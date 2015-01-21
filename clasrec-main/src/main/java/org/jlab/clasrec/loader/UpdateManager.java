@@ -14,6 +14,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jlab.clas.tools.utils.ResourcesUtils;
+import org.jlab.clas.tools.utils.StringUtils;
 import org.jlab.utils.CLASResources;
 
 /**
@@ -22,6 +23,8 @@ import org.jlab.utils.CLASResources;
  */
 public class UpdateManager {
     public static void downloadURL(String url, String file, String directory){
+        
+        System.err.println("------> ");
         System.err.println("[UpdateManager] url         : " + url);
         System.err.println("[UpdateManager] copy file   : " + file);
         System.err.println("[UpdateManager] destination : " + directory);
@@ -38,14 +41,14 @@ public class UpdateManager {
             //Logger.getLogger(UpdateManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             //Logger.getLogger(UpdateManager.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("[UpdateManager] failure     : file not found." );
+            System.err.println(StringUtils.getStringRed("[UpdateManager] failure     : file not found." ));
             return;
         }
         
         Long endTime = System.currentTimeMillis();
         Integer timeElapsed = (int) (endTime - startTime);
-        System.err.println(
-                String.format("[UpdateManager] success     :  time = %6.2f sec", (double) timeElapsed/1000.0));
+        String summary = String.format("[UpdateManager] success     :  time = %6.2f sec", (double) timeElapsed/1000.0);
+        System.err.println(StringUtils.getStringGreen(summary));
     }
     
     public static void updatePlugins(){
@@ -87,6 +90,7 @@ public class UpdateManager {
         
         if(updateType.compareTo("plugins")==0){
             UpdateManager.updatePlugins();
+            System.err.println("\n\nDone......\n");
         }
     }
 }
