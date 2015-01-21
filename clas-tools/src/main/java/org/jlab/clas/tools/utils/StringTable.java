@@ -10,6 +10,8 @@ package org.jlab.clas.tools.utils;
  * @author gavalian
  */
 public class StringTable {
+    
+    
     public StringTable(){
         
     }
