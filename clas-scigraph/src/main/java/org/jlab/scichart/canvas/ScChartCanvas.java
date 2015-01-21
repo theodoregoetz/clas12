@@ -209,8 +209,15 @@ public class ScChartCanvas extends JPanel implements ComponentListener{
     }
     
     public void draw(int pad,H1D hist){
-        int color = 4;
-        series.get(pad).clear();
+        this.draw(pad, hist, "*", 1);
+    }
+    
+    public void draw(int pad,H1D hist, String options, int color){
+        //int color = 4;
+        if(options.contains("same")==true){
+            series.get(pad).clear();            
+        }
+        
         DataSetXY dataset = hist.getDataSet();
         double[] x = dataset.getDataX().getArray();
         double[] y = dataset.getDataY().getArray();

@@ -10,3 +10,5 @@ mvn3 org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file  -Dfile=ta
     -Dversion=1.0-SNAPSHOT \
     -Dpackaging=jar \
     -DlocalRepositoryPath=$REPO
+
+scp -r $REPO/org/jlab/coat/coat-libs jlabl1:/group/clas/www/clasweb/html/clas12maven/org/jlab/coat/.

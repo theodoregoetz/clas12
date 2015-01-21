@@ -46,12 +46,12 @@ public class H1D implements EvioWritableTree {
      * @param xMin		the desired minimum value on the x axis
      * @param xMax		the desired maximum value on the x axis
      */
-    public H1D(String hName, String xTitle, String yTitle, int bins, double xMin, double xMax) {
-    	setXTitle(xTitle);
-    	setYTitle(yTitle);
+    public H1D(String hName, String xTitle, String yTitle, int bins, double xMin, double xMax) {    	
     	setName(hName);
     	set(bins, xMin, xMax);
     	initDataStore(bins);
+        setXTitle(xTitle);
+        setYTitle(yTitle);
     }
     
     /**
@@ -214,7 +214,7 @@ public class H1D implements EvioWritableTree {
             //System.err.println(" bin count = " + count + " content summ = " + bincontent);
             if(bincontent!=0){
                 summ  += this.getAxis().getBinCenter(i)*this.getBinContent(i);
-                count++;
+                count += this.getBinContent(i);
             }
         }
         

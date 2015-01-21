@@ -84,11 +84,12 @@ public class ScCanvas extends JFrame {
     }
     
     public void draw(H1D h, String options, int color){
-        double[] xdata = h.getAxis().getBinCenters();
-        double[] ydata = h.getData();
+        //double[] xdata = h.getAxis().getBinCenters();
+        //double[] ydata = h.getData();
         Boolean  isSame = false;
         if(options.contains("same")==true) isSame = true;
-        sciCanvas.addH1D(currentPad, xdata, ydata, color, isSame);
+        sciCanvas.draw(currentPad, h, options,color);
+        //sciCanvas.addH1D(currentPad, xdata, ydata, color, isSame);
     }
     
     public void setMargins(double xl, double xh, double yl, double yh){
