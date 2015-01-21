@@ -48,10 +48,26 @@ public class UpdateManager {
                 String.format("[UpdateManager] success     :  time = %6.2f sec", (double) timeElapsed/1000.0));
     }
     
+    public static void updatePlugins(){
+        String[] plugins = new String[]{
+            "clasrec-ftof-1.0-SNAPSHOT.jar",
+            "clasrec-ec-1.0-SNAPSHOT.jar",
+            "clasrec-eb-1.0-SNAPSHOT.jar",
+            "clasrec-dc-1.0-SNAPSHOT.jar"
+        };
+        
+        String pluginsURL = "https://userweb.jlab.org/~gavalian/software/plugins";
+        String pluginsDirectory = ResourcesUtils.getResourceDir("CLAS12DIR", "lib/plugins");
+        
+        for(int loop = 0; loop < plugins.length; loop++){
+            UpdateManager.downloadURL(pluginsURL, plugins[loop], pluginsDirectory);
+        }        
+    }
+    
     public static void main(String[] args){
         
         String updateType = args[0];
-        
+        System.err.println("\n\n********************************************");
         if(updateType.compareTo("coat")==0){
             String clas12maven = "https://clasweb.jlab.org/clas12maven/org/jlab/coat/coat-libs/1.0-SNAPSHOT";
             String version     = "1.0-SNAPSHOT";
@@ -65,8 +81,12 @@ public class UpdateManager {
             }
             String jarFileName = jarLib + "-" + version + ".jar";
             UpdateManager.downloadURL(clas12maven, jarFileName, destination);
-            
+            System.err.println("********************************************");
             System.err.println("\n\nDone......\n");
+        }
+        
+        if(updateType.compareTo("plugins")==0){
+            UpdateManager.updatePlugins();
         }
     }
 }
