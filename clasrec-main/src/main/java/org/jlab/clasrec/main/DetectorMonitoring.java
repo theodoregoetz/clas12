@@ -31,7 +31,7 @@ public abstract class DetectorMonitoring {
     public abstract void processEvent(EvioDataEvent event);
     public abstract void init();
     public abstract void configure(ServiceConfiguration c);
-    public abstract void analyze();    
+    public abstract void analyze();
     
     public void add(String group, String histname, int bins, double xmin, 
             double xmax){
