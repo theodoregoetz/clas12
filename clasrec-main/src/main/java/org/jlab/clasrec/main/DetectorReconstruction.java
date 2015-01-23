@@ -6,12 +6,17 @@
 
 package org.jlab.clasrec.main;
 
+import java.nio.ByteOrder;
 import java.util.HashMap;
+import org.jlab.clas12.tools.MimeType;
 import org.jlab.clasrec.utils.DataBaseLoader;
 import org.jlab.clasrec.utils.ServiceConfiguration;
 import org.jlab.coda.clara.core.ICService;
 import org.jlab.coda.clara.core.JioSerial;
+import org.jlab.coda.clara.system.CConstants;
+import org.jlab.coda.clara.system.CUtil;
 import org.jlab.evio.clas12.EvioDataEvent;
+import org.jlab.evio.clas12.EvioFactory;
 import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.base.Detector;
 import org.jlab.geom.detector.dc.DCFactory;
@@ -143,8 +148,45 @@ public abstract class DetectorReconstruction implements ICService {
     }
 
     @Override
-    public JioSerial execute(JioSerial js) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public JioSerial execute(JioSerial data) {
+        JioSerial output = data;
+ 
+        // Validate input type
+        MimeType mt = data.getMimeType();
+        if (mt != MimeType.EVIO) {
+            String msg = String.format("Wrong input type: %s", mt);
+            output.setStatus(CConstants.error);
+            output.setDataDescription(msg);
+            return output;
+        }
+        
+        EvioDataEvent dataevent = null;
+        try {
+            byte[] buffer = data.getDataAsByteArray();
+            ByteOrder endianness = data.getDataEndianness();
+            dataevent = new EvioDataEvent(buffer, endianness, EvioFactory.getDictionary());
+        } catch (/* EvioException */ Exception e) {
+            // Actually, EvioDataEvent is not throwing any exception, but I think it should.
+            // Why having an EvioDataEvent that failed to extract the event?
+            String msg = String.format("Error reading input event%n%n%s", CUtil.reportException(e));
+            output.setStatus(CConstants.error);
+            output.setDataDescription(msg);
+            return output;
+        }
+        try {
+            this.processEvent(dataevent);
+        } catch (Exception e) {
+            String msg = String.format("Error processing input event%n%n%s", CUtil.reportException(e));
+            output.setStatus(CConstants.error);
+            output.setDataDescription(msg);
+            return output;
+        }
+ 
+        // Save event.
+        output.setData(dataevent.getEventBuffer(), MimeType.EVIO);
+ 
+        return output;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
