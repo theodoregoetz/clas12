@@ -42,7 +42,7 @@ public class ClasPluginLoader {
         pluginLoader.clear();
         
         for(String jarFile : pluginFiles){
-            System.err.println("[PLUGIN] ----> scanning file : " + jarFile);
+            System.err.println("[JarFileLoader] ----> scanning file : " + jarFile);
             pluginLoader.scan(jarFile);
         }
     }

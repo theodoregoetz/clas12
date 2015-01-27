@@ -30,9 +30,15 @@ public class RawData {
         dataArray.add(adc);
     }
     
+    public RawData(Integer channel, Short tdc, Short adc){
+        MODE = 4;
+        dataArray.add(channel);
+        dataArray.add(tdc);
+        dataArray.add(adc);
+    }
+    
     public RawData(short[] shortData){
-        this.set(shortData);
-        
+        this.set(shortData);        
     }
     
     public final void set(short[] shortData){
@@ -71,16 +77,37 @@ public class RawData {
     
     public int mode() { return MODE;}
     
+    public int dataSize(){
+        return dataArray.size();
+    }
+    
+    public Object  getObject(int index){
+        return dataArray.get(index);
+    }
+    
+    public Integer getData(int index){
+        return (Integer) dataArray.get(index);
+    }
+    
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();
         str.append(String.format("PULSE (mode = %2d) : ", MODE ));
         if(MODE==3){
-            str.append(String.format("%8d %8d", this.getTDC(),this.getADC() ));
+            str.append(String.format("TDC [%8d]  ADC [%8d]", this.getTDC(),this.getADC() ));
         }
         if(MODE==7){
-            str.append(String.format("%8d %8d %8d %8d", this.getTDC(),this.getADC(),
+            str.append(String.format("TDC [%8d] ADC [%8d] PULSE [ min = %8d max = %8d]",
+                    this.getTDC(),this.getADC(),
                     this.getPulseMin(),this.getPulseMax()));
+        }
+        
+        if(MODE==4){
+            str.append(String.format("%8d %8d %8d", 
+                    (Integer) dataArray.get(0),
+                    (Short) dataArray.get(1),
+                    (Short) dataArray.get(2)            
+            ));
         }
         
         if(MODE==1){

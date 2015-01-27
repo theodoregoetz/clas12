@@ -35,14 +35,14 @@ public class JarPluginLoader {
     public void clear() { jarClasses.clear();}
     
     public void scan(String jarfile) {
-        System.err.println("[JarPluginLoader] -----> scanninng......");
-        System.err.println("[JarPluginLoader] -----> check for class DetectorReconstruction");
+        //System.err.println("[JarPluginLoader] -----> scanninng......");
+        //System.err.println("[JarPluginLoader] -----> check for class DetectorReconstruction");
         try {
             Class.forName("org.jlab.clasrec.main.DetectorReconstruction");
             // it exists on the classpath
         } catch(ClassNotFoundException e) {
             // it does not exist on the classpath
-            System.err.println("Could not resolve the CLASS");
+            System.err.println("[JarPluginLoader] ERROR : Could not resolve the CLASS");
             return;
         }
         try {            
@@ -65,7 +65,7 @@ public class JarPluginLoader {
                 //Class c = cl.loadClass(className);
                 Class c = Class.forName(className);
                 if(c.getSuperclass()==DetectorReconstruction.class){
-                    System.err.println("\t ====> CLASS = " + className);
+                    //System.err.println("\t ====> CLASS = " + className);
                     ICService  rec = (ICService) c.newInstance();
                     jarClasses.put(rec.getName(), rec);
                 }
@@ -88,4 +88,12 @@ public class JarPluginLoader {
         JarPluginLoader loader = new JarPluginLoader();
         loader.scan(jarFilePath);
     }
+    
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        
+        return str.toString();
+    }
+
 }

@@ -144,7 +144,7 @@ public abstract class DetectorReconstruction implements ICService {
     
     @Override
     public void configure(JioSerial js) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.init();
     }
 
     @Override
@@ -191,12 +191,13 @@ public abstract class DetectorReconstruction implements ICService {
 
     @Override
     public JioSerial execute(JioSerial[] jss) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void destruct() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

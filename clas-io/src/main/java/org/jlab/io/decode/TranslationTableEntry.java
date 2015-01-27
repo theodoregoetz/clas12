@@ -9,7 +9,7 @@ package org.jlab.io.decode;
  *
  * @author gavalian
  */
-public class CreateTranslationEntry {
+public class TranslationTableEntry {
     
     public Integer sector    = 1;
     public Integer layer     = 1;
@@ -20,11 +20,11 @@ public class CreateTranslationEntry {
     public Integer slot      = 1;
     public Integer channel   = 1;
     
-    public CreateTranslationEntry(String _det_){
+    public TranslationTableEntry(String _det_){
         this.detector = _det_;
     }
     
-    public CreateTranslationEntry(String _det_,
+    public TranslationTableEntry(String _det_,
             int _sec_, int _lay_, int _comp_,
             int _cr_ , int _sl_ , int _ch_){
         this.detector = _det_;
@@ -44,15 +44,15 @@ public class CreateTranslationEntry {
         this.channel = ch;
     }
     
-    public Integer getHashCreate(int _create_, int _slot_, int _ch_){
+    public static Integer getHashCreate(int _create_, int _slot_, int _ch_){
         Integer hash_c = _create_*256*256*256 + _slot_*256*256 + _ch_;
         return hash_c;
     }
     
     public Integer getHashCreate(){
-        return getHashCreate(this.create,this.slot, this.channel);
+        return TranslationTableEntry.getHashCreate(this.create,this.slot, this.channel);
     }
-
+    
     public void parse(String format){
         String[] tokens = format.split("\\s+");
         if(tokens.length<7){
@@ -71,7 +71,7 @@ public class CreateTranslationEntry {
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();
-        str.append(String.format("%-8s %4d %5d %5d %5d %5d %5d", this.detector,
+        str.append(String.format("%-8s %5d %5d %5d %5d %5d %5d", this.detector,
                 this.sector, this.layer, this.component,
                 this.create,this.slot,this.channel));
         return str.toString();

@@ -76,4 +76,9 @@ public class HDirectory implements TreeBrowser {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    public void show(){
+        for(Map.Entry<String,HGroup> entry : this.directoryGroups.entrySet()){
+            System.err.println(String.format("%-12s : %d", entry.getKey(), 1));
+        }
+    }
 }

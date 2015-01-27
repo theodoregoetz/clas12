@@ -116,6 +116,6 @@ public class F1D extends Function1D implements EvioWritableTree {
     }
 
     public void fromTreeMap(TreeMap<Integer, Object> map) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

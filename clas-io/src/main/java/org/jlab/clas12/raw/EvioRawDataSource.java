@@ -20,6 +20,7 @@ import org.jlab.coda.jevio.EvioNode;
 import org.jlab.data.io.DataEvent;
 import org.jlab.data.io.DataEventList;
 import org.jlab.data.io.DataSource;
+import org.jlab.data.utils.EvioDataConvertor;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioSource;
 
@@ -189,7 +190,7 @@ public class EvioRawDataSource implements DataSource {
     }
    
     
-    public EvioRawDataBank  getDataBankFromNodeRawPulse(EvioNode node, EvioDataEvent event){
+    public EvioRawDataBank  getDataBankFromNodeRawPulse(Integer crate, EvioNode node, EvioDataEvent event){
         if(node.getTag()==57601){
             try {
                 ByteBuffer     compBuffer = node.getByteData(true);
@@ -207,7 +208,7 @@ public class EvioRawDataSource implements DataSource {
                 Byte    slot = (Byte)     cdataitems.get(0);
                 Integer trig = (Integer)  cdataitems.get(1);
                 Long    time = (Long)     cdataitems.get(2);
-                EvioRawDataBank  dataBank = new EvioRawDataBank(slot.intValue(),trig,time);
+                EvioRawDataBank  dataBank = new EvioRawDataBank(crate, slot.intValue(),trig,time);
                 Integer nchannels = (Integer) cdataitems.get(3);
                 //System.out.println("Retrieving the data size = " + cdataitems.size()
                 //+ "  " + cdatatypes.get(3) + " number of channels = " + nchannels);
@@ -240,7 +241,50 @@ public class EvioRawDataSource implements DataSource {
         return null;
     }
     
-    public EvioRawDataBank  getDataBankFromNode(EvioNode node, EvioDataEvent event){
+    public EvioRawDataBank  getDataBankFromNodeMode17(Integer crate, EvioNode node, EvioDataEvent event){
+        if(node.getTag()==57617){
+            try {
+                ByteBuffer     compBuffer = node.getByteData(true);
+                CompositeData  compData = new CompositeData(compBuffer.array(),event.getByteOrder());
+                
+                List<DataType> cdatatypes = compData.getTypes();
+                List<Object>   cdataitems = compData.getItems();
+                if(cdatatypes.get(3) != DataType.NVALUE){
+                    System.err.println("[EvioRawDataSource] ** error ** corrupted "
+                    + " bank. tag = " + node.getTag() + " num = " + node.getNum());
+                    return null;
+                }
+                
+                Byte    slot = (Byte)     cdataitems.get(0);
+                Integer trig = (Integer)  cdataitems.get(1);
+                Long    time = (Long)     cdataitems.get(2);
+                EvioRawDataBank  dataBank = new EvioRawDataBank(crate, slot.intValue(),trig,time);
+                Integer nchannels = (Integer) cdataitems.get(3);
+                
+                int position = 4;
+                int counter  = 0;
+                while(counter<nchannels){
+                    //System.err.println("Position = " + position + " type =  "
+                    //+ cdatatypes.get(position));
+                    Integer channel = EvioDataConvertor.getIntFromShort((Short) cdataitems.get(position));
+                    Short   tdc     = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position+1));
+                    Short   adc     = EvioDataConvertor.getShortFromByte((Byte)  cdataitems.get(position+2));
+                    dataBank.addChannel(channel);
+                    dataBank.addData(channel, new RawData(channel,tdc,adc));
+                    position += 3;
+                    counter++;
+                }
+                
+                return dataBank;
+                
+            } catch (EvioException ex) {
+                Logger.getLogger(EvioRawDataSource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+    
+    public EvioRawDataBank  getDataBankFromNode(Integer crate, EvioNode node, EvioDataEvent event){
         if(node.getTag()==57602){
             try {
                 ByteBuffer     compBuffer = node.getByteData(true);
@@ -258,7 +302,7 @@ public class EvioRawDataSource implements DataSource {
                 Byte    slot = (Byte)     cdataitems.get(0);
                 Integer trig = (Integer)  cdataitems.get(1);
                 Long    time = (Long)     cdataitems.get(2);
-                EvioRawDataBank  dataBank = new EvioRawDataBank(slot.intValue(),trig,time);
+                EvioRawDataBank  dataBank = new EvioRawDataBank(crate,slot.intValue(),trig,time);
                 Integer nchannels = (Integer) cdataitems.get(3);
                 //System.out.println("Retrieving the data size = " + cdataitems.size()
                 //+ "  " + cdatatypes.get(3) + " number of channels = " + nchannels);
@@ -290,17 +334,20 @@ public class EvioRawDataSource implements DataSource {
         return null;
     }
     
-    public EvioRawDataBank  getDataBank(EvioDataEvent event, int create){
+    public EvioRawDataBank  getDataBank(EvioDataEvent event, int crate){
         ArrayList<EvioTreeBranch> branches = this.getEventBranches(event);
         
-        EvioTreeBranch cbranch = this.getEventBranch(branches, create);
+        EvioTreeBranch cbranch = this.getEventBranch(branches, crate);
         if(cbranch == null ) return null;
         for(EvioNode node : cbranch.getNodes()){
             if(node.getTag()==57602){
-                return this.getDataBankFromNode(node, event);
+                return this.getDataBankFromNode(crate,node, event);
             }
             if(node.getTag()==57601){
-                return this.getDataBankFromNodeRawPulse(node, event);
+                return this.getDataBankFromNodeRawPulse(crate,node, event);
+            }
+            if(node.getTag()==57617){
+                return this.getDataBankFromNodeMode17(crate,node, event);
             }
         }
         //EvioRawDataBank dataBank = new EvioRawDataBank();
@@ -311,15 +358,17 @@ public class EvioRawDataSource implements DataSource {
         EvioRawDataSource  source = new EvioRawDataSource();
         //source.open("/Users/gavalian/Work/DataSpace/LTCC/ltcc0test_000195.evio");
         //source.open("/Users/gavalian/Work/DataSpace/HPS/hps_003001_mode7.evio");
-        source.open("/Users/gavalian/Work/DataSpace/HPS/hps_002891.evio");
-        for(int loop = 0; loop < 10; loop++){
+        source.open("/Users/gavalian/Work/DataSpace/SVT/svt25test.dat_000857.evio");
+        for(int loop = 0; loop < 1000; loop++){
             EvioDataEvent event = (EvioDataEvent) source.getNextEvent();
             //ADCData  adc = source.getADCData(event, 57601,43);
-            System.out.println("EVENT = " + loop);
-            ArrayList<EvioTreeBranch> branches = source.getEventBranches(event);
-            //source.showBranches(branches);
-            EvioRawDataBank bank = source.getDataBank(event, 39);
-            System.out.println(bank);
+            EvioRawDataBank bank = source.getDataBank(event, 2);
+            if(bank!=null){
+                System.out.println("EVENT = " + loop);
+                ArrayList<EvioTreeBranch> branches = source.getEventBranches(event);
+                //source.showBranches(branches);            
+                System.out.println(bank);
+            }
             //source.getEvenetNodeTree(event);
             //System.err.println(adc);
         }

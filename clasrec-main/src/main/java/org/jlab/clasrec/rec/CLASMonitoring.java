@@ -26,6 +26,8 @@ public class CLASMonitoring {
     
     
     public void process(){
+        
+        detectorFactory.get(0).init();
         EvioSource  reader = new EvioSource();
         reader.open(this.inputFileName);
         int icounter = 0;
@@ -39,5 +41,6 @@ public class CLASMonitoring {
                 + icounter);
             }
          }
+        detectorFactory.get(0).analyze();
     }
 }

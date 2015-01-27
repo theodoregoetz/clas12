@@ -15,6 +15,7 @@ import java.util.TreeMap;
  * @author gavalian
  */
 public class EvioRawDataBank {
+    private Integer crateID = 0;
     private Integer slotID = 0;
     private Integer trigger = 0;
     private Long    timestamp = (long) 0;
@@ -22,6 +23,13 @@ public class EvioRawDataBank {
     
     private TreeMap<Integer, ArrayList<RawData> >  bankData = new 
         TreeMap<Integer, ArrayList<RawData> >();
+    
+    public EvioRawDataBank(Integer crate, Integer slot, Integer trig, Long time){
+        this.crateID = crate;
+        this.timestamp = time;
+        this.slotID = slot;
+        this.trigger = trig;        
+    }
     
     public EvioRawDataBank(Integer slot, Integer trig, Long time){
         this.timestamp = time;
@@ -37,6 +45,14 @@ public class EvioRawDataBank {
         bankData.get(channel).add(data);
     }
     
+    public Integer getCrate(){
+        return crateID;
+    }
+    
+    public Integer getSlot(){
+        return slotID;
+    }
+    
     public int getHits(int channel){
         if(bankData.containsKey(channel)==false) return 0;
         return bankData.get(channel).size();
@@ -50,6 +66,10 @@ public class EvioRawDataBank {
         return channels;
     }
     
+    public int getRows(){
+        return bankData.size();
+    }
+    
     public ArrayList<RawData>  getData(int channel){
         if(bankData.containsKey(channel)==false) return new ArrayList<RawData>();
         return bankData.get(channel);
@@ -58,8 +78,8 @@ public class EvioRawDataBank {
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();
-        str.append(String.format("[RAW Data Bank] SLOT = %4d , TRIGGER = %8d , TIME = %18d\n",
-                this.slotID,this.trigger,this.timestamp));
+        str.append(String.format("[RAW Data Bank] CRATE : %4d , SLOT = %4d , TRIGGER = %8d , TIME = %18d\n",
+                this.crateID,this.slotID,this.trigger,this.timestamp));
         for(Map.Entry<Integer, ArrayList<RawData>> entry : bankData.entrySet()){
             str.append(String.format("\t CHANNEL : %4d\n",entry.getKey()));
             int counter = 0;
