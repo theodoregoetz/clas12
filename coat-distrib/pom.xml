@@ -169,14 +169,14 @@
       <version>2.3</version>
       <configuration>
 	<outputFile>target/coat-libs-${project.version}.jar</outputFile>
-	
+	<!--
 	<artifactSet>
           <excludes>
             <exclude>org.jlab.coda:clara</exclude>
             <exclude>org.jlab.coda:jtools</exclude>
           </excludes>
         </artifactSet>
-
+	-->
       </configuration>
       <executions>
         <execution>

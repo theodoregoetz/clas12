@@ -9,7 +9,9 @@ package org.jlab.clasrec.rec;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
-import org.jlab.clas12.utils.Benchmark;
+import org.jlab.clas.tools.benchmark.Benchmark;
+import org.jlab.clas.tools.utils.CommandLineTools;
+
 import org.jlab.clasrec.loader.ClasPluginLoader;
 import org.jlab.clasrec.main.DetectorReconstruction;
 import org.jlab.coda.clara.core.ICService;
@@ -32,6 +34,7 @@ public class CLASReconstruction {
      
     private EvioSource  reader               = new EvioSource();
     private Integer     debugLevel           = 0;
+    private Integer     maxEventsReconstruct = -1;
     
     public CLASReconstruction(){
         
@@ -78,6 +81,10 @@ public class CLASReconstruction {
         }
     }
     
+    public void setMaxEvents(int maxevt){
+        this.maxEventsReconstruct = maxevt;
+    }
+    
     public void initPlugins(){
         System.err.println("[PLUGIN] ----> Initializing Plugins");
         pluginLoader.loadPluginDirectory();
@@ -99,9 +106,9 @@ public class CLASReconstruction {
         }
         
         Long  processTime = System.currentTimeMillis();
-        
+        int iEventCounter = 0;
         while(reader.hasEvent()){
-        
+            iEventCounter++;
             bench.resume("TOTAL");
             EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
             for(DetectorReconstruction rec : this.detectorFactory){
@@ -110,7 +117,8 @@ public class CLASReconstruction {
                     rec.processEvent(event);
                 } catch (Exception e) {
                     System.err.println("[CLAS-REC] -----> ERROR : excpetion thrown by "
-                            + rec.getName());
+                            + rec.getName());                    
+                    e.printStackTrace();
                 }
                 bench.pause(rec.getName());
             }
@@ -123,6 +131,7 @@ public class CLASReconstruction {
                 processTime = currentTime;
                 System.err.println(bench.getTimer("TOTAL").toString());
             }
+            if(this.maxEventsReconstruct>0&&iEventCounter>=this.maxEventsReconstruct) break;
         }
         writer.close();
         System.err.println("\n\n" + bench.toString());
@@ -140,19 +149,47 @@ public class CLASReconstruction {
     
     public static void main(String[] args){
         
-        if(args.length<2){
-            CLASReconstruction.printUsage();
+        CommandLineTools  cmdParser = new CommandLineTools();
+        
+        cmdParser.addRequired("-i");
+        cmdParser.addRequired("-s");
+        cmdParser.addDescription("-i", "input file name");
+        cmdParser.addDescription("-s", "service list to run (e.g. BST:FTOF:EB )");
+        cmdParser.addDescription("-o", "output file name");
+        cmdParser.addDescription("-n", "number of events to run");
+        
+        cmdParser.parse(args);
+        
+        
+        Integer nEventsToRun = -1;
+        String  outputFileName = "rec_output.evio";
+        
+        if(cmdParser.isComplete()==false){
+            System.err.println(cmdParser.usageString());
             System.exit(0);
         }
+        //if(args.length<2){
+        //    CLASReconstruction.printUsage();
+
+        //}
         
-        String serviceList  = args[0];
-        String inputFile    = args[1];
+        String serviceList  = cmdParser.asString("-s");
+        String inputFile    = cmdParser.asString("-i");
         String outputFile   = "rec_output.evio";
-        if(args.length>2) {
-            outputFile = args[2];
+        
+        if(cmdParser.hasOption("-o")==true){
+            outputFile = cmdParser.asString("-o");
         }
         
+        if(cmdParser.hasOption("-n")==true){
+            nEventsToRun = cmdParser.asInteger("-n");
+        }
+        //if(args.length>2) {
+        //    outputFile = args[2];
+        //}
+        
         CLASReconstruction  clasRec = new CLASReconstruction();
+        clasRec.setMaxEvents(nEventsToRun);
         clasRec.setDetectors(serviceList);
         clasRec.initPlugins();
         

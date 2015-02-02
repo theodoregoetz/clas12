@@ -34,7 +34,7 @@ public class JarPluginLoader {
     
     public void clear() { jarClasses.clear();}
     
-    public void scan(String jarfile) {
+    public void scan(String jarfile) {       
         //System.err.println("[JarPluginLoader] -----> scanninng......");
         //System.err.println("[JarPluginLoader] -----> check for class DetectorReconstruction");
         try {
@@ -71,7 +71,8 @@ public class JarPluginLoader {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(JarPluginLoader.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("[JarFileLoader] ----> (warning) file is not a proper jar : " + jarfile);
+            //Logger.getLogger(JarPluginLoader.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(JarPluginLoader.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {

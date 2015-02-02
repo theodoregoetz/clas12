@@ -266,19 +266,25 @@ public class EvioRawDataSource implements DataSource {
                 while(counter<nchannels){
                     //System.err.println("Position = " + position + " type =  "
                     //+ cdatatypes.get(position));
-                    Integer channel = EvioDataConvertor.getIntFromShort((Short) cdataitems.get(position));
-                    Short   tdc     = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position+1));
-                    Short   adc     = EvioDataConvertor.getShortFromByte((Byte)  cdataitems.get(position+2));
-                    dataBank.addChannel(channel);
-                    dataBank.addData(channel, new RawData(channel,tdc,adc));
-                    position += 3;
+                    Short   half    = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position));
+                    Short   channel = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position+1));
+                    Short   tdc     = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position+2));
+                    Short   adc     = EvioDataConvertor.getShortFromByte((Byte)  cdataitems.get(position+3));
+                    
+                    Integer channelKey = (half<<8)|channel;
+                    //System.err.println(" HALF = " + half + "  CHANNEL = " + channel + " KEY = " + channelKey  );
+                    dataBank.addChannel(channelKey);
+                    dataBank.addData(channelKey, new RawData(channelKey,tdc,adc));
+                    position += 4;
                     counter++;
                 }
                 
                 return dataBank;
                 
             } catch (EvioException ex) {
-                Logger.getLogger(EvioRawDataSource.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(EvioRawDataSource.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IndexOutOfBoundsException ex){
+                //System.out.println("[ERROR] ----> ERROR DECODING COMPOSITE DATA FOR ONE EVENT");
             }
         }
         return null;
@@ -355,19 +361,23 @@ public class EvioRawDataSource implements DataSource {
     }
     
     public static void main(String[] args){
+        
+        
         EvioRawDataSource  source = new EvioRawDataSource();
         //source.open("/Users/gavalian/Work/DataSpace/LTCC/ltcc0test_000195.evio");
         //source.open("/Users/gavalian/Work/DataSpace/HPS/hps_003001_mode7.evio");
-        source.open("/Users/gavalian/Work/DataSpace/SVT/svt25test.dat_000857.evio");
-        for(int loop = 0; loop < 1000; loop++){
+        //source.open("/Users/gavalian/Work/DataSpace/SVT/svt257test.dat_000869.evio");
+        source.open("/Users/gavalian/Work/DataSpace/SVT/svt257test.dat_000869.evio");
+        for(int loop = 0; loop < 100000; loop++){
             EvioDataEvent event = (EvioDataEvent) source.getNextEvent();
             //ADCData  adc = source.getADCData(event, 57601,43);
+            System.out.println(" EVENT # = " + (loop+1));
             EvioRawDataBank bank = source.getDataBank(event, 2);
             if(bank!=null){
-                System.out.println("EVENT = " + loop);
-                ArrayList<EvioTreeBranch> branches = source.getEventBranches(event);
+                //System.out.println("EVENT = " + loop);
+                //ArrayList<EvioTreeBranch> branches = source.getEventBranches(event);
                 //source.showBranches(branches);            
-                System.out.println(bank);
+                //System.out.println(bank);
             }
             //source.getEvenetNodeTree(event);
             //System.err.println(adc);

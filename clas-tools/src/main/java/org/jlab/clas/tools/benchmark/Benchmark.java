@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.jlab.clas12.utils;
+package org.jlab.clas.tools.benchmark;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.jlab.clas12.utils;
+package org.jlab.clas.tools.benchmark;
 
 /**
  *
@@ -61,7 +61,7 @@ public class BenchmarkTimer {
         StringBuilder str = new StringBuilder();
         double timePerCall = 0.0;
         if(numberOfCalls!=0) timePerCall = this.getMiliseconds()/numberOfCalls;
-        str.append(String.format("TIMER (%15s) : N Calls %15d,  Total Time  = %12.6f sec,  Unit Time = %12.5f msec",
+        str.append(String.format("TIMER (%-12s) : N Calls %12d,  Total Time  = %12.2f sec,  Unit Time = %12.3f msec",
                 this.getName(),numberOfCalls,this.getSeconds(),timePerCall));
         return str.toString();
     }
