@@ -32,7 +32,8 @@ public class DatabaseConstantProvider implements ConstantProvider {
     
     private void initialize(String address){
         provider = CcdbPackage.createProvider(address);
-        provider.connect();        
+        provider.connect();
+        
         //Assignment asgmt = provider.getData("/test/test_vars/test_table");
     }
     

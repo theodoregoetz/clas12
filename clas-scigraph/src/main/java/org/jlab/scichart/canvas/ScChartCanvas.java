@@ -18,7 +18,9 @@ import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.jlab.data.func.F1D;
 import org.jlab.data.graph.DataSetXY;
+import org.jlab.data.histogram.GraphErrors;
 import org.jlab.data.histogram.H1D;
 import org.jlab.scichart.group.ScGroupSeries;
 import org.jlab.scichart.group.ScNodePaveText;
@@ -240,6 +242,57 @@ public class ScChartCanvas extends JPanel implements ComponentListener{
         //this.repaint();
     }
     
+    public void draw(int pad, F1D func){
+        this.draw(pad, func,"*");
+    }
+    
+    public void draw(int pad, F1D func, String options){
+        DataSetXY graph = func.getDataSet();
+        double[] x = graph.getDataX().getArray();
+        double[] y = graph.getDataY().getArray();
+        ScNodeSeries chart = new ScNodeSeries();
+        chart.setData(1, x, y,1);
+        series.get(pad).addSeries(chart);
+        if(options.contains("stat"));
+        ScNodePaveText legend = new ScNodePaveText(0.01,0.01,func.getParameterText());
+        series.get(pad).getChildren().add(legend);
+        //this.repaint();
+        this.repaint();
+    }
+    
+    public void draw(int pad, GraphErrors graph){
+        this.draw(pad, graph,"*");
+    }
+    
+    public void draw(int pad, GraphErrors graph, String options){
+        ScNodeSeries chart = new ScNodeSeries();
+        double[] x = graph.getDataX().getArray();
+        double[] y = graph.getDataY().getArray();
+        chart.setData(2, x, y, graph.graphMarkerAttributes.MARKER_COLOR);
+        
+        series.get(pad).addSeries(chart);
+        series.get(pad).setAxisTitles(graph.getXTitle(), graph.getYTitle());
+        chart.attributes().LINE_COLOR = graph.graphMarkerAttributes.MARKER_COLOR;
+        chart.attributes().MARKER_STYLE = graph.graphMarkerAttributes.MARKER_STYLE;
+        chart.attributes().MARKER_STROKE = new BasicStroke(2);
+        chart.attributes().MARKER_SIZE   = graph.graphMarkerAttributes.MARKER_SIZE;
+        this.repaint();
+    }
+    
+    public void draw(int pad, GraphErrors graph, int color){
+        ScNodeSeries chart = new ScNodeSeries();
+        double[] x = graph.getDataX().getArray();
+        double[] y = graph.getDataY().getArray();
+        chart.setData(2, x, y,color);
+        series.get(pad).setAxisTitles(graph.getXTitle(), graph.getYTitle());
+        series.get(pad).addSeries(chart);
+        chart.attributes().LINE_COLOR = color;
+        chart.attributes().MARKER_STYLE = 2;
+        chart.attributes().MARKER_STROKE = new BasicStroke(2);
+        chart.attributes().MARKER_SIZE   = 8;
+        this.repaint();
+    }
+    
     public void addLegend(int pad, double xr, double yr, String[] texts){
         ScNodePaveText legend = new ScNodePaveText(xr,yr,texts);
         series.get(pad).getChildren().add(legend);
@@ -277,6 +330,7 @@ public class ScChartCanvas extends JPanel implements ComponentListener{
         //canvas.setLogY(2, true);        
         //canvas.addLine(0,xdata, ygaus, 4);
         //canvas.addLine(1,xdata, yexpo, 3);
+        
         FontManager fonts = new FontManager();
         for(int loop = 0; loop < 4; loop++)
             canvas.draw(loop, H1);

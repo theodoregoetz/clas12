@@ -14,6 +14,8 @@ import org.jlab.data.graph.DataSet;
  */
 public class FunctionFactory {
     
+    private static double ONE_OVER_SQRT_2PI = 1.0/Math.sqrt(2.0*Math.PI);
+    
     public static double[] getUniformAxis(int bins, double min, double max){
         double[] axis = new double[bins];
         double width = (max-min)/bins;
@@ -39,6 +41,11 @@ public class FunctionFactory {
     
     public static double  gauss(double x, double mean, double sigma){
         return Math.exp(-(x-mean)*(x-mean)/(2.0*sigma*sigma));
+    }
+    
+    public static double landau(double x, double mean, double sigma){
+        double lambda = (x-mean)/sigma;
+        return Math.exp(-0.5*(lambda+Math.exp(-lambda)));
     }
     
     public static DataSet getGauss(int bins, double min, double max, double amp, double mean, double sigma){

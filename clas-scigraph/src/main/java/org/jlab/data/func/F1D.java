@@ -47,6 +47,13 @@ public class F1D extends Function1D implements EvioWritableTree {
                 pars.add("mean");
                 pars.add("sigma");
             }
+            
+            if(f.compareTo("landau")==0){
+                pars.add("amp");
+                pars.add("mean");
+                pars.add("sigma");
+            }
+            
             if(f.compareTo("p0")==0){
                 pars.add("p0");
             }
@@ -60,7 +67,15 @@ public class F1D extends Function1D implements EvioWritableTree {
                 pars.add("p0");
                 pars.add("p1");
                 pars.add("p2");
-            }            
+            }
+            
+            if(f.compareTo("p3")==0){
+                pars.add("p0");
+                pars.add("p1");
+                pars.add("p2");
+                pars.add("p3");
+            }
+            
         }
         
         this.setNParams(pars.size());
@@ -82,6 +97,13 @@ public class F1D extends Function1D implements EvioWritableTree {
                 parOffset += 3;
             }
             
+            if(f.compareTo("landau")==0){
+                values.add(this.parameter(parOffset).value()*FunctionFactory.landau(x,
+                        this.parameter(parOffset+1).value(),
+                        this.parameter(parOffset+2).value()));
+                parOffset += 3;
+            }
+            
             if(f.compareTo("p0")==0){
                 values.add(this.parameter(parOffset).value()); 
                 parOffset += 1;
@@ -92,13 +114,23 @@ public class F1D extends Function1D implements EvioWritableTree {
                         this.parameter(parOffset+1).value()*x);
                     parOffset += 2;
             }
+            
             if(f.compareTo("p2")==0){
                 values.add(this.parameter(parOffset).value()+
                         this.parameter(parOffset+1).value()*x +
                         this.parameter(parOffset+2).value()*x*x
                 );
                     parOffset += 3;
-            }            
+            }
+            
+            if(f.compareTo("p3")==0){
+                values.add(this.parameter(parOffset).value()+
+                        this.parameter(parOffset+1).value()*x +
+                        this.parameter(parOffset+2).value()*x*x +
+                        this.parameter(parOffset+2).value()*x*x*x 
+                );
+                    parOffset += 4;
+            }
         }
         
         double result = 0.0;

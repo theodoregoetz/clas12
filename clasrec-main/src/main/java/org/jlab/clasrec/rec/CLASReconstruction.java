@@ -35,6 +35,7 @@ public class CLASReconstruction {
     private EvioSource  reader               = new EvioSource();
     private Integer     debugLevel           = 0;
     private Integer     maxEventsReconstruct = -1;
+    private Integer     skipEvents           = 0;
     
     public CLASReconstruction(){
         
@@ -80,6 +81,9 @@ public class CLASReconstruction {
             }
         }
     }
+    public void setSkip(Integer skip){
+        this.skipEvents = skip;
+    }
     
     public void setMaxEvents(int maxevt){
         this.maxEventsReconstruct = maxevt;
@@ -111,21 +115,24 @@ public class CLASReconstruction {
             iEventCounter++;
             bench.resume("TOTAL");
             EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
-            for(DetectorReconstruction rec : this.detectorFactory){
-                bench.resume(rec.getName());
-                try {
-                    rec.processEvent(event);
-                } catch (Exception e) {
-                    System.err.println("[CLAS-REC] -----> ERROR : excpetion thrown by "
-                            + rec.getName());                    
-                    e.printStackTrace();
-                }
-                bench.pause(rec.getName());
+            if(iEventCounter >= this.skipEvents){
+                for(DetectorReconstruction rec : this.detectorFactory){
+                    bench.resume(rec.getName());
+                    try {
+                        rec.processEvent(event);
+                    } catch (Exception e) {
+                        System.err.println("[CLAS-REC] -----> ERROR : excpetion thrown by "
+                                + rec.getName());                    
+                        e.printStackTrace();
+                    }
+                    bench.pause(rec.getName());
+                }            
+                bench.resume("WRITER");
+                writer.writeEvent(event);
+                bench.pause("WRITER");
             }
+            
             bench.pause("TOTAL");
-            bench.resume("WRITER");
-            writer.writeEvent(event);
-            bench.pause("WRITER");
             Long currentTime = System.currentTimeMillis();
             if((currentTime-processTime)>10000){
                 processTime = currentTime;
@@ -157,6 +164,7 @@ public class CLASReconstruction {
         cmdParser.addDescription("-s", "service list to run (e.g. BST:FTOF:EB )");
         cmdParser.addDescription("-o", "output file name");
         cmdParser.addDescription("-n", "number of events to run");
+        cmdParser.addDescription("-l", "number of events to skip");
         
         cmdParser.parse(args);
         
@@ -181,6 +189,7 @@ public class CLASReconstruction {
             outputFile = cmdParser.asString("-o");
         }
         
+                
         if(cmdParser.hasOption("-n")==true){
             nEventsToRun = cmdParser.asInteger("-n");
         }
@@ -192,6 +201,11 @@ public class CLASReconstruction {
         clasRec.setMaxEvents(nEventsToRun);
         clasRec.setDetectors(serviceList);
         clasRec.initPlugins();
+        
+        if(cmdParser.hasOption("-l")==true){
+            Integer skip = cmdParser.asInteger("-l");            
+            clasRec.setSkip(skip);
+        }
         
         clasRec.run(inputFile, outputFile);
         

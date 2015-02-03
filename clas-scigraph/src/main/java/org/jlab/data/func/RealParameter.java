@@ -62,6 +62,10 @@ public class RealParameter {
         this.setLimits(min, max);
     }
     
+    public void set(double value){
+        this.setValue(value);
+    }
+    
     public void setValue(double value) { pValue = value; };
     public double value(){ return pValue;}
     public String name() { return pName;}

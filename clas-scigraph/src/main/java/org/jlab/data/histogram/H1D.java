@@ -3,6 +3,8 @@ package org.jlab.data.histogram;
 import java.util.TreeMap;
 import org.jlab.data.base.EvioWritableTree;
 import org.jlab.data.base.StatNumber;
+import org.jlab.data.fitter.DataFitter;
+import org.jlab.data.func.F1D;
 import org.jlab.data.graph.DataPoints;
 import org.jlab.data.graph.DataSetXY;
 
@@ -285,6 +287,16 @@ public class H1D implements EvioWritableTree {
         histogramDataError = new double[size];
     }
     
+    public void fit(F1D func){
+        this.fit(func, "*");
+    }
+    
+    public void fit(F1D func, String options){
+        DataFitter.fit(this.getDataSet(), func);
+        if(options.contains("Q")==false){
+            func.show();
+        }
+    }
     /**
      * Increments the bin corresponding to that value by 1
      * 
@@ -483,7 +495,7 @@ public class H1D implements EvioWritableTree {
                     this.getBinError(i)));
         }
         return buffer.toString();
-    }
+    }       
     
     public DataSetXY getDataSet(){
         DataSetXY dataset = new DataSetXY(this.getAxis().getBinCenters(),
@@ -495,6 +507,13 @@ public class H1D implements EvioWritableTree {
      * 
      * @return a DataPoints object of the histogram data
      */
+    public GraphErrors getGraph(){
+        GraphErrors  graph = new GraphErrors(this.getAxis().getBinCenters(),
+                this.getData());
+        return graph;
+    }
+    
+    /*
     public DataPoints getGraph() {
         DataPoints graph = new DataPoints(this.histName+"_graph",this.histXTitle,this.histYTitle);
         int npoints = this.getAxis().getNBins();
@@ -506,7 +525,7 @@ public class H1D implements EvioWritableTree {
                     this.getBinContent(i));
         }
         return graph;
-    }
+    }*/
     
     /**
      * 

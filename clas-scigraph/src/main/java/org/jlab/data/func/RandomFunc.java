@@ -7,7 +7,6 @@
 package org.jlab.data.func;
 
 import org.jlab.data.graph.DataSetXY;
-import org.jlab.data.graph.DataVector;
 
 /**
  *

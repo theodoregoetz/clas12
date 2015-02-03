@@ -45,10 +45,10 @@ public class DataFitter {
         //System.err.println("******************");
         //System.err.println("*   SCAN RESULTS  *");
         //System.err.println("******************");
-        System.out.println("minimum : " + scanmin);
-        System.out.println("pars    : " + upar);
+        //System.out.println("minimum : " + scanmin);
+        //System.out.println("pars    : " + upar);
         //System.out.println(upar);
-        System.err.println("*******************************************");
+        //System.err.println("*******************************************");
         MnMigrad migrad = new MnMigrad(funcFitter, upar);
         FunctionMinimum min = migrad.minimize();
         
@@ -59,6 +59,7 @@ public class DataFitter {
             par.setValue(userpar.value(par.name()));
             par.setError(userpar.error(par.name()));
         }
+        
         /*
         System.out.println(upar);
         System.err.println("******************");

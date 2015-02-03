@@ -70,6 +70,17 @@ public class Function1D  {
         return funcParams.get(index);
     }
     
+    public String[] getParameterText(){
+        String[]  parText = new String[this.funcParams.size()];
+        for(int loop = 0; loop < this.funcParams.size(); loop++){
+            parText[loop] = String.format("%-8s %.3f / %.3f", 
+                    this.funcParams.get(loop).name(),
+                    this.funcParams.get(loop).value(),
+                    this.funcParams.get(loop).error());
+        }
+        return parText;
+    }
+            
     public double eval(double x){
         return 1;
     }
