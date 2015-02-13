@@ -18,6 +18,7 @@
     <module>clasrec-main</module>
     <module>clas-geometry</module>
     <module>clas-scigraph</module>
+    <module>jroot</module>
   </modules>
 
 </project>
