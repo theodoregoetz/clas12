@@ -67,7 +67,9 @@ public class EvioRawDataDecoder {
             } else {
                 record.init(entry.sector, entry.layer, half, chipID, trueChannel);
                 record.setData(BCO, ADC);
-                records.add(record);
+                if(record.SECTOR>0){
+                    records.add(record);
+                }
             }
         }
         return records;
