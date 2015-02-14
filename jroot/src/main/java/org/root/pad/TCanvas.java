@@ -8,6 +8,7 @@ package org.root.pad;
 
 import javax.swing.JFrame;
 import org.root.func.F1D;
+import org.root.group.PlotGroup;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
 import org.root.series.DataSeriesFunc;
@@ -73,4 +74,7 @@ public class TCanvas extends JFrame {
         this.embededCanvas.repaint();
     }
     
+    public void draw(PlotGroup group){
+        this.embededCanvas.draw(group);
+    }
 }

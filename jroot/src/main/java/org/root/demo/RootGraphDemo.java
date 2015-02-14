@@ -18,6 +18,8 @@ import org.root.series.DataSeriesPoints;
  * @author gavalian
  */
 public class RootGraphDemo {
+    
+    
     public static void main(String[] args){
         JFrame frame = new JFrame("Scigraph DEMO");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,6 +39,8 @@ public class RootGraphDemo {
         canvas.add(0,data2d);
         canvas.add(1,data);
         canvas.add(2,graph);
+        
+        
         
         frame.add(canvas);
         /*

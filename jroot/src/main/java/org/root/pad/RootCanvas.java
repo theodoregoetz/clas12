@@ -9,8 +9,16 @@ package org.root.pad;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.swing.JPanel;
 import org.root.base.IDrawableDataSeries;
+import org.root.data.DataSetXY;
+import org.root.group.PlotDescriptor;
+import org.root.group.PlotGroup;
+import org.root.histogram.H1D;
+import org.root.histogram.H2D;
+import org.root.series.DataSeriesH1D;
+import org.root.series.DataSeriesH2D;
 
 /**
  *
@@ -30,6 +38,8 @@ public class RootCanvas extends JPanel {
     
     public void divide(int cols, int rows){
         canvasPads.clear();
+        this.removeAll();
+        this.revalidate();
         this.setLayout(new GridLayout(rows,cols));
         int xsize = this.getWidth()/cols;
         int ysize = this.getHeight()/rows;
@@ -37,6 +47,34 @@ public class RootCanvas extends JPanel {
             RootPad pad = new RootPad(xsize,ysize);
             canvasPads.add(pad);
             this.add(pad);
+        }
+        this.revalidate();
+    }
+    
+    public void draw(int pad, PlotGroup group, String objname){
+        Object drawObject = group.getObjects().get(objname);
+        if(drawObject instanceof H1D){
+            DataSeriesH1D h1d = new DataSeriesH1D((H1D) drawObject);
+            this.add(pad,h1d);
+            return;
+        }
+        
+        if(drawObject instanceof H2D){
+            DataSeriesH2D h2d = new DataSeriesH2D((H2D) drawObject);
+            this.add(pad,h2d);
+            return;
+        }
+    }
+    
+    public void draw(PlotGroup group){
+        //ArrayList<Object>  items = group.getObjects();
+        this.divide(group.getColumns(), group.getRows());
+        for(Map.Entry<Integer,PlotDescriptor> entry : group.getDescriptors().entrySet()){
+            int pad = entry.getKey();
+            ArrayList<String>  list = entry.getValue().getList();
+            for(String plotName : list){
+                this.draw(pad,group, plotName);
+            }
         }
     }
     

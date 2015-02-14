@@ -91,10 +91,12 @@ public class DataSeriesH1D implements IDrawableDataSeries {
         F1D fitfunc = new F1D(function,this.getMinX(),this.getMaxX());
         DataSetXY  data = this.dataHistogram.getDataSet();
         double mean = this.dataHistogram.getMean();
-        double rms  = this.dataHistogram.getRMS();        
+        double rms  = this.dataHistogram.getRMS();
+        //System.out.println("mean = " + mean + "  rms = " + rms);
         fitfunc.parameter(0).set(400, 0.0, 5000000);
-        fitfunc.parameter(1).set(0.0,-120,120);
-        fitfunc.parameter(2).set(10,0.0,200);        
+        fitfunc.parameter(1).set(mean,this.dataHistogram.getxAxis().min(),
+                this.dataHistogram.getxAxis().max());
+        fitfunc.parameter(2).set(rms,0.0,5.0*rms);
         fitfunc.show();
         DataFitter.fit(data, fitfunc);
         fitfunc.show();

@@ -36,8 +36,8 @@ public class DataSeriesPoints implements IDrawableDataSeries {
     }
     
     public void generateRandom(){
-        DataVector  xvec = DataSetFactory.uniformAxis(50, 0.8, 6.2);
-        DataVector  yvec = DataSetFactory.gausFunction(xvec, 200, 3.5, 0.6);
+        DataVector  xvec = DataSetFactory.uniformAxis(50, 18.0, 35.0);
+        DataVector  yvec = DataSetFactory.gausFunction(xvec, 200, 26.0, 1.6);
         this.dataSet = new DataSetXY();
         for(int loop = 0; loop < xvec.getSize(); loop++){
             this.dataSet.add(xvec.getValue(loop), yvec.getValue(loop));
@@ -86,12 +86,16 @@ public class DataSeriesPoints implements IDrawableDataSeries {
         F1D func = new F1D(function,this.getMinX(),this.getMaxX());
         if(function.contains("gaus")){
             
-            //func.parameter(0).set(200, 0.0, 50000.0);
-            func.parameter(1).set(3.0, 0.0, 200.0);
-            func.parameter(2).set(0.2, 0.0, 1000.0);
+            double mean = func.getMin() + 0.5*( func.getMax()-func.getMin());
+            func.parameter(0).set(200, 0.0, 500000.0);
+            func.parameter(1).set(mean, func.getMin(), func.getMax());
+            func.parameter(2).set(0.5*mean, 0.0, 1000.0);
         }
+        
+        func.show();
         DataFitter.fit(dataSet, func);
         DataSeriesFunc dataFunc = new DataSeriesFunc(func);
+        func.show();
         return dataFunc;
     }
     
