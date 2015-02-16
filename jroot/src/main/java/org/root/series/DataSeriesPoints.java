@@ -86,10 +86,10 @@ public class DataSeriesPoints implements IDrawableDataSeries {
         F1D func = new F1D(function,this.getMinX(),this.getMaxX());
         if(function.contains("gaus")){
             
-            double mean = func.getMin() + 0.5*( func.getMax()-func.getMin());
+            double mean = this.getMinX() + 0.5*( this.getMaxX()-this.getMinX());
             func.parameter(0).set(200, 0.0, 500000.0);
             func.parameter(1).set(mean, func.getMin(), func.getMax());
-            func.parameter(2).set(0.5*mean, 0.0, 1000.0);
+            func.parameter(2).set(0.1*mean, 0.0, 1000.0);
         }
         
         func.show();

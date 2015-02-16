@@ -22,7 +22,7 @@ public class GraphAxis {
     
     private Point axisOrigin   = new Point();
     private Integer axisLength = 10;
-    private Integer axisWidth = 10;
+    private Integer axisWidth  = 10;
     private Boolean isAxisVertical = false;
     private Integer ndivisions     = 10;
     private Integer ntickdivisiond = 5;
@@ -30,8 +30,8 @@ public class GraphAxis {
     private Double  axisMaximum    = 1.0;
     private AxisNiceScale axisScale = new AxisNiceScale(0.0,15.0);
     
-    private Font          fontAxisTicks = new Font(Font.SANS_SERIF,Font.PLAIN,14);
-    private Font          fontAxisTitle = new Font(Font.SANS_SERIF,Font.PLAIN,18);
+    private Font          fontAxisTicks = new Font(Font.SANS_SERIF,Font.PLAIN,12);
+    private Font          fontAxisTitle = new Font(Font.SANS_SERIF,Font.PLAIN,14);
     
     
     final static float dash1[] = {5.0f};

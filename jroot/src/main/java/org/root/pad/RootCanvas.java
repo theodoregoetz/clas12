@@ -49,12 +49,16 @@ public class RootCanvas extends JPanel {
             this.add(pad);
         }
         this.revalidate();
+        this.repaint();
     }
     
     public void draw(int pad, PlotGroup group, String objname){
         Object drawObject = group.getObjects().get(objname);
         if(drawObject instanceof H1D){
+            H1D histogram = (H1D) drawObject;
+            //System.out.println(histogram);
             DataSeriesH1D h1d = new DataSeriesH1D((H1D) drawObject);
+            
             this.add(pad,h1d);
             return;
         }
@@ -62,6 +66,7 @@ public class RootCanvas extends JPanel {
         if(drawObject instanceof H2D){
             DataSeriesH2D h2d = new DataSeriesH2D((H2D) drawObject);
             this.add(pad,h2d);
+            
             return;
         }
     }
@@ -76,6 +81,7 @@ public class RootCanvas extends JPanel {
                 this.draw(pad,group, plotName);
             }
         }
+        this.repaint();
     }
     
     public void add(int pad, IDrawableDataSeries series){

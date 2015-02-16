@@ -6,9 +6,11 @@
 package org.jlab.clasrec.main;
 
 import org.jlab.clasrec.utils.ServiceConfiguration;
-import org.jlab.data.histogram.H1D;
-import org.jlab.data.histogram.HDirectory;
 import org.jlab.evio.clas12.EvioDataEvent;
+import org.root.group.PlotDirectory;
+import org.root.group.PlotGroup;
+import org.root.histogram.H1D;
+import org.root.histogram.H2D;
 
 /**
  *
@@ -19,7 +21,7 @@ public abstract class DetectorMonitoring {
     private String moduleName      = "undef";
     private String moduleVersion   = "0.5";
     private String moduleAuthor    = "unknown";
-    private final HDirectory  hDirectory = new HDirectory();
+    private final PlotDirectory  hDirectory = new PlotDirectory();
     
     public DetectorMonitoring(String name, String version, String author){
         this.moduleName     = name;
@@ -33,6 +35,10 @@ public abstract class DetectorMonitoring {
     public abstract void configure(ServiceConfiguration c);
     public abstract void analyze();
     
+    public void addGroup(PlotGroup group){
+        this.hDirectory.addGroup(group);
+    }
+    /*
     public void add(String group, String histname, int bins, double xmin, 
             double xmax){
         if(hDirectory.getGroups().containsKey(group)==false){
@@ -57,9 +63,39 @@ public abstract class DetectorMonitoring {
                     ") does not have a plotting group \""+group +"\"");
         }
     }
-    
-    public HDirectory getDirectory(){
-        return hDirectory;
+    */
+    public void fill(String group, String hist, double value)
+    {        
+        if(hDirectory.getGroup(group) != null){
+            Object h1d = hDirectory.getGroup(group).getObjects().get(hist);
+            if(h1d!=null){
+                if(h1d instanceof H1D){
+                    //System.out.println("Fillinf histogram");
+                    ((H1D) h1d).fill(value);
+                } else {
+                    System.err.println(" --- error --- " + h1d.getClass());
+                }
+            } else {
+                System.err.println(" histogram not found with name " + hist);
+            }
+        } else {
+            System.err.println(" Group not found with name " + group);
+        }    
     }
     
+    public void fill(String group, String hist, double vx, double vy)
+    {
+        if(hDirectory.getGroup(group) != null){
+            Object h2d = hDirectory.getGroup(group).getObjects().get(hist);
+            if(h2d!=null){
+                if(h2d instanceof H2D){
+                    ((H2D) h2d).fill(vx,vy);
+                }
+            }
+        }        
+    }
+    
+    public PlotDirectory getDirectory(){
+        return hDirectory;
+    }    
 }

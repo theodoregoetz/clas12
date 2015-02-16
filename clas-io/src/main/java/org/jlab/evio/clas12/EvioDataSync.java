@@ -37,7 +37,10 @@ public class EvioDataSync implements DataSync {
         try {
             evioWriter = new EvioCompactEventWriter(filename, null,
                     0, 0, 
-                    4*300, 1000, 2*1024*1024, writerByteOrder, null, true);
+                    15*300, 
+                    2000, 
+                    8*1024*1024, 
+                    writerByteOrder, null, true);
 //new EventWriter(file, 1000000, 2,
             //ByteOrder.BIG_ENDIAN, null, null);
         } catch (EvioException ex) {
@@ -56,7 +59,7 @@ public class EvioDataSync implements DataSync {
             clone.put(original);
             original.rewind();
             clone.flip();
-            evioWriter.writeEvent(clone);            
+            evioWriter.writeEvent(clone);
 //            event.getEventBuffer().flip();
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);

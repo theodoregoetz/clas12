@@ -15,8 +15,10 @@ import org.jlab.evio.clas12.EvioSource;
  * @author gavalian
  */
 public class CLASMonitoring {
+    
     private final ArrayList<DetectorMonitoring>  detectorFactory =
             new ArrayList<DetectorMonitoring>();
+    
     private String inputFileName = "";
     
     public CLASMonitoring(String file, DetectorMonitoring detector){

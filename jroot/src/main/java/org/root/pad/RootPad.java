@@ -47,7 +47,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     private GraphAxis   graphAxisX = new GraphAxis();
     private GraphAxis   graphAxisY = new GraphAxis();
     private Font        graphAxisFont = new Font(Font.SANS_SERIF,Font.PLAIN,12);
-    private Font        graphAxisTitleFont = new Font(Font.SANS_SERIF,Font.PLAIN,12);
+    private Font        graphAxisTitleFont = new Font(Font.SANS_SERIF,Font.PLAIN,14);
 
     private ArrayList<IDrawableDataSeries> padSeries = new ArrayList<IDrawableDataSeries>();
     private ArrayList<IDrawableDataSeries> padFits   = new ArrayList<IDrawableDataSeries>();

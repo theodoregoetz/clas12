@@ -13,9 +13,19 @@ import java.util.TreeMap;
  * @author gavalian
  */
 public class PlotDirectory {
+    
     private TreeMap<String,PlotGroup> directoryGroups = new TreeMap<String,PlotGroup>();
+    private String directoryName = "undefined";
+    
     public PlotDirectory(){
         
+    }
+    
+    public void setName(String name){ this.directoryName = name;}
+    public String getName() { return this.directoryName;}
+    
+    public void addGroup(PlotGroup group){
+        this.directoryGroups.put(group.getName(), group);
     }
     
     public void addGroup(String name, int xs, int ys){
