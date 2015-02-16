@@ -49,7 +49,14 @@ public class RootCanvas extends JPanel {
             this.add(pad);
         }
         this.revalidate();
+        this.update();
         this.repaint();
+    }
+    
+    public void update(){
+        for(RootPad pad : this.canvasPads){
+            pad.repaint();
+        }
     }
     
     public void draw(int pad, PlotGroup group, String objname){

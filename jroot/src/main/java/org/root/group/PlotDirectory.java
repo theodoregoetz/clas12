@@ -6,7 +6,9 @@
 
 package org.root.group;
 
+import java.util.Map;
 import java.util.TreeMap;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -35,4 +37,15 @@ public class PlotDirectory {
     public PlotGroup getGroup(String name){
         return this.directoryGroups.get(name);
     }
+    
+    public DefaultMutableTreeNode getTree() {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(this.directoryName);
+        for(Map.Entry<String,PlotGroup> entry : this.directoryGroups.entrySet()){
+            //    root.add(new DefaultMutableTreeNode(entry.getKey()));
+            //DefaultMutableTreeNode groupRoot = new DefaultMutableTreeNode(entry.getKey());
+            root.add(new DefaultMutableTreeNode(entry.getValue().getName()));
+            //root.add(groupRoot);
+        }
+        return root;
+    }     
 }
