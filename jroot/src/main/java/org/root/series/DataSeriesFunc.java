@@ -72,5 +72,15 @@ public class DataSeriesFunc implements IDrawableDataSeries {
     public IDrawableDataSeries fit(String function, String options) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    public String[] getStatText() {
+        int npars = this.seriesFunc.getNParams();
+        String[]  text = new String[npars];
+        for(int loop = 0; loop < npars; loop++){
+            text[loop] = String.format("%-7s %9.4f", 
+                    this.seriesFunc.parameter(loop).name(),
+                    this.seriesFunc.parameter(loop).value());
+        }
+        return text;
+    }
 }

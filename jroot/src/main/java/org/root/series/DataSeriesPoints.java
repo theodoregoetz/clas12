@@ -98,5 +98,9 @@ public class DataSeriesPoints implements IDrawableDataSeries {
         func.show();
         return dataFunc;
     }
+
+    public String[] getStatText() {
+        return new String[0];
+    }
     
 }

@@ -13,10 +13,12 @@ import java.util.Map;
 import javax.swing.JPanel;
 import org.root.base.IDrawableDataSeries;
 import org.root.data.DataSetXY;
+import org.root.func.F1D;
 import org.root.group.PlotDescriptor;
 import org.root.group.PlotGroup;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
+import org.root.histogram.PaveText;
 import org.root.series.DataSeriesH1D;
 import org.root.series.DataSeriesH2D;
 
@@ -58,6 +60,20 @@ public class RootCanvas extends JPanel {
             pad.repaint();
         }
     }
+    public void draw(int pad, PaveText pave){
+        this.canvasPads.get(pad).addText(pave);
+    }
+    
+    public void draw(int pad, F1D func){
+        this.canvasPads.get(pad).addSeries(func);
+        this.canvasPads.get(pad).repaint();
+    }
+    
+    public void setFontSize(int size){
+        for(RootPad pad : this.canvasPads){
+            pad.setFontSize(size);
+        }
+    }
     
     public void draw(int pad, PlotGroup group, String objname){
         Object drawObject = group.getObjects().get(objname);
@@ -93,6 +109,10 @@ public class RootCanvas extends JPanel {
     
     public void add(int pad, IDrawableDataSeries series){
         canvasPads.get(pad).addSeries(series);
+    }
+    
+    public void add(int pad, H1D h){
+        this.canvasPads.get(pad).addSeries(h);
     }
     
     public void clear(int pad){

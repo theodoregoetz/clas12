@@ -37,6 +37,18 @@ public class F1D extends Function1D implements EvioWritableTree {
         this.initParameters();
     }
     
+    public void setParameter(int par, double value){
+        this.parameter(par).setValue(value);
+    }
+    
+    public void setParLimits(int par, double min, double max){
+        this.parameter(par).setLimits(min, max);
+    }
+    
+    public double getParameter(int par){
+        return this.parameter(par).value();
+    }
+    
     private void initParameters(){
         
         ArrayList<String> pars = new ArrayList<String>();

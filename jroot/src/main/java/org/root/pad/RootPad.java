@@ -27,7 +27,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import org.root.base.IDrawableDataSeries;
+import org.root.func.F1D;
+import org.root.histogram.H1D;
+import org.root.histogram.PaveText;
+import org.root.series.DataSeriesFunc;
+import org.root.series.DataSeriesH1D;
 import org.root.series.DataSeriesPoints;
+import org.root.series.DataSeriesText;
 
 /**
  *
@@ -42,7 +48,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     private int         drawMarginLeftY  = 60;
     
     private String      titleString      = "Graph";
-    private String      axisString       = "0123456";
+    private String      axisString       = "012345";
     
     private GraphAxis   graphAxisX = new GraphAxis();
     private GraphAxis   graphAxisY = new GraphAxis();
@@ -51,6 +57,9 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
 
     private ArrayList<IDrawableDataSeries> padSeries = new ArrayList<IDrawableDataSeries>();
     private ArrayList<IDrawableDataSeries> padFits   = new ArrayList<IDrawableDataSeries>();
+    private ArrayList<IDrawableDataSeries> padLabels = new ArrayList<IDrawableDataSeries>();
+    private DataSeriesText            statisticsBox  = new DataSeriesText();
+    private Boolean                   optionStat     = true;
     
     public RootPad(){
         super();
@@ -67,6 +76,10 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     }
     
     public void addSeries(IDrawableDataSeries series){
+        if(padSeries.size()==0){
+            this.statisticsBox.addText(series.getStatText());
+            this.statisticsBox.setXY(0.05, 0.95);
+        }
         padSeries.add(series);
         this.repaint();
     }
@@ -76,6 +89,41 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisX.setMinMax(0.0, 5.0);
         this.graphAxisY.setMinMax(0.0, 5.0);
         this.repaint();
+    }
+    
+    public void setTitle(String padtitle){
+        this.titleString = padtitle;
+    }
+    
+    public void setFontSize(int size){
+        this.graphAxisFont = new Font(Font.SANS_SERIF,Font.PLAIN,size);
+        this.graphAxisTitleFont = new Font(Font.SANS_SERIF,Font.PLAIN,size);
+        this.graphAxisX.setFont(size);
+        this.graphAxisY.setFont(size);
+        this.statisticsBox.setFontSize(size);
+    }
+    
+    public void addText(PaveText pave){
+        DataSeriesText tpave = new DataSeriesText();
+        tpave.setXY(pave.getPositionX(), pave.getPositionY());
+        for(String item : pave.paveStrings){
+            tpave.addLine(item);
+        }
+        tpave.setFontSize(pave.FontSize);
+        this.padLabels.add(tpave);
+        this.repaint();
+    }
+    public void addSeries(H1D hist){
+        DataSeriesH1D h1d = new DataSeriesH1D(hist);
+        this.setTitle(hist.getTitle());
+        this.graphAxisX.setTitle(hist.getXTitle());
+        this.graphAxisY.setTitle(hist.getYTitle());
+        this.addSeries(h1d);
+    }
+    
+    public void addSeries(F1D func){
+        DataSeriesFunc data = new DataSeriesFunc(func);
+        this.padSeries.add(data);
     }
     
     @Override
@@ -98,6 +146,20 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         int w = this.getSize().width  - this.drawMarginRightX - this.drawMarginLeftX;
         int h = this.getSize().height - this.drawMarginLeftY - this.drawMarginRightY;
         
+        this.graphAxisX.setOrigin(axisX,axisY);
+        this.graphAxisX.setLength(w);
+        this.graphAxisX.setWidth(h);
+        
+        this.graphAxisY.setOrigin(axisX, axisY);
+        this.graphAxisY.setLength(h);
+        this.graphAxisY.setWidth(w);
+        this.graphAxisY.setVertical(true);
+        
+        g2d.setFont(this.graphAxisTitleFont);
+        double titleX = this.drawMarginLeftX + 0.5*w - 0.5*(titleFM.stringWidth(titleString));
+        double titleY = 1.2*titleFM.getHeight();
+        g2d.drawString(titleString, (int)titleX, (int) titleY);
+        
         if(padSeries.size()>0){
             this.graphAxisX.setMinMax(padSeries.get(0).getMinX(), 
                     padSeries.get(0).getMaxX());
@@ -116,19 +178,18 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         
         // Drawing Axis
         //this.graphAxisX.setMinMax(0.0, 1.0);
-        this.graphAxisX.setOrigin(axisX,axisY);
-        this.graphAxisX.setLength(w);
-        this.graphAxisX.setWidth(h);
+       
         
         this.graphAxisX.draw(g2d);
         //this.graphAxisY.setMinMax(0.0, 250.0);
-        this.graphAxisY.setOrigin(axisX, axisY);
-        this.graphAxisY.setLength(h);
-        this.graphAxisY.setWidth(w);
-        this.graphAxisY.setVertical(true);
+        
         this.graphAxisY.draw(g2d);
         
+        for(IDrawableDataSeries label : this.padLabels){
+            label.draw(graphAxisX, graphAxisY, g2d);
+        }
         
+        this.statisticsBox.draw(graphAxisX, graphAxisY, g2d);
         //DataSeriesPoints xyData = new DataSeriesPoints();        
         //xyData.draw(graphAxisX, graphAxisY, g2d);
         //g2d.drawRect(this.drawMargin,this.drawMargin, w, h);
@@ -157,14 +218,29 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.drawMarginLeftX = title.getHeight()*2 + axisTicks.stringWidth(axisString);
         this.drawMarginLeftY = title.getHeight()*2;
         this.drawMarginRightX  = 20;
-        this.drawMarginRightY  = title.getHeight()*2 + axisTicks.getHeight()*2;
+        this.drawMarginRightY  = (int) (title.getHeight()*1.5 + axisTicks.getHeight()*1.5);
     }
     
     public void fitPadData(String function){
         IDrawableDataSeries fitFunction = this.padSeries.get(0).fit(function, "");
         //this.addSeries(fitFunction);
+        if(this.padSeries.size()>0){
+            this.statisticsBox.setText(this.padSeries.get(0).getStatText());
+        }
         this.padFits.clear();
+        this.statisticsBox.addText(fitFunction.getStatText());
         this.padFits.add(fitFunction);
+        this.repaint();
+    }
+    
+    public void addText( String[] texts, double x, double y){
+         this.addText(12, texts, x, y);
+    }
+    
+    public void addText(int size, String[] texts, double x, double y){
+        DataSeriesText paveLabel = new DataSeriesText(texts,x,y);
+        paveLabel.setFontSize(size);
+        this.padLabels.add(paveLabel);
         this.repaint();
     }
     
@@ -248,7 +324,13 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         RootPad pad3 = new RootPad(400,300);
         DataSeriesPoints points = new DataSeriesPoints();
         points.generateRandom();
-        pad.addSeries(points);
+        DataSeriesH1D hist = new DataSeriesH1D();
+        hist.generateRandom();
+        //pad.addSeries(points);
+        pad.addSeries(hist);
+        //pad.addText(new String[]{
+        //    "amp    = 0.1","mean   = 0.2","sigma   = 0.5"}
+        //        , 0.5, 0.6);
         frame.setLayout(new GridLayout(1,3));
         frame.setSize(800, 600);
         frame.add(pad);
@@ -295,8 +377,11 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         System.out.println("Action = " + e.getActionCommand());
         if(e.getActionCommand().startsWith("1")==true||
                 e.getActionCommand().startsWith("2")==true){
+            /*
             this.graphAxisX.setFont(Integer.parseInt(e.getActionCommand()));
             this.graphAxisY.setFont(Integer.parseInt(e.getActionCommand()));
+            this.statisticsBox.setFontSize(Integer.parseInt(e.getActionCommand()));*/
+            this.setFontSize(Integer.parseInt(e.getActionCommand()));
             this.repaint();            
         }
         

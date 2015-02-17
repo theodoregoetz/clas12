@@ -11,6 +11,7 @@ import org.root.func.F1D;
 import org.root.group.PlotGroup;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
+import org.root.histogram.PaveText;
 import org.root.series.DataSeriesFunc;
 import org.root.series.DataSeriesH1D;
 import org.root.series.DataSeriesH2D;
@@ -35,6 +36,14 @@ public class TCanvas extends JFrame {
         this.setVisible(true);
     }
     
+    public void setFontSize(int size){
+        this.embededCanvas.setFontSize(size);
+    }
+    
+    public void draw(PaveText pave){
+        this.embededCanvas.draw(currentPad, pave);
+        this.repaint();
+    }
     public TCanvas(String name, String title, int xsize, int ysize, int col, int rows){
         super(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,10 +65,16 @@ public class TCanvas extends JFrame {
         if (pad>=this.numberOfPads) currentPad = this.numberOfPads -1;        
     }
     
+    public void draw(H1D h, String options){
+        if(options.contains("same")==false){
+            this.embededCanvas.clear(currentPad);
+        }
+        this.embededCanvas.add(currentPad, h);
+        this.repaint();
+    }
+    
     public void draw(H1D h){
-        DataSeriesH1D h1d = new DataSeriesH1D(h);
-        this.embededCanvas.add(currentPad, h1d);
-        this.embededCanvas.repaint();
+        this.draw(h, "*");
     }
     
     public void draw(H2D h){
@@ -68,10 +83,8 @@ public class TCanvas extends JFrame {
         this.embededCanvas.repaint();
     }
     
-    public void draw(F1D func){
-        DataSeriesFunc series = new DataSeriesFunc(func);
-        this.embededCanvas.add(currentPad,series);
-        this.embededCanvas.repaint();
+    public void draw(F1D func){       
+        this.embededCanvas.draw(currentPad,func);
     }
     
     public void draw(PlotGroup group){

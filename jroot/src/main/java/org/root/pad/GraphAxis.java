@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 /**
@@ -29,10 +30,10 @@ public class GraphAxis {
     private Double  axisMinimum    = 0.0;
     private Double  axisMaximum    = 1.0;
     private AxisNiceScale axisScale = new AxisNiceScale(0.0,15.0);
-    
+    private String        axisTitle = "Axis Title";
     private Font          fontAxisTicks = new Font(Font.SANS_SERIF,Font.PLAIN,12);
     private Font          fontAxisTitle = new Font(Font.SANS_SERIF,Font.PLAIN,14);
-    
+    private Color         axisGridColor = new Color(220,220,220);
     
     final static float dash1[] = {5.0f};
     final static BasicStroke dashed =
@@ -50,9 +51,16 @@ public class GraphAxis {
         this.axisScale.setMaxTicks(ndivisions);
     }
     
+    public void setTitle(String title){
+        this.axisTitle = title;
+    }
+    
     public void setOrigin(int x, int y){
         axisOrigin.move(x, y);
     }
+    
+    public int getOriginX(){ return axisOrigin.x;}
+    public int getOriginY(){ return axisOrigin.y;}
     
     public void setVertical(boolean flag){
         this.isAxisVertical = flag;
@@ -65,6 +73,10 @@ public class GraphAxis {
     public void setLength(int length){
         this.axisLength = length;
     }
+    
+    public int getLength(){ return this.axisLength;}
+    public int getWidth(){ return this.axisWidth;}
+    
     
     public void setWidth(int width){
         this.axisWidth = width;
@@ -112,7 +124,7 @@ public class GraphAxis {
                 double xcoord = this.getTranslatedCoordinate(ticks.get(loop));
                 
                 g2d.setStroke(dashed);
-                g2d.setColor(Color.gray);
+                g2d.setColor(this.axisGridColor);
                 g2d.drawLine((int) xcoord,
                         (int) this.axisOrigin.y, 
                         (int) xcoord, 
@@ -133,6 +145,10 @@ public class GraphAxis {
                         (int) (xcoord-xoffset), (int) (this.axisOrigin.y + yoffset));
                         
             }
+            
+            double axisX = this.axisOrigin.x + 0.5*this.axisLength-0.5*fm.stringWidth(axisTitle) ;
+            double axisY = this.axisOrigin.y + fm.getHeight()*2.5;
+            g2d.drawString(axisTitle, (int) axisX, (int) axisY);
         } else {
             ArrayList<Double> ticks = this.axisScale.getCoordinates();
             ArrayList<String> tickLabels = this.axisScale.getCoordinatesLabels();
@@ -144,7 +160,7 @@ public class GraphAxis {
                 double ycoord = this.getTranslatedCoordinate(ticks.get(loop));
                 
                 g2d.setStroke(dashed);
-                g2d.setColor(Color.gray);
+                g2d.setColor(this.axisGridColor);
                  g2d.drawLine(
                         this.axisOrigin.x, 
                         (int) ycoord,
@@ -167,7 +183,18 @@ public class GraphAxis {
                 g2d.drawString(tickLabels.get(loop), 
                         (int) (this.axisOrigin.x - xoffset), (int) (ycoord + yoffset));
             }
+            AffineTransform orig = g2d.getTransform();
+            g2d.rotate(-Math.PI/2);
+            double axisX = -this.axisOrigin.y + (0.5*this.getLength() - 0.5*fm.stringWidth(axisTitle));
+            double axisY = fm.getHeight() ;//- fm.stringWidth(axisTitle);
+            g2d.setFont(this.fontAxisTicks);
+            g2d.drawString(axisTitle, (int) axisX, (int) axisY);
+            g2d.setTransform(orig);
         }
+    }
+    
+    public void grawGrid(Graphics2D g2d){
+        
     }
     
     public double getTranslatedCoordinate(double value){

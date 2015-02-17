@@ -18,6 +18,7 @@ public interface IDrawableDataSeries {
     double getMaxX();
     double getMinY();
     double getMaxY();
+    String[]  getStatText();
     void draw(GraphAxis xaxis, GraphAxis yaxis, Graphics2D g2d);
     Object dataObject();
     IDrawableDataSeries fit(String function, String options);

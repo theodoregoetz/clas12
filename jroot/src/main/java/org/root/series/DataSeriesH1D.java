@@ -54,6 +54,7 @@ public class DataSeriesH1D implements IDrawableDataSeries {
 
     @Override
     public double getMaxX() {
+        //double length = this.dataHistogram.getxAxis().max() - this.dataHistogram.getxAxis().min();
         return this.dataHistogram.getxAxis().max();
     }
 
@@ -64,7 +65,8 @@ public class DataSeriesH1D implements IDrawableDataSeries {
 
     @Override
     public double getMaxY() {
-        return this.dataHistogram.getBinContent(this.dataHistogram.getMaximumBin());
+        double length = this.dataHistogram.getxAxis().max() - this.dataHistogram.getxAxis().min();
+        return this.dataHistogram.getBinContent(this.dataHistogram.getMaximumBin())+0.15*length;
     }
 
     @Override
@@ -103,4 +105,12 @@ public class DataSeriesH1D implements IDrawableDataSeries {
         DataSeriesFunc  dataFunc = new DataSeriesFunc(fitfunc);
         return dataFunc;
     }    
+
+    public String[] getStatText() {
+        String[] labels = new String[3];
+        labels[0] = String.format("%-7s %9d", "Entries",this.dataHistogram.getEntries());
+        labels[1] = String.format("%-7s %9.4f", "Mean",this.dataHistogram.getMean());
+        labels[2] = String.format("%-7s %9.4f", "RMS",this.dataHistogram.getRMS());
+        return labels;
+    }
 }
