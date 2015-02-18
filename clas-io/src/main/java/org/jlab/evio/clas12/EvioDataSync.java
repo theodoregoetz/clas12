@@ -73,7 +73,7 @@ public class EvioDataSync implements DataSync {
         try {
             evioWriter = new EvioCompactEventWriter(filename, dictionary,
                     0, 0, 
-                    4*300, 1000, 2*1024*1024, writerByteOrder, null, true);
+                    10*2000, 10000, 8*1024*1024, writerByteOrder, null, true);
 //new EventWriter(file, 1000000, 2,
             //ByteOrder.BIG_ENDIAN, null, null);
         } catch (EvioException ex) {
@@ -83,6 +83,7 @@ public class EvioDataSync implements DataSync {
     
     @Override
     public void close() {
+        
         evioWriter.close();
     }
     
