@@ -6,6 +6,7 @@
 
 package org.root.series;
 
+import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -23,6 +24,7 @@ public class DataSeriesText implements IDrawableDataSeries {
     private Double            coordX   = 0.0;
     private Double            coordY   = 0.0;
     private Font              labelFont = new Font(Font.MONOSPACED,Font.PLAIN,12);
+    private Integer           bosrderSize = 0;
     
     public DataSeriesText(){
         
@@ -45,6 +47,7 @@ public class DataSeriesText implements IDrawableDataSeries {
         }
     }
     
+    public void setBorderSize(int size) { this.bosrderSize = size;}
     public void addText(String[] lines){
         for(String item : lines){
             this.paveText.add(item);
@@ -79,10 +82,23 @@ public class DataSeriesText implements IDrawableDataSeries {
         FontMetrics fm = g2d.getFontMetrics();
         double firstX   = xaxis.getOriginX()+(this.coordX*xaxis.getLength());
         double firstY   = yaxis.getOriginY()-(this.coordY*yaxis.getLength())+fm.getHeight();
-        
+        double boxStartX = firstX-10;
+        double boxStartY = firstY - fm.getHeight();
+        double largestWidth = 0.0;
         for(int loop = 0; loop < this.paveText.size();loop++){
             g2d.drawString(this.paveText.get(loop), (int) firstX, (int) firstY);
             firstY += 1.0*fm.getHeight();
+            if(fm.stringWidth(this.paveText.get(loop))>largestWidth ){
+                largestWidth = fm.stringWidth(this.paveText.get(loop));
+            }
+        }
+        
+        if(this.bosrderSize>0&&this.paveText.size()>0){
+            g2d.setStroke(new BasicStroke(this.bosrderSize));
+            g2d.drawRect((int) boxStartX, (int) boxStartY, 
+                    (int) (largestWidth+20),
+                    (int) (firstY-boxStartY-0.5*fm.getHeight())
+            );
         }
     }
 
