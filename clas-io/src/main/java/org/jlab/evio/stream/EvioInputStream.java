@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jlab.coda.jevio.ByteDataTransformer;
@@ -30,6 +31,7 @@ import org.jlab.evio.clas12.EvioSource;
  * @author gavalian
  */
 public class EvioInputStream {
+    
     private ByteOrder  storeByteOrder = ByteOrder.BIG_ENDIAN;
     private EvioCompactReader evioReader    = null;
     private int        currentEvent;
@@ -59,6 +61,62 @@ public class EvioInputStream {
     
     public int getEntries() { return this.currentFileEntries; }
     
+    public TreeMap<Integer,Object>  getObjectFromNode(EvioNode root){
+        TreeMap<Integer,Object> treemap = new TreeMap<Integer,Object>();
+
+        List<EvioNode>  nodes = root.getAllNodes();
+        for(int loop = 0; loop < nodes.size(); loop++){
+
+            if(nodes.get(loop).getDataTypeObj()==DataType.CHAR8){
+                byte[] data = ByteDataTransformer.toByteArray(nodes.get(loop).getByteData(true));
+                treemap.put(nodes.get(loop).getNum(), 
+                        data
+                );
+            }
+            if(nodes.get(loop).getDataTypeObj()==DataType.DOUBLE64){
+                double[] data = ByteDataTransformer.toDoubleArray(nodes.get(loop).getByteData(true));
+                treemap.put(nodes.get(loop).getNum(),
+                        data
+                );
+            }
+             if(nodes.get(loop).getDataTypeObj()==DataType.INT32){
+                int[] data = ByteDataTransformer.toIntArray(nodes.get(loop).getByteData(true));
+                treemap.put(nodes.get(loop).getNum(),
+                        data
+                );
+            }
+        }
+        return treemap;
+    }
+    
+    public ArrayList< TreeMap<Integer,Object> > getObjectTree(){
+        ArrayList< TreeMap<Integer,Object> > objectArray = new ArrayList< TreeMap<Integer,Object> >();
+        for(int loop = 0; loop < currentFileEntries; loop++){
+            //System.err.println("--- reading file ---");
+            try {
+                ByteBuffer evioBuffer = evioReader.getEventBuffer(loop+1, true);
+                EvioCompactStructureHandler structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
+                List<EvioNode> nodes   = structure.getNodes();
+                if(nodes==null) continue;
+                for (EvioNode node : nodes) {
+                    //System.err.println("--- adding node --");
+                    if(node.getTag()==200&&
+                            (node.getDataTypeObj()==DataType.ALSOBANK||
+                            node.getDataTypeObj()==DataType.BANK)){
+                        TreeMap<Integer,Object> objects = this.getObjectFromNode(node);
+                        if(objects.size()>0) objectArray.add(objects);
+                    }
+                }
+            } catch (EvioException ex) {
+                Logger.getLogger(EvioInputStream.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return objectArray;
+    }
+    
+    public void close(){
+        this.evioReader.close();
+    }
     public ArrayList<Integer> getContainerTags(){
         ArrayList<Integer> tags = new ArrayList<Integer>();
         for(int loop = 0; loop < currentFileEntries; loop++){

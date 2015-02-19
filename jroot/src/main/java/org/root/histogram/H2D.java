@@ -23,6 +23,7 @@ public class H2D implements EvioWritableTree {
 		hBuffer = new double[offset.getArraySize()];
 	}
 
+        public void setName(String name){ this.hName = name;}
 	/**
 	 * Creates an empty 2D Histogram with 1 bin x and y axes
 	 * 

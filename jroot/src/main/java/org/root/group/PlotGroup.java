@@ -27,6 +27,12 @@ public class PlotGroup {
         this.numRows    = row;
     }
     
+    public PlotGroup(String name){
+        this.groupName  = name;
+        this.numColumns = 1;
+        this.numRows    = 1;
+    }
+    
     public void add(String name,Object hobj){
         this.groupObjects.put(name,hobj);
     }

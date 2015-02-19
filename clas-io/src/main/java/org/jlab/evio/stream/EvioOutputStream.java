@@ -165,7 +165,7 @@ public class EvioOutputStream {
         try {
             EvioCompactEventWriter evioWriter = new EvioCompactEventWriter(filename, null,
                     0, 0, 
-                    4*300, 1000, 20*1024*1024, writerByteOrder, null, true);
+                    4*3000, 100000, 20*1024*1024, writerByteOrder, null, true);
             ByteBuffer original = structure.getByteBuffer();
             ByteBuffer clone = ByteBuffer.allocate(original.capacity());
             clone.order(original.order());
@@ -192,8 +192,7 @@ public class EvioOutputStream {
         histos.put(9, namedata);
         histos.put(10, new int[]{3,4} );
         histos.put(11, new double[]{4.5,6.7} );
-        histos.put(12, new double[]{0.5,1.5,2.5,3.5});
-        
+        histos.put(12, new double[]{0.5,1.5,2.5,3.5});        
         writer.writeTree(histos);
         writer.close();
     }
