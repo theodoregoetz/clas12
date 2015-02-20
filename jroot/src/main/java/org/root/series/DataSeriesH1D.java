@@ -6,6 +6,7 @@
 
 package org.root.series;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import org.root.base.IDrawableDataSeries;
@@ -62,16 +63,37 @@ public class DataSeriesH1D implements IDrawableDataSeries {
     public double getMinY() {
         return 0.0;
     }
-
+    
     @Override
     public double getMaxY() {
-        double length = this.dataHistogram.getxAxis().max() - this.dataHistogram.getxAxis().min();
-        return this.dataHistogram.getBinContent(this.dataHistogram.getMaximumBin())+0.15*length;
+        //double length = this.dataHistogram.getxAxis().max() - this.dataHistogram.getxAxis().min();
+        double maxC = this.dataHistogram.getBinContent(this.dataHistogram.getMaximumBin());
+        double minC = 0;
+        return (1.15*maxC);
     }
 
     @Override
     public void draw(GraphAxis xaxis, GraphAxis yaxis, Graphics2D g2d) {
+
+        g2d.setStroke(new BasicStroke(1));
         GeneralPath path = new GeneralPath();
+        double bw = this.dataHistogram.getxAxis().getBinWidth(0);
+        double xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(0)-bw);
+        double yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(0));
+        path.moveTo(xc, yc);
+        for(int loop = 0; loop < this.dataHistogram.getxAxis().getNBins()-1; loop++){
+            bw = this.dataHistogram.getxAxis().getBinWidth(loop);
+            xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(loop)+bw);
+            yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(loop));
+            path.lineTo(xc, yc);
+            xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(loop)+bw);
+            yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(loop+1));
+            path.lineTo(xc, yc);
+        }
+        g2d.draw(path);
+        /*
+        GeneralPath path = new GeneralPath();
+        double bw = this.dataHistogram.getxAxis().getBinWidth(0);
         double xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(0));
         double yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(0));
         path.moveTo(xc, yc);
@@ -81,6 +103,7 @@ public class DataSeriesH1D implements IDrawableDataSeries {
             path.lineTo(xc, yc);
         }
         g2d.draw(path);
+        */
     }
 
     @Override

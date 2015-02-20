@@ -34,6 +34,7 @@ public class GraphAxis {
     private Font          fontAxisTicks = new Font(Font.SANS_SERIF,Font.PLAIN,12);
     private Font          fontAxisTitle = new Font(Font.SANS_SERIF,Font.PLAIN,14);
     private Color         axisGridColor = new Color(220,220,220);
+    private int           axisGridStyle = 1;
     
     final static float dash1[] = {5.0f};
     final static BasicStroke dashed =
@@ -112,6 +113,15 @@ public class GraphAxis {
         } else {
             g2d.drawLine(xend, yend, xend + this.axisWidth, yend);
         }
+                
+    }
+    
+    public void drawGrid(Graphics2D g2d){
+        
+        FontMetrics  fm = g2d.getFontMetrics(fontAxisTicks);
+        if(this.axisGridStyle==2){
+            this.drawFancyGrid(g2d);
+        }
         
         if(this.isAxisVertical==false){
             
@@ -121,7 +131,8 @@ public class GraphAxis {
             
             //double stepSize =  (xend - this.axisOrigin.x)/this.ndivisions;
             for(int loop = 0; loop < ticks.size(); loop++){
-                double xcoord = this.getTranslatedCoordinate(ticks.get(loop));
+                
+                double xcoord = this.getTranslatedCoordinate(ticks.get(loop));                
                 
                 g2d.setStroke(dashed);
                 g2d.setColor(this.axisGridColor);
@@ -157,8 +168,7 @@ public class GraphAxis {
             for(int loop = 0; loop < ticks.size(); loop++){
                 //double stepSize =  (this.axisOrigin.y - yend)/this.ndivisions;
                 //for(int loop = 0; loop < this.ndivisions; loop++){
-                double ycoord = this.getTranslatedCoordinate(ticks.get(loop));
-                
+                double ycoord = this.getTranslatedCoordinate(ticks.get(loop));               
                 g2d.setStroke(dashed);
                 g2d.setColor(this.axisGridColor);
                  g2d.drawLine(
@@ -193,8 +203,38 @@ public class GraphAxis {
         }
     }
     
-    public void grawGrid(Graphics2D g2d){
-        
+    public void drawFancyGrid(Graphics2D g2d){
+        ArrayList<Double> ticks = this.axisScale.getCoordinates();
+        ArrayList<String> tickLabels = this.axisScale.getCoordinatesLabels();
+        if(this.isAxisVertical==false){
+            for(int loop = 0; loop < ticks.size(); loop++){
+                
+                double xcoord = this.getTranslatedCoordinate(ticks.get(loop));
+                if(loop%2==0&&loop!=ticks.size()-1){
+                    double xcoordNext = this.getTranslatedCoordinate(ticks.get(loop+1));
+                    g2d.setColor(new Color(250,250,250));
+                    g2d.fillRect( (int) xcoord, (int) this.axisOrigin.y - this.axisWidth, 
+                            (int) (xcoordNext-xcoord) ,this.axisWidth );
+                }
+            }
+        } else {
+            for(int loop = 0; loop < ticks.size(); loop++){
+                //double stepSize =  (this.axisOrigin.y - yend)/this.ndivisions;
+                //for(int loop = 0; loop < this.ndivisions; loop++){
+                double ycoord = this.getTranslatedCoordinate(ticks.get(loop));
+                if(loop%2==0&&loop!=ticks.size()-1){
+                    double ycoordNext = this.getTranslatedCoordinate(ticks.get(loop+1));
+                    g2d.setColor(new Color(250,250,250));
+                    int xr = (int) this.axisOrigin.x;
+                    int yr = (int) ( ycoord);
+                    int wr = (int) this.axisWidth;
+                    int hr =  (int) (ycoord- ycoordNext);
+                    //System.err.println(" - drawing fancy - " + xr + "  " + yr + " " + wr + " " +hr);
+                    g2d.fillRect( xr,yr,wr,hr);
+                            
+                }
+            }
+        }
     }
     
     public double getTranslatedCoordinate(double value){

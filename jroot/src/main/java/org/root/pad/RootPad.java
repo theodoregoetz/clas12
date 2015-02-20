@@ -27,6 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import org.root.base.IDrawableDataSeries;
+import org.root.data.DataSetXY;
 import org.root.func.F1D;
 import org.root.histogram.H1D;
 import org.root.histogram.PaveText;
@@ -123,6 +124,13 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.addSeries(h1d);
     }
     
+    public void addSeries(DataSetXY xydata){
+        DataSeriesPoints  points = new DataSeriesPoints(xydata.getDataX().getArray(),
+                xydata.getDataY().getArray());
+        
+        this.addSeries(points);
+    }
+    
     public void addSeries(F1D func){
         DataSeriesFunc data = new DataSeriesFunc(func);
         this.padSeries.add(data);
@@ -156,7 +164,8 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisY.setLength(h);
         this.graphAxisY.setWidth(w);
         this.graphAxisY.setVertical(true);
-        
+
+                
         g2d.setFont(this.graphAxisTitleFont);
         double titleX = this.drawMarginLeftX + 0.5*w - 0.5*(titleFM.stringWidth(titleString));
         double titleY = 1.2*titleFM.getHeight();
@@ -169,6 +178,11 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
                     padSeries.get(0).getMaxY());
         }
 
+        //this.graphAxisX.drawFancyGrid(g2d);
+        this.graphAxisY.drawFancyGrid(g2d);
+        this.graphAxisX.drawGrid(g2d);
+        this.graphAxisY.drawGrid(g2d);
+        
         for(int loop = 0; loop < padSeries.size(); loop++){
             padSeries.get(loop).draw(graphAxisX, graphAxisY, g2d);
         }

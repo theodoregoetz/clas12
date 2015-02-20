@@ -47,7 +47,9 @@ public class FunctionFactory {
         return Math.exp(-0.5*(lambda+Math.exp(-lambda)));
     }
     
-    
+    public static double erf(double x, double offset, double scale){
+        return 1.0;
+    }
     
     public static double getRandMinMax(double min, double max){
         return min + (max-min)*Math.random();

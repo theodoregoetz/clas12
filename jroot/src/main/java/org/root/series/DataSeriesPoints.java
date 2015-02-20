@@ -29,6 +29,7 @@ public class DataSeriesPoints implements IDrawableDataSeries {
         
     }
     
+    
     public DataSeriesPoints(double[] x, double[] y){
         for(int loop = 0; loop < x.length; loop++){
             dataSet.add(x[loop], y[loop]);

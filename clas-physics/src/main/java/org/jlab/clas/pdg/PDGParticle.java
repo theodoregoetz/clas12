@@ -10,12 +10,12 @@ package org.jlab.clas.pdg;
  */
 public class PDGParticle {
     
-    String  particleName;
-    Integer particleId;
-    Integer particleIdGeant;
-    Double  particleMass;
-    Integer    particleCharge;
-    Double     particleWidth;
+    String  particleName = "unknown";
+    Integer particleId = 0;
+    Integer particleIdGeant = 0;
+    Double  particleMass = 0.0;
+    Integer    particleCharge = -1;
+    Double     particleWidth  = 0.0;
     
     public PDGParticle(String partname, int partid, double partmass)
     {
@@ -37,6 +37,7 @@ public class PDGParticle {
     {
         particleName = partname;
         particleId   = partid;
+        particleIdGeant = geantid;
         particleMass = partmass;
         particleCharge = charge;
         particleWidth  = 0.0;
@@ -76,5 +77,14 @@ public class PDGParticle {
     public double width()
     {
         return particleWidth;
+    }
+    
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        str.append(String.format("[%12s] pid/gid %6d [%5d] %3d mass %8.5f width %8.5f", 
+                this.particleName,this.particleId,
+                this.particleIdGeant, this.charge(), this.particleMass, this.particleWidth));
+        return str.toString();
     }
 }

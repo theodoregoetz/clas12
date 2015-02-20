@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.jlab.evio.stream.EvioInputStream;
 import org.jlab.evio.stream.EvioOutputStream;
 import org.root.base.EvioWritableTree;
+import org.root.data.DataSetXY;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
 
@@ -57,6 +58,7 @@ public class PlotDirectory {
         }
         return root;
     }
+    
     public void list(){
         for(Map.Entry<String,PlotGroup> group : directoryGroups.entrySet()){
             String dirname = this.getName() + "/" + group.getValue().getName();
@@ -126,6 +128,19 @@ public class PlotDirectory {
                 h.setName(tokens[2]);
                 this.getGroup(tokens[1]).add(h.getName(), h);
             }
+            
+            if(type[0]==6){
+                DataSetXY h = new DataSetXY();
+                h.fromTreeMap(treemap);
+                String[] tokens = this.getPathComponents(h.getName());
+                this.setName(tokens[0]);
+                if(this.directoryGroups.containsKey(tokens[1])==false){
+                    this.directoryGroups.put(tokens[1], new PlotGroup(tokens[1]));
+                }
+                h.setName(tokens[2]);
+                this.getGroup(tokens[1]).add(h.getName(), h);
+            }
+            
         }
     }
     

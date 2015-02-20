@@ -60,12 +60,24 @@ public class RootCanvas extends JPanel {
             pad.repaint();
         }
     }
+    
     public void draw(int pad, PaveText pave){
         this.canvasPads.get(pad).addText(pave);
     }
     
+    public void draw(int pad, H1D h){
+        this.canvasPads.get(pad).addSeries(h);
+        this.canvasPads.get(pad).repaint();
+    }
+    
     public void draw(int pad, F1D func){
         this.canvasPads.get(pad).addSeries(func);
+        this.canvasPads.get(pad).repaint();
+    }
+    
+    public void draw(int pad, DataSetXY xydata){
+        this.canvasPads.get(pad).clear();
+        this.canvasPads.get(pad).addSeries(xydata);
         this.canvasPads.get(pad).repaint();
     }
     

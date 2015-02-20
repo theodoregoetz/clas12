@@ -25,6 +25,7 @@ public abstract class DetectorMonitoring {
     
     public DetectorMonitoring(String name, String version, String author){
         this.moduleName     = name;
+        this.hDirectory.setName(name);
         this.moduleVersion  = version;
         this.moduleAuthor   = author;
         hDirectory.setName(name);

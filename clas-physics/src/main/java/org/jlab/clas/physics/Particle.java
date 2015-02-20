@@ -137,6 +137,7 @@ public class Particle {
         return part.vector().vect().dot(partVector.vect())/
                 (part.vector().vect().mag()*partVector.vect().mag());
     }
+    
     void initParticleWithMassSquare(double mass2,double px, double py, double pz, double vx, double vy, double vz)
     {
         particleCharge = 0;
@@ -230,6 +231,7 @@ public class Particle {
                 + pname + "  is not defined");
         return 0.0;
     }
+    
     public boolean hasProperty(String pname)
     {
         if(particleProperties.containsKey(pname)==true) return true;

@@ -28,7 +28,10 @@ public class PDGDatabase {
     
     static public PDGParticle getParticleById(int pid)
     {
-        if(particleDatabase.containsKey(pid)==true) return particleDatabase.get(pid);
+        if(particleDatabase.containsKey(pid)==true){
+            return particleDatabase.get(pid);
+        }
+        System.err.println("PDGDatabase::Error -> there is no particle with pid " + pid);
         return null;
     }
     
@@ -94,5 +97,10 @@ public class PDGDatabase {
         }
         return null;
         //particleDatabase   
+    }
+    public static void show(){
+        for(Map.Entry<Integer,PDGParticle> items : particleDatabase.entrySet()){
+            System.out.println(items.getValue().toString());
+        }
     }
 }

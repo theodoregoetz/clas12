@@ -31,6 +31,13 @@ public class PhysicsEvent {
         eventProperties = new HashMap<String,Double>();
     }
     
+    public PhysicsEvent(double be){
+        eventBeam   = new Particle(11,0.,0.,be,0.,0.,0.);
+        eventTarget = new Particle(2212,0.,0.,0.,0.,0.,0.);
+        eventParticles = new ArrayList<Particle>();
+        eventProperties = new HashMap<String,Double>();
+    }
+    
     public void addProperty(String name, double value)
     {
         eventProperties.put(name, value);
