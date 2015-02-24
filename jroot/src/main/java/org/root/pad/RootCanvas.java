@@ -130,6 +130,14 @@ public class RootCanvas extends JPanel {
         }
     }
     
+    public void setXaxisDivisions(int pad, int div){
+        this.canvasPads.get(pad).setAxisDivisions(0, div);
+    }
+    
+    public void setYaxisDivisions(int pad, int div){
+        this.canvasPads.get(pad).setAxisDivisions(1, div);
+    }
+    
     public void draw(PlotGroup group){
         //ArrayList<Object>  items = group.getObjects();
         this.divide(group.getColumns(), group.getRows());

@@ -7,8 +7,10 @@
 package org.root.pad;
 
 import javax.swing.JFrame;
+import org.root.data.DataSetXY;
 import org.root.func.F1D;
 import org.root.group.PlotGroup;
+import org.root.histogram.GraphErrors;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
 import org.root.histogram.PaveText;
@@ -36,6 +38,7 @@ public class TCanvas extends JFrame {
         this.setVisible(true);
     }
     
+    
     public void setFontSize(int size){
         this.embededCanvas.setFontSize(size);
     }
@@ -60,10 +63,29 @@ public class TCanvas extends JFrame {
         
     }
     
+    public void draw(GraphErrors graph){
+        this.draw(graph,"*");
+    }
+    
+    public void draw(GraphErrors graph, String options){
+        DataSetXY data = new DataSetXY(graph.getDataX().getArray(),
+                graph.getDataY().getArray());
+        data.setTiles(graph.getTitle(), graph.getXTitle(), graph.getYTitle());
+        this.embededCanvas.draw(this.currentPad, data, options);
+    }
+    
     public void cd(int pad){
         currentPad = pad;
         if (pad<0) currentPad = 0;
         if (pad>=this.numberOfPads) currentPad = this.numberOfPads -1;        
+    }
+    
+    public void setNdivisionsX(int div){
+        this.embededCanvas.setXaxisDivisions(this.currentPad, div);
+    }
+    
+    public void setNdivisionsY(int div){
+        this.embededCanvas.setYaxisDivisions(this.currentPad, div);
     }
     
     public void draw(H1D h, String options){

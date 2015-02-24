@@ -79,27 +79,31 @@ public class DataSeriesPoints implements IDrawableDataSeries {
     public Object dataObject() {
         return dataSet;
     }
-
+    
     @Override
     public double getMinX() {
-        return dataSet.getDataX().getMin();
+        double length = dataSet.getDataX().getMax() - dataSet.getDataX().getMin();
+        return dataSet.getDataX().getMin() - 0.15*length;
     }
 
     @Override
     public double getMaxX() {
-        return dataSet.getDataX().getMax();
+        double length = dataSet.getDataX().getMax() - dataSet.getDataX().getMin();
+        return dataSet.getDataX().getMax() + 0.15*length;
     }
 
     @Override
     public double getMinY() {
-        return dataSet.getDataY().getMin();
+        double length = dataSet.getDataX().getMax() - dataSet.getDataX().getMin();
+        return dataSet.getDataY().getMin() - 0.15*length;
     }
 
     @Override
     public double getMaxY() {
-        double min = this.getMinY();
+        double length = dataSet.getDataX().getMax() - dataSet.getDataX().getMin();
+        //double min = this.getMinY();
         double max = dataSet.getDataY().getMax();
-        return max + (max-min)*0.15;
+        return max + 0.15*length;
     }
 
     @Override

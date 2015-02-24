@@ -60,6 +60,10 @@ public class GraphAxis {
         axisOrigin.move(x, y);
     }
     
+    public void setNdivisions(int div){
+        this.axisScale.setMaxTicks(div);
+    }
+    
     public int getOriginX(){ return axisOrigin.x;}
     public int getOriginY(){ return axisOrigin.y;}
     

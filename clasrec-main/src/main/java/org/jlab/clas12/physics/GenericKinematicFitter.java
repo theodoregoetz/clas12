@@ -48,11 +48,25 @@ public class GenericKinematicFitter {
     public PhysicsEvent  getPhysicsEvent(DataEvent  event){
         if(event instanceof EvioDataEvent){
             if(event.hasBank("EVENTHB::particle")==true){
-                return this.getPhysicsEventClas12((EvioDataEvent) event);
+                PhysicsEvent genEvent = this.getGeneratedEvent(event);
+                PhysicsEvent recEvent =  this.getPhysicsEventClas12((EvioDataEvent) event);
+                this.matchGenerated(genEvent, recEvent);
+                return recEvent;
             }
         }
         return new PhysicsEvent(this.beamEnergy);
     }    
+    
+    public void matchGenerated(PhysicsEvent gen, PhysicsEvent rec){
+        int nrows = rec.count();
+        for(int loop = 0; loop < nrows; loop++){
+            Particle rpart = rec.getParticle(loop);
+            Particle gpart = gen.closestParticle(rpart);
+            if(rpart.cosTheta(gpart)>0.99){
+                rpart.changePid(gpart.pid());
+            }
+        }
+    }
     
     private PhysicsEvent  getGeneratedEventClas12(EvioDataEvent event){
         PhysicsEvent physEvent = new PhysicsEvent();

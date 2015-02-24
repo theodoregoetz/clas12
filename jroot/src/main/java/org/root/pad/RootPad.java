@@ -16,7 +16,6 @@ import java.awt.GridLayout;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -97,6 +96,14 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.titleString = padtitle;
     }
     
+    public void setAxisDivisions(int axis, int div){
+        if(axis==0){
+            this.graphAxisX.setNdivisions(div);
+        } else {
+            this.graphAxisY.setNdivisions(div);
+        }
+    }
+    
     public void setFontSize(int size){
         this.graphAxisFont = new Font(Font.SANS_SERIF,Font.PLAIN,size);
         this.graphAxisTitleFont = new Font(Font.SANS_SERIF,Font.PLAIN,size);
@@ -127,7 +134,9 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     public void addSeries(DataSetXY xydata){
         DataSeriesPoints  points = new DataSeriesPoints(xydata.getDataX().getArray(),
                 xydata.getDataY().getArray());
-        
+        this.titleString = xydata.getTitle();
+        this.graphAxisX.setTitle(xydata.getXTitle());
+        this.graphAxisY.setTitle(xydata.getYTitle());
         this.addSeries(points);
     }
     
