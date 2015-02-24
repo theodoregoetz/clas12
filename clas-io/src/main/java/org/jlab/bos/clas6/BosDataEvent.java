@@ -78,7 +78,7 @@ public class BosDataEvent implements DataEvent {
     }
     
     final void updateRunEventNumber(){
-        if(this.checkBankConsistency("HEAD")==false) return;
+        if(this.checkBankConsistency("HEAD",0)==false) return;
         BosDataBank bank = (BosDataBank) this.getBank("HEAD");        
         if(bank!=null){
             RunNumber = bank.getInt("NRUN")[0];
@@ -87,7 +87,7 @@ public class BosDataEvent implements DataEvent {
     }
     
     int getEventNumber(){
-        if(this.checkBankConsistency("HEAD")==false) return 0;
+        if(this.checkBankConsistency("HEAD",0)==false) return 0;
         BosDataBank bank = (BosDataBank) this.getBank("HEAD");
         return bank.getInt("NEVENT")[0];
     }
@@ -124,9 +124,9 @@ public class BosDataEvent implements DataEvent {
         //return s;
     }
     
-    boolean checkBankConsistency(String bankname){
+    boolean checkBankConsistency(String bankname, int banknumber){
         boolean consistency = true;
-        int index = this.getBankIndex(bankname, 0);
+        int index = this.getBankIndex(bankname, banknumber);
         if(index<0) return false;
         BosBankHeader header = new BosBankHeader(index);
         int ncols  = bosBCS.get(header.NCOLS_WORD_INDEX);
@@ -218,7 +218,14 @@ public class BosDataEvent implements DataEvent {
     public boolean hasBank(String name) {
         //int index = this.getBankIndex(name, 0);
         //if(index>=0) return true;
-        return this.checkBankConsistency(name);
+        String __bankname   = name;
+        int    __banknumber = 0;
+        if(name.contains(":")==true){
+            String[] tokens = name.split(":");
+            __bankname = tokens[0];
+            __banknumber = Integer.parseInt(tokens[1]);
+        }
+        return this.checkBankConsistency(__bankname,__banknumber);
     }
 
     @Override

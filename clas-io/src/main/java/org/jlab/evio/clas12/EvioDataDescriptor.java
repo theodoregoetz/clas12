@@ -8,6 +8,7 @@ package org.jlab.evio.clas12;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import org.jlab.data.io.DataDescriptor;
 import org.jlab.utils.TablePrintout;
 
@@ -20,8 +21,8 @@ public class EvioDataDescriptor implements DataDescriptor {
     private Integer descriptorContainerTag = 0;
     private Integer descriptorContainerNum = 0;
     private ArrayList<String> entryNames = new ArrayList<String>();
-    private HashMap<String,EvioDataDescriptorEntry> descriptorEntries = 
-            new HashMap<String,EvioDataDescriptorEntry>();
+    private TreeMap<String,EvioDataDescriptorEntry> descriptorEntries = 
+            new TreeMap<String,EvioDataDescriptorEntry>();
     private HashMap<String,String>  descriptorProperties = 
             new HashMap<String,String>();
     

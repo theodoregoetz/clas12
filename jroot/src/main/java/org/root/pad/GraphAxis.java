@@ -86,7 +86,11 @@ public class GraphAxis {
     public void setMinMax(double min, double max){
         this.axisMinimum = min;
         this.axisMaximum = max;
-        this.axisScale.setMinMaxPoints(min, max);
+        if(min==max){
+            this.axisMinimum = 0.0;
+            this.axisMaximum = 1.0;
+        }
+        this.axisScale.setMinMaxPoints(this.axisMinimum, this.axisMaximum);
     }
     
     public void draw(Graphics2D g2d){

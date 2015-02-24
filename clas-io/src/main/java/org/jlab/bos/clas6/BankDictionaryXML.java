@@ -71,7 +71,7 @@ public class BankDictionaryXML {
             + " is not defined.");
             return this;
         }
-        String dictPath = CLAS12DIR + "/lib/bankdefs/clas6/"+filename;
+        String dictPath = CLAS12DIR + "/etc/bankdefs/clas6/"+filename;
         return this.load(dictPath);
     }
 }

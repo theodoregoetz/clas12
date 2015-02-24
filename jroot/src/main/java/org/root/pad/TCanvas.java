@@ -44,6 +44,7 @@ public class TCanvas extends JFrame {
         this.embededCanvas.draw(currentPad, pave);
         this.repaint();
     }
+    
     public TCanvas(String name, String title, int xsize, int ysize, int col, int rows){
         super(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

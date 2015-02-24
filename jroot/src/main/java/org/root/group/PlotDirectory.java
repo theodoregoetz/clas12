@@ -72,7 +72,9 @@ public class PlotDirectory {
     
     public void write(String filename){
         EvioOutputStream outStream = new EvioOutputStream(filename);
+        System.out.println("[Directory] -----> open file : " + filename);
         for(Map.Entry<String,PlotGroup> group : directoryGroups.entrySet()){
+            System.out.println("[Directory] -----> process group : " + group.getKey());
             String dirname = this.getName() + "/" + group.getValue().getName();
             TreeMap<String,Object>  groupObjects = group.getValue().getObjects();
             for(Map.Entry<String,Object> objects : groupObjects.entrySet()){

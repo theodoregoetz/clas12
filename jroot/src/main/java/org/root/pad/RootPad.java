@@ -131,6 +131,14 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.addSeries(points);
     }
     
+    public void addSeries(DataSetXY xydata, int mode){
+        
+        DataSeriesPoints  points = new DataSeriesPoints(xydata.getDataX().getArray(),
+                xydata.getDataY().getArray());
+        points.setDrawStyle(mode);
+        this.addSeries(points);
+    }
+    
     public void addSeries(F1D func){
         DataSeriesFunc data = new DataSeriesFunc(func);
         this.padSeries.add(data);

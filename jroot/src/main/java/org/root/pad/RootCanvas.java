@@ -66,18 +66,42 @@ public class RootCanvas extends JPanel {
     }
     
     public void draw(int pad, H1D h){
+        this.draw(pad,h,"");
+    }
+    
+    public void draw(int pad, H1D h, String options){
+        if(options.contains("same")==false){
+            this.canvasPads.get(pad).clear();
+        }
         this.canvasPads.get(pad).addSeries(h);
         this.canvasPads.get(pad).repaint();
     }
     
     public void draw(int pad, F1D func){
+        this.draw(pad, func,"");
+    }
+    
+    public void draw(int pad, F1D func, String options){
+        if(options.contains("same")==false){
+            this.canvasPads.get(pad).clear();
+        }
         this.canvasPads.get(pad).addSeries(func);
         this.canvasPads.get(pad).repaint();
     }
     
     public void draw(int pad, DataSetXY xydata){
-        this.canvasPads.get(pad).clear();
-        this.canvasPads.get(pad).addSeries(xydata);
+        this.draw(pad, xydata,"");
+    }
+    
+    public void draw(int pad, DataSetXY xydata, String options){
+        if(options.contains("same")==false){
+            this.canvasPads.get(pad).clear();
+        }
+        if(options.contains("L")==true){
+            this.canvasPads.get(pad).addSeries(xydata,1);
+        } else {
+            this.canvasPads.get(pad).addSeries(xydata);
+        }
         this.canvasPads.get(pad).repaint();
     }
     

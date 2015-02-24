@@ -63,12 +63,12 @@ public class GenericKinematicFitter {
             for(int loop = 0; loop < nrows; loop++){
                 physEvent.addParticle(new Particle(
                         evntBank.getInt("pid", loop),
-                        evntBank.getFloat("px", loop),
-                        evntBank.getFloat("py", loop),
-                        evntBank.getFloat("pz", loop),
-                        evntBank.getFloat("vx", loop),
-                        evntBank.getFloat("vy", loop),
-                        evntBank.getFloat("vz", loop)
+                        evntBank.getDouble("px", loop)*0.001,
+                        evntBank.getDouble("py", loop)*0.001,
+                        evntBank.getDouble("pz", loop)*0.001,
+                        evntBank.getDouble("vx", loop),
+                        evntBank.getDouble("vy", loop),
+                        evntBank.getDouble("vz", loop)
                 ));                
             }
         }

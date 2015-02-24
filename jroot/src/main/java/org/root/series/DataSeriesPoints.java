@@ -6,7 +6,9 @@
 
 package org.root.series;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
 import org.root.attr.MarkerPainter;
 import org.root.base.IDrawableDataSeries;
 import org.root.data.DataSetXY;
@@ -24,16 +26,20 @@ public class DataSeriesPoints implements IDrawableDataSeries {
     
     private DataSetXY  dataSet = new DataSetXY();
     private MarkerPainter markerPainter = new MarkerPainter();
+    private Integer       drawStyle     = 0;
     
     public DataSeriesPoints(){
         
     }
-    
-    
+        
     public DataSeriesPoints(double[] x, double[] y){
         for(int loop = 0; loop < x.length; loop++){
             dataSet.add(x[loop], y[loop]);
         }
+    }
+    
+    public void setDrawStyle(int style){
+        this.drawStyle = style;
     }
     
     public void generateRandom(){
@@ -47,11 +53,25 @@ public class DataSeriesPoints implements IDrawableDataSeries {
     
     @Override
     public void draw(GraphAxis xaxis, GraphAxis yaxis, Graphics2D g2d){
-        for(int loop = 0; loop < dataSet.getDataX().getSize(); loop++){
-            double xcoord = xaxis.getTranslatedCoordinate(dataSet.getDataX().getValue(loop));
-            double ycoord = yaxis.getTranslatedCoordinate(dataSet.getDataY().getValue(loop));
-            markerPainter.drawMarker(g2d, (int) xcoord,(int) ycoord,2,8);
-            //g2d.fillRect((int) xcoord, (int) ycoord, 5, 5);
+        if(this.drawStyle==1||this.drawStyle==2){
+            g2d.setStroke(new BasicStroke(2));
+            GeneralPath path = new GeneralPath();
+            double xcoord = xaxis.getTranslatedCoordinate(dataSet.getDataX().getValue(0));
+            double ycoord = yaxis.getTranslatedCoordinate(dataSet.getDataY().getValue(0));
+            path.moveTo(xcoord,ycoord);
+            for(int loop = 0; loop < dataSet.getDataX().getSize(); loop++){
+                xcoord = xaxis.getTranslatedCoordinate(dataSet.getDataX().getValue(loop));
+                ycoord = yaxis.getTranslatedCoordinate(dataSet.getDataY().getValue(loop));
+                path.lineTo(xcoord, ycoord);
+            }
+            g2d.draw(path);
+        } else {            
+            for(int loop = 0; loop < dataSet.getDataX().getSize(); loop++){
+                double xcoord = xaxis.getTranslatedCoordinate(dataSet.getDataX().getValue(loop));
+                double ycoord = yaxis.getTranslatedCoordinate(dataSet.getDataY().getValue(loop));
+                markerPainter.drawMarker(g2d, (int) xcoord,(int) ycoord,2,8);
+                //g2d.fillRect((int) xcoord, (int) ycoord, 5, 5);
+            }
         }
     }
 

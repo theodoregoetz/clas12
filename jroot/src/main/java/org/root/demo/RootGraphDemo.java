@@ -35,7 +35,7 @@ public class RootGraphDemo {
         
         DataSeriesPoints  graph = new DataSeriesPoints();
         graph.generateRandom();
-        
+        graph.setDrawStyle(1);
         canvas.add(0,data2d);
         canvas.add(1,data);
         canvas.add(2,graph);
