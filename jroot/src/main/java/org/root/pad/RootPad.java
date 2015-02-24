@@ -13,6 +13,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -200,6 +201,8 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisX.drawGrid(g2d);
         this.graphAxisY.drawGrid(g2d);
         
+        Rectangle clipping = new Rectangle(axisX,axisY - h,w,h);
+        g2d.setClip(clipping);
         for(int loop = 0; loop < padSeries.size(); loop++){
             padSeries.get(loop).draw(graphAxisX, graphAxisY, g2d);
         }
@@ -207,7 +210,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         for(int loop = 0; loop < padFits.size(); loop++){
             padFits.get(loop).draw(graphAxisX, graphAxisY, g2d);
         }
-        
+        g2d.setClip(null);
         // Drawing Axis
         //this.graphAxisX.setMinMax(0.0, 1.0);
        

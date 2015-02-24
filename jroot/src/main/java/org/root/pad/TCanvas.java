@@ -110,6 +110,10 @@ public class TCanvas extends JFrame {
         this.embededCanvas.draw(currentPad,func);
     }
     
+    public void draw(F1D func,String options){ 
+        this.embededCanvas.draw(currentPad,func,options);
+    }
+    
     public void draw(PlotGroup group){
         this.embededCanvas.draw(group);
     }
