@@ -28,6 +28,8 @@ import org.root.series.DataSeriesH2D;
  */
 public class RootCanvas extends JPanel {
     private ArrayList<RootPad>  canvasPads = new ArrayList<RootPad>();
+    private Integer             currentPad = 0;
+    
     public RootCanvas(){
         super();        
     }
@@ -38,8 +40,28 @@ public class RootCanvas extends JPanel {
         this.divide(nx, ny);
     }
     
+    public void incrementPad(){
+        currentPad++;
+        if(currentPad>=this.canvasPads.size()){
+            currentPad = 0;
+        }
+    }
+    
+    public int getPadCount(){
+        return this.canvasPads.size();
+    }
+
+    public void setCurrentPad(int pad){
+        this.currentPad = pad;
+    }
+    
+    public int getCurrentPad(){
+        return this.currentPad;
+    }
+    
     public void divide(int cols, int rows){
         canvasPads.clear();
+        this.setCurrentPad(0);
         this.removeAll();
         this.revalidate();
         this.setLayout(new GridLayout(rows,cols));
@@ -61,12 +83,28 @@ public class RootCanvas extends JPanel {
         }
     }
     
+    public void setAxisRange(int pad,double xmin, double xmax, double ymin, double ymax){
+        this.canvasPads.get(pad).setAxisRange(xmin,xmax,"X");
+        this.canvasPads.get(pad).setAxisRange(ymin,ymax,"Y");
+        this.canvasPads.get(pad).repaint();
+    }
+    
     public void draw(int pad, PaveText pave){
         this.canvasPads.get(pad).addText(pave);
     }
     
     public void draw(int pad, H1D h){
         this.draw(pad,h,"");
+    }
+    
+    public void draw(int pad, H2D h2){
+        this.draw(pad, h2,"*");
+    }
+    
+    public void draw(int pad, H2D h2, String options){
+         DataSeriesH2D h2d = new DataSeriesH2D(h2);
+         this.clear(pad);
+         this.add(pad,h2d);
     }
     
     public void draw(int pad, H1D h, String options){

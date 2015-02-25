@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @author gavalian
  */
 public class PaveText {
+    
     public ArrayList<String> paveStrings = new ArrayList<String>();
     private double pavePositionX = 0.0;
     private double pavePositionY = 0.0;
@@ -21,6 +22,11 @@ public class PaveText {
     public PaveText(double rx, double ry){
         this.pavePositionX = rx;
         this.pavePositionY = ry;
+    }
+    
+    public void setPosition(double x, double y){
+        this.pavePositionX = x;
+        this.pavePositionY = y;
     }
     
     public double getPositionX(){

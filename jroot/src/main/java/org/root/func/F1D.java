@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeMap;
 import org.root.base.EvioWritableTree;
+import org.root.histogram.PaveText;
 
 /**
  *
@@ -95,6 +96,19 @@ public class F1D extends Function1D implements EvioWritableTree {
         for(int loop = 0; loop < pars.size(); loop++){
             this.parameter(loop).setName(pars.get(loop));
         }
+    }
+    
+    public PaveText getStat(){
+        PaveText pave = new PaveText(0.02,0.98);
+        int npars = this.getNParams();
+        for(int loop = 0; loop < npars; loop++){
+            String paramString = String.format("%-8s %8.3f", 
+                    this.parameter(loop).name(),
+                    this.parameter(loop).value()
+                    );
+            pave.addText(paramString);
+        }
+        return pave;
     }
     
     @Override

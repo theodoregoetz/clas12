@@ -42,5 +42,5 @@ public class GraphErrors extends DataSetXY {
     public void setMarkerSize(int size){ 
         this.graphMarkerAttributes.MARKER_SIZE = size; 
     }
-    
+     
 }

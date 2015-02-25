@@ -34,6 +34,9 @@ public class DataSeriesText implements IDrawableDataSeries {
         this.setText(lines);
     }
     
+    
+    public void clear(){ paveText.clear(); }
+    
     public DataSeriesText(String[] lines, double x, double y){
         this.setText(lines);
         this.coordX = x;

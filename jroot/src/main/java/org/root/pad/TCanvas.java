@@ -63,6 +63,10 @@ public class TCanvas extends JFrame {
         
     }
     
+    public void setAxisRange(double xmin, double xmax, double ymin, double ymax){
+        this.embededCanvas.setAxisRange(this.currentPad, xmin, xmax, ymin, ymax);
+    }
+    
     public void draw(GraphErrors graph){
         this.draw(graph,"*");
     }

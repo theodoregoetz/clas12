@@ -47,7 +47,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     private int         drawMarginRightY = 60;
     private int         drawMarginLeftX  = 40;
     private int         drawMarginLeftY  = 60;
-    
+    private Boolean     axisRangeFixed   = false;
     private String      titleString      = "Graph";
     private String      axisString       = "012345";
     
@@ -90,7 +90,19 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         padSeries.clear();
         this.graphAxisX.setMinMax(0.0, 5.0);
         this.graphAxisY.setMinMax(0.0, 5.0);
+        this.statisticsBox.clear();
         this.repaint();
+    }
+    
+    public void setAxisRange(double min, double max, String axis){
+        
+        this.axisRangeFixed = true;
+        if(axis.compareTo("X")==0){
+            this.graphAxisX.setMinMax(min, max);
+        }
+        if(axis.compareTo("Y")==0){
+            this.graphAxisY.setMinMax(min, max);
+        }
     }
     
     public void setTitle(String padtitle){
@@ -189,7 +201,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         double titleY = 1.2*titleFM.getHeight();
         g2d.drawString(titleString, (int)titleX, (int) titleY);
         
-        if(padSeries.size()>0){
+        if(padSeries.size()>0 && this.axisRangeFixed == false){
             this.graphAxisX.setMinMax(padSeries.get(0).getMinX(), 
                     padSeries.get(0).getMaxX());
             this.graphAxisY.setMinMax(padSeries.get(0).getMinY(), 
