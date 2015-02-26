@@ -5,6 +5,7 @@
  */
 package org.root.group;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -16,6 +17,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import org.root.histogram.H1D;
@@ -39,6 +42,8 @@ public class TBrowser extends JFrame implements ActionListener {
     
     public TBrowser(TDirectory dir){
         super("TBrowser");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        UIManager.put("Tree.rendererFillBackground", false);
         this.browserDirectory = dir;
         this.initMenuBar();
         this.initComponents();
@@ -67,6 +72,14 @@ public class TBrowser extends JFrame implements ActionListener {
                 doMouseClicked(me);
             }
         });
+        
+        DefaultTreeCellRenderer renderer =
+                (DefaultTreeCellRenderer) canvasTree.getCellRenderer();
+        renderer.setTextSelectionColor(Color.red);
+        renderer.setBackgroundSelectionColor(Color.blue);
+        renderer.setBorderSelectionColor(Color.black);
+               
+        canvasTree.setBackground(new Color(240,240,240));
         this.updateTreeView();
         //this.updateTree();
     }

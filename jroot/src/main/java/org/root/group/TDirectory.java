@@ -5,11 +5,14 @@
  */
 package org.root.group;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import org.jlab.evio.stream.EvioOutputStream;
 import org.root.base.EvioWritableTree;
 
@@ -52,7 +55,11 @@ public class TDirectory {
     }
     
     public void scan(){
-        
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        for(Map.Entry<String,TDirectory> items : this.directory.entrySet()){
+            this.makeTreeDirectory(root, items.getKey());
+        }
+        /*
         Set<String> dirs = this.getDirectoryLevelSet(0,"/");
         int count = dirs.size();
         int loop  = 0;
@@ -65,7 +72,7 @@ public class TDirectory {
             loop++;
             dirs  = this.getDirectoryLevelSet(loop,"/");
             count = dirs.size();
-        }
+        }*/
     }
     
     private Set<String>  getDirectoryLevelSet(int level, String start){
@@ -103,6 +110,80 @@ public class TDirectory {
         return null;
     }
     
+    private DefaultMutableTreeNode  getTreeNode(DefaultMutableTreeNode rootNode, String[] dirpath, int length){
+        //System.out.println("--------------------->");
+        //System.out.print(" LOOKING FOR : ");
+        for(int loop = 0 ; loop < length; loop ++ ) System.out.print( dirpath[loop] + " / ");
+            System.out.println();
+           
+        Enumeration<DefaultMutableTreeNode> en = rootNode.preorderEnumeration();
+        while (en.hasMoreElements())
+        {
+            DefaultMutableTreeNode node = en.nextElement();
+            TreeNode[] path = node.getPath();
+            
+            //System.out.print(" ANALZING : ");
+            //for(int loop = 0 ; loop < path.length; loop ++ ) System.out.print( path[loop].toString() + " / ");
+            //System.out.println();
+            /*System.out.print(" MATCHING : ");
+            for(int loop = 0 ; loop < length; loop ++ ) System.out.print( dirpath[loop] + " / ");
+            System.out.println();*/
+            if((path.length-1) == length){
+                boolean hasDir  = true;
+                for(int loop = 0; loop < length; loop++){
+                    if(path[loop+1].toString().compareTo(dirpath[loop])!=0)
+                        hasDir = false;
+                }
+                if(hasDir == true) return node;
+            }
+        }
+        return null;
+    }
+    
+    private void makeTreeDirectory(DefaultMutableTreeNode rootNode, String dir){
+        System.out.println("--------------------->");
+
+        String[] tokens = dir.split("/");
+        System.out.println("ANALYZING Directory : " + dir + "  size = " + tokens.length);
+        //ArrayList<DefaultMutableTreeNode>  nodesArray = new ArrayList<DefaultMutableTreeNode>();
+        DefaultMutableTreeNode node = this.getTreeNode(rootNode, tokens, 1);
+        if(node==null){
+            rootNode.add(new DefaultMutableTreeNode(tokens[0]));
+        }
+        
+        for(int loop = 1; loop < tokens.length; loop++){
+            
+            System.out.print("---->  LOOK FOR : " + loop );
+            for(int i = 0 ; i <= loop ; i++) System.out.print(" " + tokens[i]);
+            System.out.println();
+            
+            DefaultMutableTreeNode dirnode = this.getTreeNode(rootNode, tokens, loop+1);
+            System.out.println("result ----> " + dirnode);
+            if(dirnode==null){
+                DefaultMutableTreeNode parent = this.getTreeNode(rootNode, tokens,loop);
+                System.out.println(" =====> Creating " + tokens[loop] + 
+                        "  in parent " + parent.toString());
+                parent.add(new DefaultMutableTreeNode(tokens[loop]));
+            }  
+        }
+        /*
+        for(int loop = nodesArray.size()-1; loop > 0; loop--){
+            nodesArray.get(loop-1).add(nodesArray.get(loop));
+        }
+        
+        rootNode.add(nodesArray.get(0));*/
+        /*
+        Enumeration<DefaultMutableTreeNode> en = rootNode.preorderEnumeration();
+        while (en.hasMoreElements())
+        {
+            DefaultMutableTreeNode node = en.nextElement();
+            TreeNode[] path = node.getPath();
+            boolean hasDir  = false;
+            int     nlookup = dirpath.length - 1;
+            System.out.println((node.isLeaf() ? "  - " : "+ ") + path[path.length - 1]);
+        }*/
+    }
+    
     public void ls(){
         if(currentDirectory.compareTo("/")==0){
             System.out.println(this.toString());
@@ -119,7 +200,21 @@ public class TDirectory {
         return root;
     }
     
+    private void addObjectsToTree(DefaultMutableTreeNode tree){
+        for(Map.Entry<String,TDirectory> dirs : this.directory.entrySet()){
+            String[] path = dirs.getKey().split("/");
+            DefaultMutableTreeNode node = this.getTreeNode(tree, path, path.length);
+            if(node!=null){
+                for(Map.Entry<String,Object> items : dirs.getValue().getObjects().entrySet()){
+                    node.add(new DefaultMutableTreeNode(items.getKey()));
+                }
+            } else {
+                System.err.println("===> ERROR");
+            }
+        }
+    }
     public DefaultMutableTreeNode getTree() {
+        /*
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(this.directoryName);
         for(Map.Entry<String,TDirectory> entry : this.directory.entrySet()){
             //    root.add(new DefaultMutableTreeNode(entry.getKey()));
@@ -128,7 +223,12 @@ public class TDirectory {
             + entry.getValue().getName());
             root.add(entry.getValue().getLeafNode());
             //root.add(groupRoot);
+        }*/
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        for(Map.Entry<String,TDirectory> items : this.directory.entrySet()){
+            this.makeTreeDirectory(root, items.getKey());
         }
+        this.addObjectsToTree(root);
         return root;
     }
     
