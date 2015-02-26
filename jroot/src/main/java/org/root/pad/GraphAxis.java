@@ -30,7 +30,7 @@ public class GraphAxis {
     private Double  axisMinimum    = 0.0;
     private Double  axisMaximum    = 1.0;
     private AxisNiceScale axisScale = new AxisNiceScale(0.0,15.0);
-    private String        axisTitle = "Axis Title";
+    private String        axisTitle = "";
     private Font          fontAxisTicks = new Font(Font.SANS_SERIF,Font.PLAIN,12);
     private Font          fontAxisTitle = new Font(Font.SANS_SERIF,Font.PLAIN,14);
     private Color         axisGridColor = new Color(220,220,220);

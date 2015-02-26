@@ -32,8 +32,7 @@ import org.xml.sax.SAXException;
 public class EvioFactory {
     
     private final static EvioDataDictionary factoryDict = EvioFactory.readDefaultDictionary();
-    
-            
+                
     public static EvioDataDictionary readDefaultDictionary(){
 
         EvioDataDictionary dict = new EvioDataDictionary();

@@ -48,7 +48,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     private int         drawMarginLeftX  = 40;
     private int         drawMarginLeftY  = 60;
     private Boolean     axisRangeFixed   = false;
-    private String      titleString      = "Graph";
+    private String      titleString      = "";
     private String      axisString       = "012345";
     
     private GraphAxis   graphAxisX = new GraphAxis();

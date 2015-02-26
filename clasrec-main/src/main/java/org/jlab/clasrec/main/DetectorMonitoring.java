@@ -9,6 +9,7 @@ import org.jlab.clasrec.utils.ServiceConfiguration;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.root.group.PlotDirectory;
 import org.root.group.PlotGroup;
+import org.root.group.TDirectory;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
 
@@ -22,6 +23,7 @@ public abstract class DetectorMonitoring {
     private String moduleVersion   = "0.5";
     private String moduleAuthor    = "unknown";
     private final PlotDirectory  hDirectory = new PlotDirectory();
+    private final TDirectory  monDirectory = new TDirectory();
     
     public DetectorMonitoring(String name, String version, String author){
         this.moduleName     = name;
@@ -35,6 +37,14 @@ public abstract class DetectorMonitoring {
     public abstract void init();
     public abstract void configure(ServiceConfiguration c);
     public abstract void analyze();
+    
+    public void addDirectory(TDirectory dir){
+        this.monDirectory.addDirectory(dir);
+    }
+    
+    public TDirectory getDir(){
+        return this.monDirectory;
+    }
     
     public void addGroup(PlotGroup group){
         this.hDirectory.addGroup(group);
