@@ -14,6 +14,7 @@ import org.jlab.clas.tools.utils.CommandLineTools;
 
 import org.jlab.clasrec.loader.ClasPluginLoader;
 import org.jlab.clasrec.main.DetectorReconstruction;
+import org.jlab.clasrec.utils.ServiceConfiguration;
 import org.jlab.coda.clara.core.ICService;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioDataSync;
@@ -31,11 +32,12 @@ public class CLASReconstruction {
             ArrayList<String>();
     
     private final ClasPluginLoader pluginLoader = new ClasPluginLoader();
-     
+    
     private EvioSource  reader               = new EvioSource();
     private Integer     debugLevel           = 0;
     private Integer     maxEventsReconstruct = -1;
     private Integer     skipEvents           = 0;
+    private ServiceConfiguration   serviceConfig = new ServiceConfiguration();
     
     public CLASReconstruction(){
         
@@ -52,6 +54,23 @@ public class CLASReconstruction {
     public void setDebugLevel(int level){
         this.debugLevel = level;
     }
+    
+    public void initServiceConfiguration(ArrayList<String> items){
+        for(String configItem : items){
+            String[] tokens = configItem.split("=");
+            if(tokens.length==2){
+                String[] systemItem = tokens[0].split("::");
+                if(systemItem.length==2){
+                    this.serviceConfig.addItem(systemItem[0], 
+                            systemItem[1], tokens[1]);
+                }
+            }
+        }
+        System.out.println("****************************************");
+        this.serviceConfig.show();
+        System.out.println("****************************************");
+    }
+    
     
     public void initDetectors(){
         this.detectorFactory.clear();
@@ -72,6 +91,7 @@ public class CLASReconstruction {
         for(DetectorReconstruction detectorRec : this.detectorFactory ){
             try {
                 detectorRec.setDebugLevel(this.debugLevel);
+                detectorRec.configure(serviceConfig);
                 detectorRec.init();
                 System.err.println("[INIT-DETECTORS] ----> detector initialization "
                         + detectorRec.getName() + " ......... ok");
@@ -159,7 +179,7 @@ public class CLASReconstruction {
         CommandLineTools  cmdParser = new CommandLineTools();
         
         cmdParser.addRequired("-i");
-        cmdParser.addRequired("-s");
+        //cmdParser.addRequired("-s");
         cmdParser.addDescription("-i", "input file name");
         cmdParser.addDescription("-s", "service list to run (e.g. BST:FTOF:EB )");
         cmdParser.addDescription("-o", "output file name");
@@ -181,7 +201,11 @@ public class CLASReconstruction {
 
         //}
         
-        String serviceList  = cmdParser.asString("-s");
+        String serviceList  = "DCHB:DCTB:FTOF:EC:EB";
+        if(cmdParser.hasOption("-s")){
+           serviceList = cmdParser.asString("-s");
+        }
+        
         String inputFile    = cmdParser.asString("-i");
         String outputFile   = "rec_output.evio";
         
@@ -198,6 +222,8 @@ public class CLASReconstruction {
         //}
         
         CLASReconstruction  clasRec = new CLASReconstruction();
+        
+        clasRec.initServiceConfiguration(cmdParser.getConfigItems());
         clasRec.setMaxEvents(nEventsToRun);
         clasRec.setDetectors(serviceList);
         clasRec.initPlugins();

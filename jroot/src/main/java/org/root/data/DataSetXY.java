@@ -120,6 +120,16 @@ public class DataSetXY implements EvioWritableTree {
         return 0.0;
     }
     
+    public double getIntersectY(double yvalue){
+        int bin = dataY.findBin(yvalue);
+        if(bin==0) return dataX.getValue(0);
+        double ylow  = dataY.getValue(bin-1);
+        double yhigh = dataY.getValue(bin);
+        double xlow  = dataY.getValue(bin-1);
+        double xhigh  = dataY.getValue(bin);
+        return 0.0;
+    }
+    
     public double evaluate(double x){
         int      bin  = dataX.findBin(x);
         double slope  = this.getBinSlope(bin);

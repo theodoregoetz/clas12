@@ -29,11 +29,23 @@ public class Configuration {
         if(config.containsKey(system)==false){
             this.addSystem(system);
         }
+        HashMap<String,Object> itemMap = (HashMap<String,Object>) config.get(system);
+        itemMap.put(item, value);
+        /*
         ArrayList< Map<String,String> > keyValue = new ArrayList< Map<String,String> >();
         keyValue.add(new HashMap<String,String>() );
         keyValue.get(0).put(item, value);
         HashMap<String,Object> itemMap = (HashMap<String,Object>) config.get(system);
-        itemMap.put(item, keyValue);
+        itemMap.put(item, keyValue);*/
+    }
+    
+    public boolean hasItem(String system, String item){
+        if(config.containsKey(system)==true){
+            if(((Map<String,Object>) config.get(system)).containsKey(item)==true){
+                return true;
+            }
+        }
+        return false;
     }
     
     public void addItem(String system,String item, Integer value){

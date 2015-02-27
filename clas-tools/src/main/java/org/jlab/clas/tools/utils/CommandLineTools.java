@@ -21,6 +21,7 @@ public class CommandLineTools {
     private TreeMap<String,String>  optionDescriptions = new TreeMap<String,String>();
     private String programName = "generic";
     private ArrayList<String>  requiredOptions = new ArrayList<String>();
+    private ArrayList<String>  configItems     = new ArrayList<String>();
     
     public CommandLineTools(){
         
@@ -50,6 +51,10 @@ public class CommandLineTools {
         return str.toString();
     }
     
+    public ArrayList<String> getConfigItems(){
+        return this.configItems;
+    }
+    
     public void addRequired(String option){
         this.requiredOptions.add(option);
     }
@@ -76,17 +81,23 @@ public class CommandLineTools {
     }
     
     public void parse(String[] args){
+        this.configItems.clear();
         int icounter = 0;
         int arglength = args.length;
         while(icounter<arglength){
-            if(this.inputOptions.containsKey(args[icounter])==true){
-                //this.inputOptions.
-                icounter += 1;
-            } else {
-                String key = args[icounter];
-                String val = args[icounter+1];
-                this.inputLineProperties.put(key, val);
+            if(args[icounter].compareTo("-config")==0){
+                this.configItems.add(args[icounter+1]);
                 icounter += 2;
+            } else {
+                if(this.inputOptions.containsKey(args[icounter])==true){
+                    //this.inputOptions.
+                    icounter += 1;
+                } else {
+                    String key = args[icounter];
+                    String val = args[icounter+1];
+                    this.inputLineProperties.put(key, val);
+                    icounter += 2;
+                }
             }
         }
     }
