@@ -79,7 +79,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     public void addSeries(IDrawableDataSeries series){
         if(padSeries.size()==0){
             this.statisticsBox.addText(series.getStatText());
-            this.statisticsBox.setXY(0.05, 0.98);
+            this.statisticsBox.setXY(0.04, 0.98);
             this.statisticsBox.setBorderSize(1);
         }
         padSeries.add(series);
@@ -88,6 +88,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     
     public void clear(){
         padSeries.clear();
+        this.padFits.clear();
         this.graphAxisX.setMinMax(0.0, 5.0);
         this.graphAxisY.setMinMax(0.0, 5.0);
         this.statisticsBox.clear();

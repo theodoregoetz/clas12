@@ -13,6 +13,8 @@ import java.util.TreeMap;
  * @author gavalian
  */
 public interface EvioWritableTree {
+    
+    String getName();
     TreeMap<Integer,Object>  toTreeMap();
     void                     fromTreeMap(TreeMap<Integer,Object> map);
 }

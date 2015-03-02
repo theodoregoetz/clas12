@@ -13,8 +13,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import org.jlab.evio.stream.EvioInputStream;
 import org.jlab.evio.stream.EvioOutputStream;
 import org.root.base.EvioWritableTree;
+import org.root.data.DataSetXY;
+import org.root.histogram.H1D;
+import org.root.histogram.H2D;
 
 /**
  *
@@ -92,6 +96,10 @@ public class TDirectory {
     
     public void add(String name, EvioWritableTree obj){
         this.directory.get(this.currentDirectory).addObject(name, obj);
+    }
+    
+    public void add( EvioWritableTree obj){
+        this.addObject(obj.getName(), obj);
     }
     
     public void addObject(String name, EvioWritableTree obj){
@@ -279,6 +287,73 @@ public class TDirectory {
         outStream.close();
     }
     
+    private String[] getPathComponents(String path){
+        int first = path.indexOf("/", 0);
+        int last  = path.lastIndexOf("/");
+        String[] tokens = new String[3];
+        tokens[0] = path.substring(0, first);
+        //tokens[1] = path.substring(first+1, last);
+        tokens[1] = path.substring(0, last);
+        tokens[2] = path.substring(last+1, path.length());
+        return tokens;
+    }
+    
+    public void readFile(String filename){
+        this.directory.clear();
+        EvioInputStream stream = new EvioInputStream();
+        stream.open(filename);
+        ArrayList< TreeMap<Integer,Object> > objects = stream.getObjectTree();
+        stream.close();
+        //System.out.println(objects.size());
+        
+        for(TreeMap<Integer,Object> treemap : objects){
+            //System.err.println(treemap.size() + "  " + treemap.containsKey(1));            
+            int[] type = (int[]) treemap.get(1);
+            if(type[0]==1){
+                H1D h = new H1D();
+                h.fromTreeMap(treemap);
+                String[] tokens = this.getPathComponents(h.name());
+                //System.out.println("****** LOADING OBJECT");
+                //System.err.println(h.name());
+                //System.err.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
+                //this.setName(tokens[0]);
+                if(this.directory.containsKey(tokens[1])==false){
+                    this.directory.put(tokens[1], new TDirectory(tokens[1]));
+                }
+                
+                h.setName(tokens[2]);
+                this.getDirectory(tokens[1]).add(h);
+            }
+            
+            if(type[0]==2){
+                H2D h = new H2D();
+                h.fromTreeMap(treemap);
+                String[] tokens = this.getPathComponents(h.getName());
+                //System.err.println(h.name() + "\n" + h.toString());
+                //System.err.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
+                //this.setName(tokens[0]);
+                if(this.directory.containsKey(tokens[1])==false){
+                    this.directory.put(tokens[1], new TDirectory(tokens[1]));
+                }
+                h.setName(tokens[2]);
+                this.getDirectory(tokens[1]).add(h);
+            }
+            
+            if(type[0]==6){
+                DataSetXY h = new DataSetXY();
+                h.fromTreeMap(treemap);
+                String[] tokens = this.getPathComponents(h.getName());
+                
+                if(this.directory.containsKey(tokens[1])==false){
+                    this.directory.put(tokens[1], new TDirectory(tokens[1]));
+                }
+                h.setName(tokens[2]);
+                this.getDirectory(tokens[1]).add(h);
+            }
+            
+        }
+    }
+    
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();
@@ -286,11 +361,16 @@ public class TDirectory {
         
         for(Map.Entry<String,TDirectory> dirs : this.directory.entrySet()){
             str.append(String.format("\t%s\n", dirs.getKey()));
+            for(Map.Entry<String,Object> objects : dirs.getValue().getObjects().entrySet()){
+                EvioWritableTree evT = (EvioWritableTree) objects.getValue();
+                str.append(String.format("\t\t-> Object : (Name) %-24s : (Type) %s\n", objects.getKey(),
+                        objects.getValue().getClass().getName()));
+            }
         }
-        
+        /*
         for(Map.Entry<String,Object> dirs : this.content.entrySet()){
             str.append(String.format("\t ---> %s\n", dirs.getKey()));
-        }
+        }*/
         
         return str.toString();
     }

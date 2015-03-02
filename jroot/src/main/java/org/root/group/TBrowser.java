@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -105,17 +107,23 @@ public class TBrowser extends JFrame implements ActionListener {
         
         JMenu  splitMenu    = new JMenu("Split");
         JMenuItem ssize1x1  = new JMenuItem("1x1");
+        JMenuItem ssize1x2  = new JMenuItem("1x2");
         JMenuItem ssize2x2  = new JMenuItem("2x2");
+        JMenuItem ssize1x3  = new JMenuItem("1x3");
         JMenuItem ssize2x3  = new JMenuItem("2x3");
         JMenuItem ssize3x3  = new JMenuItem("3x3");
         
         ssize1x1.addActionListener(this);
+        ssize1x2.addActionListener(this);
+        ssize1x3.addActionListener(this);
         ssize2x2.addActionListener(this);
         ssize2x3.addActionListener(this);
         ssize3x3.addActionListener(this);
         
         splitMenu.add(ssize1x1);
+        splitMenu.add(ssize1x2);
         splitMenu.add(ssize2x2);
+        splitMenu.add(ssize1x3);
         splitMenu.add(ssize2x3);
         splitMenu.add(ssize3x3);
         canvasMenu.add(splitMenu);
@@ -164,11 +172,41 @@ public class TBrowser extends JFrame implements ActionListener {
         }
     }
 
+    public void openFile(String fullpath, String filename){
+        this.browserDirectory = new TDirectory(filename);
+        this.browserDirectory.readFile(fullpath);
+        
+        this.updateTreeView();
+    }
     public void actionPerformed(ActionEvent e) {
+        
+        if(e.getActionCommand().compareTo("Open File")==0){
+            JFileChooser fc = new JFileChooser();
+            String pwd = System.getenv("PWD");
+            if(pwd!=null){
+                fc.setCurrentDirectory(new File(pwd));
+            }
+            int returnVal = fc.showOpenDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                
+                //This is where a real application would open the file.
+                System.out.println("Opening: " + file.getAbsolutePath() + "." );
+                this.openFile(file.getAbsolutePath(),file.getName());
+            } else {
+                //log.append("Open command cancelled by user." + newline);
+            }
+        }
+        
         if(e.getActionCommand().compareTo("1x1")==0){
             this.sciCanvas.divide(1, 1);
         }
-        
+        if(e.getActionCommand().compareTo("1x2")==0){
+            this.sciCanvas.divide(1, 2);
+        }
+        if(e.getActionCommand().compareTo("1x3")==0){
+            this.sciCanvas.divide(1, 3);
+        }
         if(e.getActionCommand().compareTo("2x2")==0){
             this.sciCanvas.divide(2, 2);
         }

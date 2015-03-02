@@ -24,7 +24,7 @@ public class GraphErrors extends DataSetXY {
     
     public GraphErrors(double[] x, double[] y){
         super(x,y);
-        setName("GraphErrors");
+        setName("GraphErrors");        
     } 
     
     public void fit(F1D func){

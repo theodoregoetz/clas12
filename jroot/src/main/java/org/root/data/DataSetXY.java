@@ -7,6 +7,7 @@
 package org.root.data;
 
 import java.util.TreeMap;
+import org.root.attr.Attributes;
 import org.root.base.EvioWritableTree;
 
 /**
@@ -21,13 +22,19 @@ public class DataSetXY implements EvioWritableTree {
     private String dataTitle  = "";
     private String dataXtitle = "";
     private String dataYtitle = "";
+    private Attributes  attr = new Attributes();
     
     public DataSetXY(){
-        
+        this.attr.addFillProperties();
+        this.attr.addLineProperties();
+        this.attr.addMarkerAttributes();
     }
     
     public DataSetXY(String name){
-        this.dataSetName = name;        
+        this.dataSetName = name;  
+        this.attr.addFillProperties();
+        this.attr.addLineProperties();
+        this.attr.addMarkerAttributes();
     }
     
     public void setName(String name){
@@ -40,6 +47,9 @@ public class DataSetXY implements EvioWritableTree {
         this.dataSetName = name;
         dataX.set(x);
         dataY.set(y);
+        this.attr.addFillProperties();
+        this.attr.addLineProperties();
+        this.attr.addMarkerAttributes();
     }
     
     public DataSetXY(double[] x, double[] y){
@@ -195,5 +205,54 @@ public class DataSetXY implements EvioWritableTree {
                 this.dataY.set(ydata);
             }
         }
+    }
+    
+    
+    public void setLineWidth(Integer width){
+        this.attr.getProperties().setProperty("line-width", width.toString());
+    }
+    
+    public void setLineColor(Integer color){
+        this.attr.getProperties().setProperty("line-color", color.toString());
+    }
+    
+    public void setLineStyle(Integer style){
+        this.attr.getProperties().setProperty("line-style", style.toString());
+    }
+    
+    public int getLineWidth(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("line-width"));
+    }
+    
+    public int getLineColor(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("line-color"));
+    }
+    
+    public int getLineStyle(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("line-style"));
+    }
+    
+    public void setMarkerStyle(Integer style){
+        this.attr.getProperties().setProperty("marker-style", style.toString());
+    }
+    
+    public void setMarkerColor(Integer color){
+        this.attr.getProperties().setProperty("marker-color", color.toString());
+    }
+    
+    public void setMarkerSize(Integer size){
+        this.attr.getProperties().setProperty("marker-size", size.toString());
+    }
+    
+    public int getMarkerColor(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("marker-color"));
+    }
+    
+    public int getMarkerStyle(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("marker-style"));
+    }
+    
+    public int getMarkerSize(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("marker-size"));
     }
 }

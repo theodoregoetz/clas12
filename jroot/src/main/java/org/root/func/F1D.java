@@ -17,8 +17,10 @@ import org.root.histogram.PaveText;
  * @author gavalian
  */
 public class F1D extends Function1D implements EvioWritableTree {
+    
     private final ArrayList<String> functionList = new ArrayList<String>();
     private String  functionString = "";
+    private String functionName = "f1";
     
     public F1D(String function){
         this.initFunction(function,0.0,1.0);
@@ -38,6 +40,7 @@ public class F1D extends Function1D implements EvioWritableTree {
         this.initParameters();
     }
     
+
     public void setParameter(int par, double value){
         this.parameter(par).setValue(value);
     }
@@ -175,5 +178,13 @@ public class F1D extends Function1D implements EvioWritableTree {
 
     public void fromTreeMap(TreeMap<Integer, Object> map) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void setName(String name){
+        this.functionName = name;
+    }
+
+    public String getName() {
+        return this.functionName;
     }
 }

@@ -7,8 +7,10 @@
 package org.root.series;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
+import org.root.attr.ColorPalette;
 import org.root.base.IDrawableDataSeries;
 import org.root.data.DataSetXY;
 import org.root.fitter.DataFitter;
@@ -74,8 +76,9 @@ public class DataSeriesH1D implements IDrawableDataSeries {
 
     @Override
     public void draw(GraphAxis xaxis, GraphAxis yaxis, Graphics2D g2d) {
-
-        g2d.setStroke(new BasicStroke(1));
+        int lineWidth = this.dataHistogram.getLineWidth();
+        g2d.setStroke(new BasicStroke(lineWidth));
+        g2d.setColor(ColorPalette.getColor(this.dataHistogram.getLineColor()));
         GeneralPath path = new GeneralPath();
         double bw = this.dataHistogram.getxAxis().getBinWidth(0);
         double xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(0)-bw);
@@ -91,6 +94,7 @@ public class DataSeriesH1D implements IDrawableDataSeries {
             path.lineTo(xc, yc);
         }
         g2d.draw(path);
+        g2d.setColor(Color.BLACK);
         /*
         GeneralPath path = new GeneralPath();
         double bw = this.dataHistogram.getxAxis().getBinWidth(0);

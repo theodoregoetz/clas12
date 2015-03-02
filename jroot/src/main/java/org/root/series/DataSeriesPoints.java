@@ -9,6 +9,7 @@ package org.root.series;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
+import org.root.attr.ColorPalette;
 import org.root.attr.MarkerPainter;
 import org.root.base.IDrawableDataSeries;
 import org.root.data.DataSetXY;
@@ -31,7 +32,7 @@ public class DataSeriesPoints implements IDrawableDataSeries {
     public DataSeriesPoints(){
         
     }
-        
+    
     public DataSeriesPoints(double[] x, double[] y){
         for(int loop = 0; loop < x.length; loop++){
             dataSet.add(x[loop], y[loop]);
@@ -54,7 +55,11 @@ public class DataSeriesPoints implements IDrawableDataSeries {
     @Override
     public void draw(GraphAxis xaxis, GraphAxis yaxis, Graphics2D g2d){
         if(this.drawStyle==1||this.drawStyle==2){
-            g2d.setStroke(new BasicStroke(2));
+            int color = this.dataSet.getLineColor();
+            int width = this.dataSet.getLineWidth();
+            
+            g2d.setStroke(new BasicStroke(width));
+            g2d.setColor(ColorPalette.getColor(color));
             GeneralPath path = new GeneralPath();
             double xcoord = xaxis.getTranslatedCoordinate(dataSet.getDataX().getValue(0));
             double ycoord = yaxis.getTranslatedCoordinate(dataSet.getDataY().getValue(0));
@@ -66,6 +71,10 @@ public class DataSeriesPoints implements IDrawableDataSeries {
             }
             g2d.draw(path);
         } else {            
+            int msize  = this.dataSet.getMarkerSize();
+            int mstyle = this.dataSet.getMarkerStyle();
+            int mcolor = this.dataSet.getMarkerColor();
+            
             for(int loop = 0; loop < dataSet.getDataX().getSize(); loop++){
                 double xcoord = xaxis.getTranslatedCoordinate(dataSet.getDataX().getValue(loop));
                 double ycoord = yaxis.getTranslatedCoordinate(dataSet.getDataY().getValue(loop));

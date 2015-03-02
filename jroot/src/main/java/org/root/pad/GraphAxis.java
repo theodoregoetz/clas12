@@ -216,7 +216,6 @@ public class GraphAxis {
         ArrayList<String> tickLabels = this.axisScale.getCoordinatesLabels();
         if(this.isAxisVertical==false){
             for(int loop = 0; loop < ticks.size(); loop++){
-                
                 double xcoord = this.getTranslatedCoordinate(ticks.get(loop));
                 if(loop%2==0&&loop!=ticks.size()-1){
                     double xcoordNext = this.getTranslatedCoordinate(ticks.get(loop+1));
@@ -226,7 +225,7 @@ public class GraphAxis {
                 }
             }
         } else {
-            for(int loop = 0; loop < ticks.size(); loop++){
+            for(int loop = 1; loop < ticks.size(); loop++){
                 //double stepSize =  (this.axisOrigin.y - yend)/this.ndivisions;
                 //for(int loop = 0; loop < this.ndivisions; loop++){
                 double ycoord = this.getTranslatedCoordinate(ticks.get(loop));

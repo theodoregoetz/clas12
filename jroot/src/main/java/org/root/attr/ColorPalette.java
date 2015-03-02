@@ -8,14 +8,17 @@ package org.root.attr;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  *
  * @author gavalian
  */
 public class ColorPalette {
-    private final ArrayList<Color>  palette = new ArrayList<Color>();
     
+    private final ArrayList<Color>  palette = new ArrayList<Color>();
+    private static TreeMap<Integer,Color>  colorPalette = ColorPalette.initColorMap();
+
     public ColorPalette(){
         this.set(1);
     }
@@ -67,5 +70,27 @@ public class ColorPalette {
         int bin = (int) binC;
         if(bin>=palette.size()) bin = palette.size()-1;
         return palette.get(bin);
+    }
+    
+    
+    public static Color  getColor(int color){
+        return ColorPalette.colorPalette.get(color);
+    }
+    
+    public static TreeMap<Integer,Color> initColorMap(){
+        TreeMap<Integer,Color> colors = new TreeMap<Integer,Color>();
+        colors.put(0, Color.white);
+        colors.put(1, Color.BLACK);
+        colors.put(2,new Color(210,79,68));
+        colors.put(3,new Color(137,216,68));
+        colors.put(4,new Color(77,176,221));
+        colors.put(5,new Color(246,188,47));        
+        colors.put(6,new Color(222,82,111));
+        colors.put(7,new Color(230,130,58));
+        colors.put(8,new Color(90,207,161));
+        colors.put(8,new Color(106,120,203));
+        
+        
+        return colors;
     }
 }

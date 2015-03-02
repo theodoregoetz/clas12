@@ -1,6 +1,7 @@
 package org.root.histogram;
 
 import java.util.TreeMap;
+import org.root.attr.Attributes;
 import org.root.base.EvioWritableTree;
 import org.root.data.DataSetXY;
 import org.root.data.StatNumber;
@@ -25,6 +26,7 @@ public class H1D implements EvioWritableTree {
     String     histYTitle = "";
     String     histName  = "";
     
+    private Attributes attr = new Attributes();
     /**
      * The default constructor, which creates a Histogram1D object with the Name "default", 
      * the Title "default", no Axis titles, and sets the minimum xAxis value to 0, the maximum x
@@ -35,6 +37,7 @@ public class H1D implements EvioWritableTree {
     	setTitle("default");
     	set(1,0.0,1.0);
     	initDataStore(1);
+        this.initAttributes();
     }
     
     /**
@@ -52,6 +55,7 @@ public class H1D implements EvioWritableTree {
     	setName(hName);
     	set(bins, xMin, xMax);
     	initDataStore(bins);
+        this.initAttributes();
         setXTitle(xTitle);
         setYTitle(yTitle);
     }
@@ -71,6 +75,7 @@ public class H1D implements EvioWritableTree {
     	for (int i = 0; i < binHeights.length; i++) {
     		histogramData[i] = binHeights[i];
     	}
+        this.initAttributes();
     }
     
     /**
@@ -85,6 +90,7 @@ public class H1D implements EvioWritableTree {
     public H1D(String name, int bins, double xMin, double xMax) {
     	setName(name);
     	set(bins, xMin, xMax);
+        this.initAttributes();
     }
     
     /**
@@ -101,6 +107,8 @@ public class H1D implements EvioWritableTree {
     	setName(name);
     	setTitle(title);
     	set(bins, xMin, xMax);
+        this.initAttributes();
+        this.attr.getProperties().setProperty("title", title);
     }
     
     /**
@@ -115,14 +123,25 @@ public class H1D implements EvioWritableTree {
     	setName(name);
     	setTitle(title);
     	set((int)(xMax - xMin), xMin, xMax);
+        this.initAttributes();
+        this.attr.getProperties().setProperty("title", title);
     }
     
+    public final void initAttributes(){
+        this.attr.getProperties().clear();
+        this.attr.addLineProperties();
+        this.attr.addFillProperties();
+        this.attr.getProperties().setProperty("title", "");
+        this.attr.getProperties().setProperty("xtitle", "");
+        this.attr.getProperties().setProperty("ytitle", "");
+    }
     /**
      * Sets the x-axis title to the specified parameter
      * @param xTitle		The desired title of the x-axis
      */
     public final void setXTitle(String xTitle) {
-    	this.getXaxis().setTitle(xTitle);
+        //this.getXaxis().setTitle(xTitle);
+        this.attr.getProperties().setProperty("xtitle", xTitle);
     }
     
     /**
@@ -131,7 +150,8 @@ public class H1D implements EvioWritableTree {
      * @param yTitle		The desired title of the y-axis
      */
     public final void setYTitle(String yTitle) {
-        this.getYaxis().setTitle(yTitle);
+        //this.getYaxis().setTitle(yTitle);
+        this.attr.getProperties().setProperty("ytitle", yTitle);
     }
     
     /**
@@ -139,7 +159,8 @@ public class H1D implements EvioWritableTree {
      * @return Title of the histogram.
      */
     public String getTitle(){
-        return this.histTitle;
+        //return this.histTitle;
+        return this.attr.getProperties().getProperty("title","");
     }
     /**
      * The getter for the x-axis title.
@@ -147,7 +168,8 @@ public class H1D implements EvioWritableTree {
      * @return		The title of the x-axis as a string
      */
     public String getXTitle() {
-    	return this.getXaxis().getTitle();
+        return this.attr.getProperties().getProperty("xtitle", "");
+    	//return this.getXaxis().getTitle();
     }
     
     /**
@@ -156,7 +178,8 @@ public class H1D implements EvioWritableTree {
      * @return		The title of the y-axis as a string
      */
     public String getYTitle() {
-    	return this.getYaxis().getTitle();
+        return this.attr.getProperties().getProperty("ytitle", "");
+        //return this.getYaxis().getTitle();
     }
     
     /**
@@ -165,7 +188,8 @@ public class H1D implements EvioWritableTree {
      * @param title		The desired title of the histogram
      */
     public final void setTitle(String title) {
-    	histTitle = title;
+        //histTitle = title;
+        this.attr.getProperties().setProperty("title", title);
     }
     
     /**
@@ -649,5 +673,36 @@ public class H1D implements EvioWritableTree {
                 }
             }
         }
+    }
+
+    
+    
+    public String getName() {
+        return this.histName;
+    }
+    
+    
+    public void setLineWidth(Integer width){
+        this.attr.getProperties().setProperty("line-width", width.toString());
+    }
+    
+    public void setLineColor(Integer color){
+        this.attr.getProperties().setProperty("line-color", color.toString());
+    }
+    
+    public void setLineStyle(Integer style){
+        this.attr.getProperties().setProperty("line-style", style.toString());
+    }
+    
+    public int getLineWidth(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("line-width"));
+    }
+    
+    public int getLineColor(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("line-color"));
+    }
+    
+    public int getLineStyle(){
+        return Integer.parseInt(this.attr.getProperties().getProperty("line-style"));
     }
 }

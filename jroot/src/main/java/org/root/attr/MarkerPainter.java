@@ -30,6 +30,14 @@ public class MarkerPainter {
         
     }
     
+    public void drawMarker(Graphics2D g2d, int x, int y, int mtype, int msize, int mcolor,
+            int linecolor, int linewidth){
+        
+        switch (mtype){
+            case 1: 
+        }
+    }
+    
     public void drawMarker(Graphics2D g2d, int x, int y, int mtype, int msize){
         //g2d.setStroke(new BasicStroke(4));
         switch (mtype){

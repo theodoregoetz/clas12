@@ -42,6 +42,8 @@ public class DataVector {
         }
     }
     
+    
+    public int  size(){ return datavec.size();}
     public void clear() { datavec.clear();}
     /**
      * Add value to the vector and ensure that the vector is ordered. If the value

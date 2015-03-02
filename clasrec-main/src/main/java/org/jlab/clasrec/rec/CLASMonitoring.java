@@ -41,6 +41,7 @@ public class CLASMonitoring {
             } catch (Exception e){
                 System.err.println("[CLASMonitoring] ----> error in event "
                 + icounter);
+                e.printStackTrace();
             }
          }
         detectorFactory.get(0).analyze();
