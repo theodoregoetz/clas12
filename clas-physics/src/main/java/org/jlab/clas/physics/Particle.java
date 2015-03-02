@@ -70,7 +70,19 @@ public class Particle {
     
     public void changePid(int pid)
     {
-        particleID = pid;
+        PDGParticle  part = PDGDatabase.getParticleById(pid);
+        if(part==null){
+            System.err.println("[Particle::changePid]  error ---> unknown particle id "
+            + pid );
+            return;
+        }
+        partVector.setPxPyPzM(
+                this.partVector.px(), 
+                this.partVector.py(), 
+                this.partVector.pz(), 
+                part.mass());
+        
+        particleID = pid;        
     }
     
     public void setParticleWithMass(double mass, byte charge, double px, double py, double pz, double vx, double vy, double vz)

@@ -70,6 +70,11 @@ public class F1D extends Function1D implements EvioWritableTree {
                 pars.add("sigma");
             }
             
+            if(f.compareTo("exp")==0){
+                pars.add("p0");
+                pars.add("p1");
+            }
+            
             if(f.compareTo("p0")==0){
                 pars.add("p0");
             }
@@ -131,6 +136,15 @@ public class F1D extends Function1D implements EvioWritableTree {
                         this.parameter(parOffset+1).value(),
                         this.parameter(parOffset+2).value()));
                 parOffset += 3;
+            }
+            
+            if(f.compareTo("exp")==0){
+                values.add(this.parameter(parOffset).value()*
+                        Math.exp(x*this.parameter(parOffset+1).value()));
+                //FunctionFactory.landau(x,
+                //        this.parameter(parOffset+1).value(),
+                //        this.parameter(parOffset+2).value()));
+                parOffset += 2;
             }
             
             if(f.compareTo("p0")==0){

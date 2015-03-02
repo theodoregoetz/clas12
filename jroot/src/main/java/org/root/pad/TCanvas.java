@@ -92,6 +92,18 @@ public class TCanvas extends JFrame {
         this.embededCanvas.setYaxisDivisions(this.currentPad, div);
     }
     
+    public void draw(DataSetXY h){
+        this.draw(h,"*");
+    }
+    
+    public void draw(DataSetXY h, String options){
+        if(options.contains("same")==false){
+            this.embededCanvas.clear(currentPad);
+        }
+        this.embededCanvas.draw(currentPad, h,options);
+        this.repaint();
+    }
+    
     public void draw(H1D h, String options){
         if(options.contains("same")==false){
             this.embededCanvas.clear(currentPad);

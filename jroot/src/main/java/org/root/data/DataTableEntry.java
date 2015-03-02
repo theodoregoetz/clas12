@@ -24,7 +24,7 @@ public class DataTableEntry {
     }
     
     public void set(String line,String separator){
-        String[] tokens = line.split(separator);
+        String[] tokens = line.trim().split(separator);
         data.clear();
         for(String item : tokens)
             data.add(item);
