@@ -32,7 +32,7 @@ public class BosDataBank implements DataBank {
 
     @Override
     public DataDescriptor getDescriptor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.bankDescriptor;
     }
 
     @Override

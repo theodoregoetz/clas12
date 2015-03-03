@@ -147,7 +147,12 @@ public class H2D implements EvioWritableTree {
 	public double getBinContent(int bx, int by) {
 		if (this.isValidBins(bx, by)) {
 			int buff = offset.getArrayIndex(bx, by);
-			return hBuffer[buff];
+                        if(buff>=0&&buff<hBuffer.length){
+                            return hBuffer[buff];
+                        } else {
+                            System.out.println("[Index] error for binx = "+ bx +
+                                    " biny = " + by);
+                        }
 		}
 		return 0.0;
 	}
