@@ -22,6 +22,7 @@ public class CommandLineTools {
     private String programName = "generic";
     private ArrayList<String>  requiredOptions = new ArrayList<String>();
     private ArrayList<String>  configItems     = new ArrayList<String>();
+    private String             multipleEntries = "-config";
     
     public CommandLineTools(){
         
@@ -29,6 +30,10 @@ public class CommandLineTools {
     
     public CommandLineTools(String prg){
         this.programName = prg;
+    }
+    
+    public void setMultiOption(String opt){
+        this.multipleEntries = opt;
     }
     public void setOptions(String options){
         String[] tokens = options.split(":");
@@ -85,7 +90,7 @@ public class CommandLineTools {
         int icounter = 0;
         int arglength = args.length;
         while(icounter<arglength){
-            if(args[icounter].compareTo("-config")==0){
+            if(args[icounter].compareTo(this.multipleEntries)==0){
                 this.configItems.add(args[icounter+1]);
                 icounter += 2;
             } else {
