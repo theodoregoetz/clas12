@@ -80,19 +80,26 @@ public class DataSeriesH1D implements IDrawableDataSeries {
         g2d.setStroke(new BasicStroke(lineWidth));
         g2d.setColor(ColorPalette.getColor(this.dataHistogram.getLineColor()));
         GeneralPath path = new GeneralPath();
-        double bw = this.dataHistogram.getxAxis().getBinWidth(0);
+        
+        double bw = this.dataHistogram.getxAxis().getBinWidth(0)*0.5;
         double xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(0)-bw);
         double yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(0));
         path.moveTo(xc, yc);
-        for(int loop = 0; loop < this.dataHistogram.getxAxis().getNBins()-1; loop++){
-            bw = this.dataHistogram.getxAxis().getBinWidth(loop);
+        for(int loop = 0; loop < this.dataHistogram.getxAxis().getNBins(); loop++){
+            bw = this.dataHistogram.getxAxis().getBinWidth(loop)*0.5;
             xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(loop)+bw);
             yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(loop));
             path.lineTo(xc, yc);
             xc = xaxis.getTranslatedCoordinate(this.dataHistogram.getxAxis().getBinCenter(loop)+bw);
-            yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(loop+1));
+            
+            if(loop!=this.dataHistogram.getxAxis().getNBins()-1){
+                yc = yaxis.getTranslatedCoordinate(this.dataHistogram.getBinContent(loop+1));
+            } else {
+                yc = yaxis.getTranslatedCoordinate(0.0);
+            }
             path.lineTo(xc, yc);
-        }
+        }        
+        
         g2d.draw(path);
         g2d.setColor(Color.BLACK);
         /*

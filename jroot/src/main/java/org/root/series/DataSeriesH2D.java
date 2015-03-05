@@ -7,6 +7,7 @@
 package org.root.series;
 
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import org.root.attr.ColorPalette;
 import org.root.base.IDrawableDataSeries;
@@ -68,16 +69,20 @@ public class DataSeriesH2D implements IDrawableDataSeries {
     public void draw(GraphAxis xaxis, GraphAxis yaxis, Graphics2D g2d) {
         double hmax = this.seriesHistogram.getMaximum();
 
-        for(int loopX = 0; loopX < this.seriesHistogram.getXAxis().getNBins()-1; loopX++){
-            for(int loopY = 0; loopY < this.seriesHistogram.getYAxis().getNBins()-1; loopY++){
+        for(int loopX = 0; loopX < this.seriesHistogram.getXAxis().getNBins(); loopX++){
+            for(int loopY = 0; loopY < this.seriesHistogram.getYAxis().getNBins(); loopY++){
+                
+                double bwx = this.seriesHistogram.getXAxis().getBinWidth(loopX)*0.5;
+                double bwy = this.seriesHistogram.getYAxis().getBinWidth(loopY)*0.5;
+                
                 double xpoint = xaxis.getTranslatedCoordinate(
-                        this.seriesHistogram.getXAxis().getBinCenter(loopX));
+                        this.seriesHistogram.getXAxis().getBinCenter(loopX) - bwx);
                 double ypoint = yaxis.getTranslatedCoordinate(
-                        this.seriesHistogram.getYAxis().getBinCenter(loopY));
+                        this.seriesHistogram.getYAxis().getBinCenter(loopY) - bwy);
                 double xnext = xaxis.getTranslatedCoordinate(
-                        this.seriesHistogram.getXAxis().getBinCenter(loopX+1));
+                        this.seriesHistogram.getXAxis().getBinCenter(loopX)+bwx);
                 double ynext = yaxis.getTranslatedCoordinate(
-                        this.seriesHistogram.getYAxis().getBinCenter(loopY+1));
+                        this.seriesHistogram.getYAxis().getBinCenter(loopY) + bwy);
                 
                 double dataValue = this.seriesHistogram.getBinContent(loopX, loopY);
                 double colorFraction = (dataValue/hmax);
@@ -90,12 +95,13 @@ public class DataSeriesH2D implements IDrawableDataSeries {
                 //    g2d.setColor(new Color(80,80,80));
                 //System.err.println( (int) xpoint + " " + (int) ypoint 
                 //+ " " + (int) xnext + " " + (int) ynext);
-                g2d.fillRect((int) xpoint, (int) ypoint,
+                g2d.fillRect((int) xpoint, (int) ynext,
                         (int) (xnext-xpoint)+1,
                         (int) (ypoint-ynext)+1
                         );
             }
         }
+        g2d.setColor(Color.black);
     }
 
     @Override

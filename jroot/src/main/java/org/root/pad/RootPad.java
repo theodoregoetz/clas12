@@ -215,7 +215,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisY.drawGrid(g2d);
         
         Rectangle clipping = new Rectangle(axisX,axisY - h,w,h);
-        g2d.setClip(clipping);
+        //g2d.setClip(clipping);
         for(int loop = 0; loop < padSeries.size(); loop++){
             padSeries.get(loop).draw(graphAxisX, graphAxisY, g2d);
         }

@@ -1,5 +1,6 @@
 package org.root.histogram;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 import org.root.base.EvioWritableTree;
 
@@ -216,7 +217,41 @@ public class H2D implements EvioWritableTree {
 	private void addBinContent(int bin, double w) {
 		hBuffer[bin] = hBuffer[bin] + w;
 	}
-
+        
+        public ArrayList<H1D>  getSlicesX(){
+            ArrayList<H1D>  slices = new ArrayList<H1D>();
+            for(int loop = 0; loop < this.getXAxis().getNBins(); loop++){
+                H1D slice = this.sliceX(loop);
+                slice.setName(this.getName()+"_"+loop);
+                slices.add(slice);
+            }
+            return slices;
+        }
+        
+        public ArrayList<H1D>  getSlicesY(){
+            ArrayList<H1D>  slices = new ArrayList<H1D>();
+            for(int loop = 0; loop < this.getYAxis().getNBins(); loop++){
+                H1D slice = this.sliceY(loop);
+                slice.setName(this.getName()+"_"+loop);
+                slices.add(slice);
+            }
+            return slices;
+        }
+        
+        public void divide(H2D h){
+            if(h.getXAxis().getNBins()==this.getXAxis().getNBins()&&
+                    h.getYAxis().getNBins()==this.getYAxis().getNBins()){
+                for(int loop = 0; loop < this.hBuffer.length; loop++){
+                    if(h.hBuffer[loop]==0){
+                        this.hBuffer[loop] = 0.0;
+                    } else {
+                        this.hBuffer[loop] = this.hBuffer[loop]/h.hBuffer[loop];
+                    }
+                }
+            } else {
+                System.err.println("[H2D::divide] error the bins in 2d histogram do not match");
+            }
+        }
 	/**
 	 * Finds which bin has that value.
 	 * 
@@ -363,15 +398,14 @@ public class H2D implements EvioWritableTree {
 	 */
 	public H1D sliceX(int xBin) {
 		String name = "Slice of " + xBin + " X Bin";
-		double xMin = xAxis.min();
-		double xMax = xAxis.max();
-		int xNum = xAxis.getNBins() + 1;
+		double xMin = yAxis.min();
+		double xMax = yAxis.max();
+		int xNum    = yAxis.getNBins() + 1;
 		H1D sliceX = new H1D(name, xNum, xMin, xMax);
 
 		for (int x = 0; x <= xNum; x++) {
-			sliceX.setBinContent(x, this.getBinContent(x, xBin));
+			sliceX.setBinContent(x, this.getBinContent(xBin,x));
 		}
-
 		return sliceX;
 	}
 
@@ -383,13 +417,13 @@ public class H2D implements EvioWritableTree {
 	 */
 	public H1D sliceY(int yBin) {
 		String name = "Slice of " + yBin + " Y Bin";
-		double yMin = yAxis.min();
-		double yMax = yAxis.max();
-		int yNum = yAxis.getNBins() + 1;
-		H1D sliceY = new H1D(name, yNum, yMin, yMax);
+		double xMin = xAxis.min();
+		double xMax = xAxis.max();
+		int    xNum = xAxis.getNBins() + 1;
+		H1D sliceY = new H1D(name, xNum, xMin, xMax);
 
-		for (int y = 0; y <= yNum; y++) {
-			sliceY.setBinContent(y, this.getBinContent(yBin, y));
+		for (int y = 0; y <= xNum; y++) {
+			sliceY.setBinContent(y, this.getBinContent(y,yBin));
 		}
 
 		return sliceY;
