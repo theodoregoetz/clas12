@@ -58,6 +58,7 @@ public class LorentzVector {
         if(m2<0) return -Math.sqrt(-m2);
         return Math.sqrt(m2);
     }
+    
     public double e()      { return energy;};
     
     void setE(double e)

@@ -5,6 +5,7 @@
  */
 package org.jlab.clasrec.rec;
 
+import java.io.Console;
 import java.util.ArrayList;
 import org.jlab.clas.tools.utils.CommandLineTools;
 import org.jlab.evio.clas12.EvioDataBank;
@@ -16,6 +17,18 @@ import org.jlab.evio.clas12.EvioSource;
  * @author gavalian
  */
 public class EvioDump {
+    
+    public static String waitForEnter() {
+        String line = "";
+        Console c = System.console();
+        if (c != null) {
+            // printf-like arguments
+            //c.format(message, args);
+            c.format("\nPress Enter for Next Event or Bank Name: ");
+            line = c.readLine();
+        }
+        return line;
+    }
     
     public static void main(String[] args){
                 
@@ -43,19 +56,37 @@ public class EvioDump {
         EvioSource reader = new EvioSource();
         reader.open(inputFile);
         ArrayList<String>  banks = parser.getConfigItems();
-        
+        String command = "";
+        EvioDataEvent event = null;
         int icounter = 0;
         while(reader.hasEvent()==true){
-            EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
-            icounter++;
-            System.out.println("*********************** EVENT # " + icounter 
-                    + "***********************");
+            
+            if(command.length()<4){
+                event = (EvioDataEvent) reader.getNextEvent();
+                icounter++;
+                System.out.println("*********************** EVENT # " + icounter 
+                        + "  ***********************");
+                event.show();
+            }
+            command = EvioDump.waitForEnter();
+            if(command.length()>4){
+                if(event.hasBank(command)==true){
+                    EvioDataBank bank = (EvioDataBank) event.getBank(command);
+                    bank.show();
+                }
+            }
+            
+            if(command.compareTo("q")==0){
+                reader.close();
+                System.exit(0);
+            }
+            /*
             for(String bankName : banks){
                 if(event.hasBank(bankName)==true){
                     EvioDataBank bank = (EvioDataBank) event.getBank(bankName);
                     bank.show();
                 }
-            }
+            }*/
         }        
         
     }
