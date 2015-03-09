@@ -19,6 +19,7 @@ public class AxisNiceScale {
     private double range;
     private double niceMin;
     private double niceMax;
+    private Boolean isAxisLogarithmic = false;
     private ArrayList<Double> niceCoordinates = new ArrayList<Double>();
     private ArrayList<String> niceCoordinateLabels = new ArrayList<String>();
     /**
@@ -40,14 +41,21 @@ public class AxisNiceScale {
     }
     
     private void calculateLog(){
+        
+        //System.out.println("CALCULATING AXIS IN LOG SCALE");
+        
         this.range = Math.floor(Math.log10(this.maxPoint)) - Math.floor(Math.log10(this.minPoint));
         this.tickSpacing = this.range/(this.maxTicks-1);
         int minlog =  (int) Math.floor(Math.log10(this.minPoint));
         int maxlog =  (int) Math.floor(Math.log10(this.maxPoint));
         this.niceCoordinates.clear();
-        this.range = maxlog - minlog;
+        this.niceCoordinateLabels.clear();
+        this.range = maxlog;// - minlog;
         for(int loop = 0; loop < this.maxTicks;loop++){
-            this.niceCoordinates.add(Math.pow(10, minlog+loop));
+            this.niceCoordinates.add(Math.pow(10, loop));            
+            this.niceCoordinateLabels.add(String.format("%.0f",
+                        this.niceCoordinates.get(loop)));
+            //System.out.println(" TICK " + loop + " = " + this.niceCoordinateLabels.get(loop));
         }
     }
     /**
@@ -83,6 +91,20 @@ public class AxisNiceScale {
         }
         //System.out.println(" SIG FIG = " + this.getSigFig());
     }
+    
+    public boolean getAxisLog(){
+        return this.isAxisLogarithmic;
+    }
+    
+    public void setAxisLog(boolean log){
+        this.isAxisLogarithmic = log;
+        if(this.isAxisLogarithmic==true){
+            this.calculateLog();
+        } else {
+            this.calculate();
+        }
+    }
+    
     public String getStringFormat(int sig){
         StringBuilder str = new StringBuilder();
         str.append('%');

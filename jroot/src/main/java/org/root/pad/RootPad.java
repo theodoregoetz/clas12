@@ -291,6 +291,17 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.repaint();
     }
     
+    public void setLogX(Boolean flag){
+        this.graphAxisX.setAxisLog(flag);
+    }
+    
+    public void setLogY(Boolean flag){
+        this.graphAxisY.setAxisLog(flag);
+    }
+    
+    public void setLogZ(Boolean flag){
+
+    }
     public void addText( String[] texts, double x, double y){
          this.addText(12, texts, x, y);
     }
@@ -336,8 +347,27 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         menu.addSeparator();
         menu.add(new JMenuItem("Properties"));
         menu.addSeparator();
-        menu.add(new JMenuItem("Export PDF"));
-        menu.add(new JMenuItem("Export PNG"));
+        JMenu  logMenu = new JMenu("Log");
+        JMenuItem logX = new JMenuItem("Log X");
+        JMenuItem logY = new JMenuItem("Log Y");
+        JMenuItem logZ = new JMenuItem("Log Z");
+        logX.addActionListener(this);
+        logY.addActionListener(this);
+        logZ.addActionListener(this);
+        logMenu.add(logX);
+        logMenu.add(logY);
+        logMenu.add(logZ);
+        menu.add(logMenu);
+        menu.addSeparator();
+        JMenu  exportMenu = new JMenu("Export");
+        JMenuItem exportPDF = new JMenuItem("PDF...");
+        JMenuItem exportPNG = new JMenuItem("PNG...");
+        exportMenu.add(exportPNG);
+        exportMenu.add(exportPDF);
+        
+        menu.add(exportMenu);
+        //menu.add(new JMenuItem("Export PDF"));
+        //menu.add(new JMenuItem("Export PNG"));
         
         JMenu fontSizeMenu = new JMenu("Font Sizse");
         String[] fontSizes = new String[]{"12","14","18","24"};
@@ -441,6 +471,16 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
             this.statisticsBox.setFontSize(Integer.parseInt(e.getActionCommand()));*/
             this.setFontSize(Integer.parseInt(e.getActionCommand()));
             this.repaint();            
+        }
+        
+        if(e.getActionCommand().compareTo("Log X")==0){
+            this.graphAxisX.toogleAxisLog();
+            this.repaint();
+        }
+        
+        if(e.getActionCommand().compareTo("Log Y")==0){
+            this.graphAxisY.toogleAxisLog();
+            this.repaint();
         }
         
         if(e.getActionCommand().compareTo("Gaus")==0){

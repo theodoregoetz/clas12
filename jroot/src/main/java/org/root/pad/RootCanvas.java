@@ -101,6 +101,17 @@ public class RootCanvas extends JPanel {
         this.draw(pad, h2,"*");
     }
     
+    public void setLogX(int pad, boolean flag){
+        this.canvasPads.get(pad).setLogX(flag);
+    }
+    
+    public void setLogY(int pad, boolean flag){
+        this.canvasPads.get(pad).setLogY(flag);
+    }
+    
+    public void setLogZ(int pad, boolean flag){
+        this.canvasPads.get(pad).setLogZ(flag);
+    }
     public void draw(int pad, H2D h2, String options){
         //DataSeriesH2D h2d = new DataSeriesH2D(h2);
          this.clear(pad);

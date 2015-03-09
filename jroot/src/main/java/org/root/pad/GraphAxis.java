@@ -52,6 +52,23 @@ public class GraphAxis {
         this.axisScale.setMaxTicks(ndivisions);
     }
     
+    
+    public void toogleAxisLog(){
+        if(this.axisScale.getAxisLog()==true){
+            this.axisScale.setAxisLog(false);
+        } else {
+            this.axisScale.setAxisLog(true);
+        }
+    }
+    
+    public Boolean getAxisLog(){
+        return this.axisScale.getAxisLog();
+    }
+    
+    public void setAxisLog(boolean flag){
+        this.axisScale.setAxisLog(flag);        
+    }
+    
     public void setTitle(String title){
         this.axisTitle = title;
     }
@@ -94,7 +111,11 @@ public class GraphAxis {
             this.axisMinimum = 0.0;
             this.axisMaximum = 1.0;
         }
-        this.axisScale.setMinMaxPoints(this.axisMinimum, this.axisMaximum);
+        if(this.axisScale.getAxisLog()==true){
+            this.axisScale.setMinMaxPointsLog(this.axisMinimum, this.axisMaximum);
+        } else {
+            this.axisScale.setMinMaxPoints(this.axisMinimum, this.axisMaximum);
+        }
     }
     
     public void draw(Graphics2D g2d){
@@ -246,13 +267,25 @@ public class GraphAxis {
     
     public double getTranslatedCoordinate(double value){
         double coordinate = 0.0;
+        //if(this.getAxisLog()==false){
         double fraction = (value-this.axisMinimum)/
-                    (this.axisMaximum - this.axisMinimum);
+                (this.axisMaximum - this.axisMinimum);
+        if(this.getAxisLog()==true){
+            //System.out.print(" AXIS LOG value = " + value + "  faction = " + 
+            //        fraction );
+            double mathlog_small = Math.log10(0.000001);
+            fraction = (Math.log10(value))/
+                    (Math.log10(this.axisMaximum));
+            //System.out.println("  refraction = " + fraction);
+            //System.out.println("  refraction = " + Math.log10(value) + "  " + mathlog_small);
+        }
+        
         if(this.isAxisVertical==false){
             coordinate = this.axisOrigin.x + (this.axisLength)*fraction;
         } else {
             coordinate = this.axisOrigin.y - (this.axisLength)*fraction;
         }
+        
         return coordinate;
     }
 }

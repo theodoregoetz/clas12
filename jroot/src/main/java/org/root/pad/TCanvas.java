@@ -96,6 +96,17 @@ public class TCanvas extends JFrame {
         this.draw(h,"*");
     }
     
+    public void setLogX(boolean flag){
+        this.embededCanvas.setLogX(this.currentPad, flag);
+    }
+    
+    public void setLogY(boolean flag){
+        this.embededCanvas.setLogX(this.currentPad, flag);
+    }
+    
+    public void setLogZ(boolean flag){
+        this.embededCanvas.setLogZ(this.currentPad, flag);
+    }
     public void draw(DataSetXY h, String options){
         if(options.contains("same")==false){
             this.embededCanvas.clear(currentPad);
