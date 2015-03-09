@@ -158,6 +158,9 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
     public void addSeries(DataSetXY xydata){
         DataSeriesPoints  points = new DataSeriesPoints(xydata.getDataX().getArray(),
                 xydata.getDataY().getArray());
+        DataSetXY  object = (DataSetXY) points.dataObject();
+        object.setLineColor(xydata.getLineColor());
+        object.setLineWidth(xydata.getLineWidth());
         this.titleString = xydata.getTitle();
         this.graphAxisX.setTitle(xydata.getXTitle());
         this.graphAxisY.setTitle(xydata.getYTitle());
@@ -168,6 +171,9 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         
         DataSeriesPoints  points = new DataSeriesPoints(xydata.getDataX().getArray(),
                 xydata.getDataY().getArray());
+        DataSetXY  object = (DataSetXY) points.dataObject();
+        object.setLineColor(xydata.getLineColor());
+        object.setLineWidth(xydata.getLineWidth());
         points.setDrawStyle(mode);
         this.addSeries(points);
     }

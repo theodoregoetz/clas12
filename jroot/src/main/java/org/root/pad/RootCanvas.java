@@ -144,6 +144,8 @@ public class RootCanvas extends JPanel {
     }
     
     public void draw(int pad, DataSetXY xydata, String options){
+        
+        System.out.println("ROOTCANVAS LINE " + xydata.getLineColor() + " " + xydata.getLineWidth());
         if(options.contains("same")==false){
             this.canvasPads.get(pad).clear();
         }

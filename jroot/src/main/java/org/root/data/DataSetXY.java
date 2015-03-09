@@ -55,6 +55,9 @@ public class DataSetXY implements EvioWritableTree {
     public DataSetXY(double[] x, double[] y){
         dataX.set(x);
         dataY.set(y);
+        this.attr.addFillProperties();
+        this.attr.addLineProperties();
+        this.attr.addMarkerAttributes();
     }
     
     public void setTiles(String t, String xt, String yt){
@@ -209,7 +212,9 @@ public class DataSetXY implements EvioWritableTree {
     
     
     public void setLineWidth(Integer width){
+
         this.attr.getProperties().setProperty("line-width", width.toString());
+        //System.out.println("SET LINE WIDTH = " + this.attr.getProperties().getProperty("line-width"));
     }
     
     public void setLineColor(Integer color){
@@ -221,6 +226,7 @@ public class DataSetXY implements EvioWritableTree {
     }
     
     public int getLineWidth(){
+        //System.out.println("LINE WIDTH = " + this.attr.getProperties().getProperty("line-width"));
         return Integer.parseInt(this.attr.getProperties().getProperty("line-width"));
     }
     

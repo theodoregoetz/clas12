@@ -72,9 +72,13 @@ public class TCanvas extends JFrame {
     }
     
     public void draw(GraphErrors graph, String options){
+        System.out.println(" TCANVAS CALL WITH GRAPHERRORS");
         DataSetXY data = new DataSetXY(graph.getDataX().getArray(),
                 graph.getDataY().getArray());
         data.setTiles(graph.getTitle(), graph.getXTitle(), graph.getYTitle());
+        data.setLineColor(graph.getLineColor());
+        data.setLineWidth(graph.getLineWidth());
+        data.setLineStyle(graph.getLineStyle());
         this.embededCanvas.draw(this.currentPad, data, options);
     }
     
@@ -101,17 +105,19 @@ public class TCanvas extends JFrame {
     }
     
     public void setLogY(boolean flag){
-        this.embededCanvas.setLogX(this.currentPad, flag);
+        this.embededCanvas.setLogY(this.currentPad, flag);
     }
     
     public void setLogZ(boolean flag){
         this.embededCanvas.setLogZ(this.currentPad, flag);
     }
+    
     public void draw(DataSetXY h, String options){
         if(options.contains("same")==false){
             this.embededCanvas.clear(currentPad);
         }
-        this.embededCanvas.draw(currentPad, h,options);
+        System.out.println("TCANVAS LINE " + h.getLineColor() + " " + h.getLineWidth());
+        this.embededCanvas.draw(currentPad, h, options);
         this.repaint();
     }
     

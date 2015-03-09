@@ -7,6 +7,7 @@
 package org.root.series;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import org.root.attr.ColorPalette;
@@ -82,6 +83,7 @@ public class DataSeriesPoints implements IDrawableDataSeries {
                 //g2d.fillRect((int) xcoord, (int) ycoord, 5, 5);
             }
         }
+        g2d.setColor(Color.black);
     }
 
     @Override
