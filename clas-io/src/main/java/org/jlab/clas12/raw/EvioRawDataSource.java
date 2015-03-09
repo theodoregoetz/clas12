@@ -269,6 +269,7 @@ public class EvioRawDataSource implements DataSource {
                     Short   half    = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position));
                     Short   channel = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position+1));
                     Short   tdc     = EvioDataConvertor.getShortFromByte((Byte) cdataitems.get(position+2));
+                    //Short   adc     = (Short)  cdataitems.get(position+3);
                     Short   adc     = EvioDataConvertor.getShortFromByte((Byte)  cdataitems.get(position+3));
                     
                     Integer channelKey = (half<<8)|channel;

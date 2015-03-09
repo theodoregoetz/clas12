@@ -30,9 +30,11 @@ import org.root.base.IDrawableDataSeries;
 import org.root.data.DataSetXY;
 import org.root.func.F1D;
 import org.root.histogram.H1D;
+import org.root.histogram.H2D;
 import org.root.histogram.PaveText;
 import org.root.series.DataSeriesFunc;
 import org.root.series.DataSeriesH1D;
+import org.root.series.DataSeriesH2D;
 import org.root.series.DataSeriesPoints;
 import org.root.series.DataSeriesText;
 
@@ -145,6 +147,14 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.addSeries(h1d);
     }
     
+    public void addSeries(H2D hist){
+        DataSeriesH2D h2d = new DataSeriesH2D(hist);
+        this.setTitle(hist.getTitle());
+        this.graphAxisX.setTitle(hist.getXTitle());
+        this.graphAxisY.setTitle(hist.getYTitle());
+        this.addSeries(h2d);
+    }
+    
     public void addSeries(DataSetXY xydata){
         DataSeriesPoints  points = new DataSeriesPoints(xydata.getDataX().getArray(),
                 xydata.getDataY().getArray());
@@ -215,7 +225,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisY.drawGrid(g2d);
         
         Rectangle clipping = new Rectangle(axisX,axisY - h,w,h);
-        //g2d.setClip(clipping);
+        g2d.setClip(clipping);
         for(int loop = 0; loop < padSeries.size(); loop++){
             padSeries.get(loop).draw(graphAxisX, graphAxisY, g2d);
         }

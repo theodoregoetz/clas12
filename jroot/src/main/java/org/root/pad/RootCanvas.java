@@ -102,9 +102,10 @@ public class RootCanvas extends JPanel {
     }
     
     public void draw(int pad, H2D h2, String options){
-         DataSeriesH2D h2d = new DataSeriesH2D(h2);
+        //DataSeriesH2D h2d = new DataSeriesH2D(h2);
          this.clear(pad);
-         this.add(pad,h2d);
+         this.canvasPads.get(pad).addSeries(h2);
+         //this.add(pad,h2d);
     }
     
     public void draw(int pad, H1D h, String options){

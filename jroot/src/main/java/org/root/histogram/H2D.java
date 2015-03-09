@@ -2,6 +2,7 @@ package org.root.histogram;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
+import org.root.attr.Attributes;
 import org.root.base.EvioWritableTree;
 
 /**
@@ -18,11 +19,15 @@ public class H2D implements EvioWritableTree {
 	private Axis yAxis = new Axis();
 	private double[] hBuffer;
 	private MultiIndex offset;
-
+        private Attributes attr = new Attributes(); 
+        
 	public H2D() {
 		offset = new MultiIndex(xAxis.getNBins(), yAxis.getNBins());
 		hBuffer = new double[offset.getArraySize()];
-	}
+                this.attr.getProperties().setProperty("title", "");
+                this.attr.getProperties().setProperty("xtitle", "");
+                this.attr.getProperties().setProperty("ytitle", "");
+        }
 
         public void setName(String name){ this.hName = name;}
 	/**
@@ -35,6 +40,9 @@ public class H2D implements EvioWritableTree {
 		hName = name;
 		offset = new MultiIndex(xAxis.getNBins(), yAxis.getNBins());
 		hBuffer = new double[offset.getArraySize()];
+                this.attr.getProperties().setProperty("title", "");
+                this.attr.getProperties().setProperty("xtitle", "");
+                this.attr.getProperties().setProperty("ytitle", "");
 	}
 
 	/**
@@ -61,6 +69,9 @@ public class H2D implements EvioWritableTree {
 		this.set(bx, xmin, xmax, by, ymin, ymax);
 		offset = new MultiIndex(bx, by);
 		hBuffer = new double[offset.getArraySize()];
+                this.attr.getProperties().setProperty("title", "");
+                this.attr.getProperties().setProperty("xtitle", "");
+                this.attr.getProperties().setProperty("ytitle", "");
 	}
 
 	/**
@@ -157,13 +168,69 @@ public class H2D implements EvioWritableTree {
 		}
 		return 0.0;
 	}
-
-	/**
-	 * Sets the bin to that value
-	 * 
-	 * @param bx
-	 *            The x coordinate of the bin
-	 * @param by
+        /**
+         * Sets the x-axis title to the specified parameter
+         * @param xTitle		The desired title of the x-axis
+         */
+        public final void setXTitle(String xTitle) {
+            //this.getXaxis().setTitle(xTitle);
+            this.attr.getProperties().setProperty("xtitle", xTitle);
+        }
+        
+        /**
+         * Sets the y-axis title to the specified parameter
+         * 
+         * @param yTitle		The desired title of the y-axis
+         */
+        public final void setYTitle(String yTitle) {
+            //this.getYaxis().setTitle(yTitle);
+            this.attr.getProperties().setProperty("ytitle", yTitle);
+        }
+        
+        /**
+         * The getter for the histogram title.
+         * @return Title of the histogram.
+         */
+        public String getTitle(){
+            //return this.histTitle;
+            return this.attr.getProperties().getProperty("title","");
+        }
+        /**
+         * The getter for the x-axis title.
+         * 
+         * @return		The title of the x-axis as a string
+         */
+        public String getXTitle() {
+            return this.attr.getProperties().getProperty("xtitle", "");
+            //return this.getXaxis().getTitle();
+        }
+        
+        /**
+         * The getter for the y-axis title.
+         * 
+         * @return		The title of the y-axis as a string
+         */
+        public String getYTitle() {
+            return this.attr.getProperties().getProperty("ytitle", "");
+            //return this.getYaxis().getTitle();
+        }
+        
+        /**
+         * Sets the specified parameter as the title of the histogram
+         * 
+         * @param title		The desired title of the histogram
+         */
+        public final void setTitle(String title) {
+            //histTitle = title;
+            this.attr.getProperties().setProperty("title", title);
+        }
+        
+        /**
+         * Sets the bin to that value
+         * 
+         * @param bx
+         *            The x coordinate of the bin
+         * @param by
 	 *            The y coordinate of the bin
 	 * @param w
 	 *            The desired value to set the bin to
