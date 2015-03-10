@@ -62,7 +62,7 @@ public class GenericKinematicFitter {
         for(int loop = 0; loop < nrows; loop++){
             Particle rpart = rec.getParticle(loop);
             Particle gpart = gen.closestParticle(rpart);
-            if(rpart.cosTheta(gpart)>0.99){
+            if(rpart.cosTheta(gpart)>0.998){
                 rpart.changePid(gpart.pid());
             }
         }
