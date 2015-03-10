@@ -134,9 +134,11 @@ public class TCanvas extends JFrame {
     }
     
     public void draw(H2D h){
+        this.embededCanvas.draw(currentPad, h, "*");
+        /*
         DataSeriesH2D h2d = new DataSeriesH2D(h);
         this.embededCanvas.add(currentPad, h2d);
-        this.embededCanvas.repaint();
+        this.embededCanvas.repaint();*/
     }
     
     public void draw(F1D func){       
