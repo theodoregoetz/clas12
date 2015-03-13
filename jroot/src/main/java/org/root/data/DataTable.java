@@ -38,6 +38,11 @@ public class DataTable {
             tableHeader.add(line);
             return;
         }
+        
+        if(line.length()<3){
+            return;
+        }
+        
         DataTableEntry entry = new DataTableEntry(line);
         if(tableEntries.size()>0){
             int nvars = tableEntries.get(0).size();

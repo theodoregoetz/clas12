@@ -135,12 +135,18 @@ public class DataSetXY implements EvioWritableTree {
     
     public double getIntersectY(double yvalue){
         int bin = dataY.findBin(yvalue);
-        if(bin==0) return dataX.getValue(0);
-        double ylow  = dataY.getValue(bin-1);
-        double yhigh = dataY.getValue(bin);
-        double xlow  = dataY.getValue(bin-1);
-        double xhigh  = dataY.getValue(bin);
-        return 0.0;
+        //System.out.println(" y value = " + yvalue + "  bin = " + bin);
+        if(bin==dataX.getSize()-1) return dataX.getValue(dataX.getSize()-1);
+        double y0   = dataY.getValue(bin);
+        double y1   = dataY.getValue(bin+1);
+        double x0   = dataX.getValue(bin);
+        double x1   = dataX.getValue(bin+1);
+        double ydiff = (y1-y0);
+        if(ydiff==0) return x0;
+        double xvalue = (x1-x0)*(yvalue-y0)/(ydiff)+x0;
+        //System.out.println("\t\t -> x value = " + xvalue
+        // + "  x0 = " + x0);
+        return xvalue;
     }
     
     public double evaluate(double x){
@@ -187,13 +193,15 @@ public class DataSetXY implements EvioWritableTree {
 
     public TreeMap<Integer, Object> toTreeMap() {
         TreeMap<Integer, Object> hcontainer = new TreeMap<Integer, Object>();
-        hcontainer.put(1, new int[]{6});        
+        hcontainer.put(1, new int[]{6});
+        byte[] nameBytes = this.dataSetName.getBytes();
+        hcontainer.put(2, nameBytes);
         //hcontainer.put(2, new int[]{this.getxAxis().getNBins()});
         //hcontainer.put(3, new double[]{this.getxAxis().min(),this.getxAxis().max()});
         hcontainer.put(4, this.dataX.getArray());
         hcontainer.put(5, this.dataY.getArray());
-        byte[] nameBytes = this.dataSetName.getBytes();
-        hcontainer.put(6, nameBytes);
+        //byte[] nameBytes = this.dataSetName.getBytes();
+        //hcontainer.put(6, nameBytes);
         return hcontainer;
     }
 
@@ -202,7 +210,7 @@ public class DataSetXY implements EvioWritableTree {
             if(  ((int[]) map.get(1))[0]==6){
                 double[]  xdata    = ((double[]) map.get(4));
                 double[]  ydata    = ((double[]) map.get(5));
-                byte[] name     = (byte[]) map.get(6);
+                byte[] name     = (byte[]) map.get(2);
                 this.dataSetName = new String(name);                
                 this.dataX.set(xdata);
                 this.dataY.set(ydata);

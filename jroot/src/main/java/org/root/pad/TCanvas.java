@@ -152,4 +152,8 @@ public class TCanvas extends JFrame {
     public void draw(PlotGroup group){
         this.embededCanvas.draw(group);
     }
+    
+    public RootCanvas  embededCanvas(){
+        return this.embededCanvas;
+    }
 }

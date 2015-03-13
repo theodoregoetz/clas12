@@ -97,8 +97,15 @@ public class TBrowser extends JFrame implements ActionListener {
         JMenuItem fileOpen  = new JMenuItem("Open File");
         fileOpen.addActionListener(this);
         JMenuItem fileQuit  = new JMenuItem("Quit");
+        JMenuItem exportPNG  = new JMenuItem("Export PNG");
+        JMenuItem exportPDF  = new JMenuItem("Export PDF");
+        exportPNG.addActionListener(this);
+        exportPDF.addActionListener(this);
         fileMenu.add(fileOpen);
         fileMenu.addSeparator();
+        fileMenu.add(exportPNG);
+        fileMenu.add(exportPDF);
+        fileMenu.addSeparator();        
         fileMenu.add(fileQuit);
         
         JMenu  editMenu   = new JMenu("Edit");
@@ -197,7 +204,12 @@ public class TBrowser extends JFrame implements ActionListener {
                 //log.append("Open command cancelled by user." + newline);
             }
         }
-        
+        if(e.getActionCommand().compareTo("Export PNG")==0){
+            this.sciCanvas.export("jroot.png");
+        }
+        if(e.getActionCommand().compareTo("Export PDF")==0){
+            this.sciCanvas.exportPDF("jroot.pdf");
+        }
         if(e.getActionCommand().compareTo("1x1")==0){
             this.sciCanvas.divide(1, 1);
         }

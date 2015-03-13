@@ -503,15 +503,15 @@ public class H2D implements EvioWritableTree {
     @Override
     public TreeMap<Integer, Object> toTreeMap() {
         TreeMap<Integer, Object> hcontainer = new TreeMap<Integer, Object>();
-        hcontainer.put(1, new int[]{2});        
-        hcontainer.put(2, new int[]{this.getXAxis().getNBins(),this.getYAxis().getNBins()});
-        hcontainer.put(3, new double[]{
+        hcontainer.put(1, new int[]{2});     
+        byte[] nameBytes = this.hName.getBytes();
+        hcontainer.put(2, nameBytes);
+        hcontainer.put(3, new int[]{this.getXAxis().getNBins(),this.getYAxis().getNBins()});
+        hcontainer.put(4, new double[]{
             this.getXAxis().min(),this.getXAxis().max(),
             this.getYAxis().min(),this.getYAxis().max()
         });
-        hcontainer.put(4, this.hBuffer);
-        byte[] nameBytes = this.hName.getBytes();
-        hcontainer.put(6, nameBytes);
+        hcontainer.put(5, this.hBuffer);
         return hcontainer;
     }
 
@@ -519,14 +519,14 @@ public class H2D implements EvioWritableTree {
     public void fromTreeMap(TreeMap<Integer, Object> map) {
         if(map.get(1) instanceof int[]){
             if(  ((int[]) map.get(1))[0]==2){
-                int[]    nbins      = ((int[]) map.get(2));
-                double[] binsrange  = ((double[]) map.get(3));
-                byte[] name     = (byte[]) map.get(6);
+                int[]    nbins      = ((int[]) map.get(3));
+                double[] binsrange  = ((double[]) map.get(4));
+                byte[] name     = (byte[]) map.get(2);
                 hName = new String(name);                
                 this.set(nbins[0], binsrange[0],binsrange[1],
                         nbins[1],binsrange[2],binsrange[3]);
                 
-                double[] binc = (double[]) map.get(4);
+                double[] binc = (double[]) map.get(5);
                 //double[] bine = (double[]) map.get(5);
                 System.arraycopy(binc, 0, hBuffer, 0, binc.length);
             }

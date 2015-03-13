@@ -21,6 +21,7 @@ public class PaveText implements EvioWritableTree {
     private double pavePositionX = 0.0;
     private double pavePositionY = 0.0;
     public  Integer FontSize     = 12;
+    public  String  objectName   = "PaveText";
     
     public PaveText(double rx, double ry){
         this.pavePositionX = rx;
@@ -46,18 +47,24 @@ public class PaveText implements EvioWritableTree {
     public void setFontSize(int size){
         this.FontSize = size;
     }
-
+    
+    public void setName(String name){
+        this.objectName = name;
+    }
+    
     public String getName() {
-        return "PaveText";
+        return this.objectName;
     }
 
     public TreeMap<Integer, Object> toTreeMap() {
         TreeMap<Integer, Object> objData = new TreeMap<Integer, Object>();
         objData.put(1, new int[]{14});
+        byte[] nameBytes = this.objectName.getBytes();
+        objData.put(2, nameBytes);   
         for(int loop = 0; loop < paveStrings.size(); loop++){
-            int num = 2 + loop;
-            byte[] nameBytes = this.paveStrings.get(loop).getBytes();
-            objData.put(num, nameBytes);
+            int num = 3 + loop;
+            byte[] lineBytes = this.paveStrings.get(loop).getBytes();
+            objData.put(num, lineBytes);
         }
         return objData;
     }
@@ -66,10 +73,13 @@ public class PaveText implements EvioWritableTree {
         this.paveStrings.clear();
         if(map.get(1) instanceof int[]){
             if(  ((int[]) map.get(1))[0]==14){
-                for(Map.Entry<Integer,Object> entry : map.entrySet()){                    
-                    if(entry.getValue() instanceof byte[]){
-                        byte[] name     = (byte[]) map.get(entry.getKey());
-                        this.paveStrings.add(new String(name));
+                this.objectName = new String((byte[]) map.get(2));
+                for(Map.Entry<Integer,Object> entry : map.entrySet()){
+                    if(entry.getKey()>2){
+                        if(entry.getValue() instanceof byte[]){
+                            byte[] name  = (byte[]) map.get(entry.getKey());
+                            this.paveStrings.add(new String(name));
+                        }
                     }
                 }
             }

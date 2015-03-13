@@ -75,15 +75,18 @@ public class GenericKinematicFitter {
             EvioDataBank evntBank = (EvioDataBank) event.getBank("GenPart::true");
             int nrows = evntBank.rows();
             for(int loop = 0; loop < nrows; loop++){
-                physEvent.addParticle(new Particle(
+                Particle genParticle = new Particle(
                         evntBank.getInt("pid", loop),
                         evntBank.getDouble("px", loop)*0.001,
                         evntBank.getDouble("py", loop)*0.001,
                         evntBank.getDouble("pz", loop)*0.001,
                         evntBank.getDouble("vx", loop),
                         evntBank.getDouble("vy", loop),
-                        evntBank.getDouble("vz", loop)
-                ));                
+                        evntBank.getDouble("vz", loop));
+                if(genParticle.p()<10.999&&
+                        Math.toDegrees(genParticle.theta())>2.0){
+                    physEvent.addParticle(genParticle);    
+                }
             }
         }
         return physEvent;

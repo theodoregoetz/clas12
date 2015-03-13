@@ -645,13 +645,13 @@ public class H1D implements EvioWritableTree {
     @Override
     public TreeMap<Integer, Object> toTreeMap() {
         TreeMap<Integer, Object> hcontainer = new TreeMap<Integer, Object>();
-        hcontainer.put(1, new int[]{1});        
-        hcontainer.put(2, new int[]{this.getxAxis().getNBins()});
-        hcontainer.put(3, new double[]{this.getxAxis().min(),this.getxAxis().max()});
-        hcontainer.put(4, this.histogramData);
-        hcontainer.put(5, this.histogramDataError);
+        hcontainer.put(1, new int[]{1});
         byte[] nameBytes = this.histName.getBytes();
-        hcontainer.put(6, nameBytes);
+        hcontainer.put(2, nameBytes);        
+        hcontainer.put(3, new int[]{this.getxAxis().getNBins()});
+        hcontainer.put(4, new double[]{this.getxAxis().min(),this.getxAxis().max()});
+        hcontainer.put(5, this.histogramData);
+        hcontainer.put(6, this.histogramDataError);        
         return hcontainer;
     }
 
@@ -659,14 +659,14 @@ public class H1D implements EvioWritableTree {
     public void fromTreeMap(TreeMap<Integer,Object> map) {
         if(map.get(1) instanceof int[]){
             if(  ((int[]) map.get(1))[0]==1){
-                int    nbins    = ((int[]) map.get(2))[0];
-                double binsmin  = ((double[]) map.get(3))[0];
-                double binsmax  = ((double[]) map.get(3))[1];
-                byte[] name     = (byte[]) map.get(6);
-                histName = new String(name);                
+                byte[] name     = (byte[]) map.get(2);
+                histName = new String(name);
+                int    nbins    = ((int[]) map.get(3))[0];
+                double binsmin  = ((double[]) map.get(4))[0];
+                double binsmax  = ((double[]) map.get(4))[1];
                 this.set(nbins, binsmin, binsmax);
-                double[] binc = (double[]) map.get(4);
-                double[] bine = (double[]) map.get(5);
+                double[] binc = (double[]) map.get(5);
+                double[] bine = (double[]) map.get(6);
                 for(int loop = 0; loop < nbins; loop++){
                     histogramData[loop] = binc[loop];
                     histogramDataError[loop] = bine[loop];
@@ -674,8 +674,6 @@ public class H1D implements EvioWritableTree {
             }
         }
     }
-
-    
     
     public String getName() {
         return this.histName;

@@ -183,11 +183,75 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.padSeries.add(data);
     }
     
+    public void drawOnCanvas(int xoffset, int yoffset, int width, int height,
+            Graphics2D g2d){
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setColor(Color.white);
+        g2d.fillRect(xoffset, yoffset, width, height);
+        g2d.setColor(Color.black);
+        FontMetrics axisFM   = g2d.getFontMetrics( this.graphAxisFont);
+        FontMetrics titleFM  = g2d.getFontMetrics( this.graphAxisTitleFont);
+        
+        this.calculateMargins(axisFM, titleFM);
+        int axisX = xoffset + this.drawMarginLeftX;
+        int axisY = yoffset + height - this.drawMarginRightY;
+        int w = width  - this.drawMarginRightX - this.drawMarginLeftX;
+        int h = height - this.drawMarginLeftY - this.drawMarginRightY;
+        
+        this.graphAxisX.setOrigin(axisX,axisY);
+        this.graphAxisX.setLength(w);
+        this.graphAxisX.setWidth(h);
+        
+        this.graphAxisY.setOrigin(axisX, axisY);
+        this.graphAxisY.setLength(h);
+        this.graphAxisY.setWidth(w);
+        this.graphAxisY.setVertical(true);
+        
+        this.graphAxisY.drawFancyGrid(g2d);
+        this.graphAxisX.drawGrid(g2d);
+        this.graphAxisY.drawGrid(g2d);
+        
+        g2d.setFont(this.graphAxisTitleFont);
+        double titleX = this.drawMarginLeftX + 0.5*w - 0.5*(titleFM.stringWidth(titleString));
+        double titleY = 1.2*titleFM.getHeight();
+        g2d.drawString(titleString, (int)titleX, (int) titleY);
+        
+        if(padSeries.size()>0 && this.axisRangeFixed == false){
+            this.graphAxisX.setMinMax(padSeries.get(0).getMinX(), 
+                    padSeries.get(0).getMaxX());
+            this.graphAxisY.setMinMax(padSeries.get(0).getMinY(), 
+                    padSeries.get(0).getMaxY());
+        }
+        
+        Rectangle clipping = new Rectangle(axisX,axisY - h,w,h);
+        g2d.setClip(clipping);
+        for(int loop = 0; loop < padSeries.size(); loop++){
+            padSeries.get(loop).draw(graphAxisX, graphAxisY, g2d);
+        }
+        
+        for(int loop = 0; loop < padFits.size(); loop++){
+            padFits.get(loop).draw(graphAxisX, graphAxisY, g2d);
+        }
+        g2d.setClip(null);
+        g2d.setFont(this.graphAxisFont);        
+        this.graphAxisX.draw(g2d);
+        this.graphAxisY.draw(g2d);
+        
+        for(IDrawableDataSeries label : this.padLabels){
+            label.draw(graphAxisX, graphAxisY, g2d);
+        }        
+        
+        this.statisticsBox.draw(graphAxisX, graphAxisY, g2d);        
+    }
+    
     @Override
     public void paint(Graphics g){
 
-        Graphics2D g2d = (Graphics2D) g;        
-
+        Graphics2D g2d = (Graphics2D) g;
+        int w = this.getSize().width;
+        int h = this.getSize().height;
+        this.drawOnCanvas(0,0, w, h, g2d);
+        /*
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         g2d.setColor(Color.white);
@@ -253,7 +317,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
             label.draw(graphAxisX, graphAxisY, g2d);
         }
         
-        this.statisticsBox.draw(graphAxisX, graphAxisY, g2d);
+        this.statisticsBox.draw(graphAxisX, graphAxisY, g2d);*/
         //DataSeriesPoints xyData = new DataSeriesPoints();        
         //xyData.draw(graphAxisX, graphAxisY, g2d);
         //g2d.drawRect(this.drawMargin,this.drawMargin, w, h);

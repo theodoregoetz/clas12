@@ -6,10 +6,22 @@
 
 package org.root.pad;
 
+import de.erichseifert.vectorgraphics2d.PDFGraphics2D;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.root.base.IDrawableDataSeries;
 import org.root.data.DataSetXY;
@@ -28,6 +40,8 @@ import org.root.series.DataSeriesH2D;
  */
 public class RootCanvas extends JPanel {
     private ArrayList<RootPad>  canvasPads = new ArrayList<RootPad>();
+    private Integer             numberOfRows    = 1;
+    private Integer             numberOfColumns = 1;
     private Integer             currentPad = 0;
     
     public RootCanvas(){
@@ -61,6 +75,8 @@ public class RootCanvas extends JPanel {
     
     public void divide(int cols, int rows){
         canvasPads.clear();
+        this.numberOfRows = rows;
+        this.numberOfColumns = cols;
         this.setCurrentPad(0);
         this.removeAll();
         this.revalidate();
@@ -213,5 +229,100 @@ public class RootCanvas extends JPanel {
     
     public void clear(int pad){
         canvasPads.get(pad).clear();
+    }
+    
+
+
+    public byte[] getImageBytesPNG() throws IOException{
+        int cw = this.getSize().width;
+        int ch = this.getSize().height;
+        BufferedImage bi = new BufferedImage(cw, ch, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D ig2 = bi.createGraphics();
+        ig2.setColor(Color.WHITE);
+        ig2.fillRect(0, 0, cw, ch);
+        int padWidth  = cw/this.numberOfColumns;
+        int padHeight = ch/this.numberOfRows;
+        int padCounter = 0;
+        for(int row = 0; row < this.numberOfRows; row++){
+            for(int col = 0; col < this.numberOfColumns; col++){
+                int padX = col*padWidth;
+                int padY = row*padHeight;
+                System.out.println("[DRAWING] --> " + 
+                        String.format("%4d   DIM  %4d : %4d ( %5d x %5d )",
+                                padCounter,
+                                padX, padY,padWidth,padHeight));
+                this.canvasPads.get(padCounter).drawOnCanvas(padX, padY,
+                        padWidth, padHeight, ig2);
+                padCounter++;
+            }
+        }
+        //for(ScGroup chart : charts){
+            //swingPainter.paintChart(ig2, chart);
+        //chart.paintGroup(ig2);
+        //}
+        //ig2.drawLine(0, 0, width, height);
+        byte[] result = new byte[1];// = ImageIO.
+        //return result;
+        
+        //ImageIO.write(bi, "png", new File("saveFile.png"));
+        ByteArrayOutputStream biStream = new ByteArrayOutputStream();
+        ImageIO.write(bi, "png", biStream);
+        biStream.flush();
+        result = biStream.toByteArray();
+        return result;
+    }
+    
+    public void export(String file){
+        try {
+            /*
+            System.err.println("*** SAVE *** : size --> ( "
+                    + width + " x " + height + " ) File = " + file);*/
+            byte[] imageBytes = this.getImageBytesPNG();
+            FileOutputStream output = new FileOutputStream(new File(file));
+            output.write(imageBytes);
+        } catch (IOException ex) {
+            Logger.getLogger(RootCanvas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    
+    public void exportPDF(String filename){
+        
+        int cw = this.getSize().width;
+        int ch = this.getSize().height;
+        PDFGraphics2D ig2 = new PDFGraphics2D(0.0, 0.0, cw, ch);
+        // Draw a red ellipse at the position (20, 30) with a width of 100 and a height of 150
+        //g.setColor(Color.RED);
+        //g.fillOval(20, 30, 100, 150);
+        ig2.setColor(Color.WHITE);
+        ig2.fillRect(0, 0, cw, ch);
+        int padWidth  = cw/this.numberOfColumns;
+        int padHeight = ch/this.numberOfRows;
+        int padCounter = 0;
+        for(int row = 0; row < this.numberOfRows; row++){
+            for(int col = 0; col < this.numberOfColumns; col++){
+                int padX = col*padWidth;
+                int padY = row*padHeight;
+                System.out.println("[DRAWING] --> " + 
+                        String.format("%4d   DIM  %4d : %4d ( %5d x %5d )",
+                                padCounter,
+                                padX, padY,padWidth,padHeight));
+                this.canvasPads.get(padCounter).drawOnCanvas(padX, padY,
+                        padWidth, padHeight, ig2);
+                padCounter++;
+            }
+        }
+        // Write the PDF output to a file
+        FileOutputStream file;
+        try {
+            file = new FileOutputStream(filename);
+            file.write(ig2.getBytes());
+            file.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(RootCanvas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(RootCanvas.class.getName()).log(Level.SEVERE, null, ex);
+        }            
     }
 }

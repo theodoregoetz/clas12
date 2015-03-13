@@ -19,6 +19,7 @@ import org.root.base.EvioWritableTree;
 import org.root.data.DataSetXY;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
+import org.root.histogram.PaveText;
 
 /**
  *
@@ -274,7 +275,7 @@ public class TDirectory {
                     TreeMap<Integer,Object> tree = ((EvioWritableTree) dataObject).toTreeMap();
                     String absolutePath = dirname + "/" + objects.getKey();
                     byte[] nameBytes = absolutePath.getBytes();
-                    tree.put(6, nameBytes);
+                    tree.put(2, nameBytes);
                     outStream.writeTree(tree);
                     counter++;
                     //System.out.println(" Saving : [" + dirname + "]  [" 
@@ -351,6 +352,17 @@ public class TDirectory {
                 this.getDirectory(tokens[1]).add(h);
             }
             
+            if(type[0]==14){
+                PaveText h = new PaveText(0.0,0.0);
+                h.fromTreeMap(treemap);
+                String[] tokens = this.getPathComponents(h.getName());
+                
+                if(this.directory.containsKey(tokens[1])==false){
+                    this.directory.put(tokens[1], new TDirectory(tokens[1]));
+                }
+                h.setName(tokens[2]);
+                this.getDirectory(tokens[1]).add(h);
+            }
         }
     }
     
