@@ -143,6 +143,14 @@ public class RootCanvas extends JPanel {
         this.canvasPads.get(pad).repaint();
     }
     
+    public void setOptStat(int pad, boolean flag){
+        this.canvasPads.get(pad).setOptStat(flag);
+    }
+    
+    public void setOptStat(boolean flag){
+        this.setOptStat(this.currentPad, flag);
+    }
+    
     public void draw(int pad, F1D func){
         this.draw(pad, func,"");
     }

@@ -63,6 +63,10 @@ public class TCanvas extends JFrame {
         
     }
     
+    public void setOptStat(boolean flag){
+        this.embededCanvas.setOptStat(this.currentPad, flag);
+    }
+    
     public void setAxisRange(double xmin, double xmax, double ymin, double ymax){
         this.embededCanvas.setAxisRange(this.currentPad, xmin, xmax, ymin, ymax);
     }

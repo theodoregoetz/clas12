@@ -120,6 +120,10 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         }
     }
     
+    public void setOptStat(boolean flag){
+        this.optionStat = flag;
+    }
+    
     public void setFontSize(int size){
         this.graphAxisFont = new Font(Font.SANS_SERIF,Font.PLAIN,size);
         this.graphAxisTitleFont = new Font(Font.SANS_SERIF,Font.PLAIN,size);
@@ -240,8 +244,9 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         for(IDrawableDataSeries label : this.padLabels){
             label.draw(graphAxisX, graphAxisY, g2d);
         }        
-        
-        this.statisticsBox.draw(graphAxisX, graphAxisY, g2d);        
+        if(this.optionStat==true){
+            this.statisticsBox.draw(graphAxisX, graphAxisY, g2d);        
+        }
     }
     
     @Override
