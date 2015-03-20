@@ -238,7 +238,21 @@ public class PhysicsEvent {
         return str.toString();
     }
     
-    
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        str.append(String.format("%12d %2d. %2d. %2d %2d %5.3f %7.3f %7.3f %7.3f %7.3f\n",
+                eventParticles.size(),
+                (int) 1, (int) 1, (int) 1, (int) 1, (float) 0.0, (float) 0.0,
+                eventBeam.vector().e(),
+                (float) 0.0, (float) 0.0));
+        for(int loop = 0; loop < eventParticles.size(); loop++){
+            str.append(String.format("%5d", loop+1));
+            str.append(eventParticles.get(loop).toString());
+            str.append("\n");
+        }
+        return str.toString();
+    }
     public Particle closestParticle(Particle child){
         Particle part = new Particle();
         double minCos = -1.0;

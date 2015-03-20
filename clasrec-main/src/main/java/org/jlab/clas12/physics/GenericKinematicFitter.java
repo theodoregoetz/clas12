@@ -5,6 +5,7 @@
  */
 package org.jlab.clas12.physics;
 
+import org.jlab.clas.pdg.PDGDatabase;
 import org.jlab.clas.physics.EventFilter;
 import org.jlab.clas.physics.Particle;
 import org.jlab.clas.physics.PhysicsEvent;
@@ -53,6 +54,10 @@ public class GenericKinematicFitter {
                 this.matchGenerated(genEvent, recEvent);
                 return recEvent;
             }
+            if(event.hasBank("EVENT::particle")==true){
+                PhysicsEvent recEvent =  this.getPhysicsEventClas6((EvioDataEvent) event);
+                return recEvent;
+            }
         }
         return new PhysicsEvent(this.beamEnergy);
     }    
@@ -63,7 +68,15 @@ public class GenericKinematicFitter {
             Particle rpart = rec.getParticle(loop);
             Particle gpart = gen.closestParticle(rpart);
             if(rpart.cosTheta(gpart)>0.998){
-                rpart.changePid(gpart.pid());
+                if(rpart.charge()!=0){
+                    rpart.changePid(gpart.pid());
+                } else {
+                    double px = rpart.px()*gpart.p();
+                    double py = rpart.py()*gpart.p();
+                    double pz = rpart.pz()*gpart.p();
+                    rpart.vector().setPxPyPzM(px, py, pz, 0.0);
+                    rpart.changePid(22);
+                }
             }
         }
     }
@@ -86,6 +99,43 @@ public class GenericKinematicFitter {
                 if(genParticle.p()<10.999&&
                         Math.toDegrees(genParticle.theta())>2.0){
                     physEvent.addParticle(genParticle);    
+                }
+            }
+        }
+        return physEvent;
+    }
+    
+    private PhysicsEvent  getPhysicsEventClas6(EvioDataEvent event){
+        PhysicsEvent physEvent = new PhysicsEvent();
+        physEvent.setBeam(this.beamEnergy);
+        if(event.hasBank("EVENT::particle")){
+            EvioDataBank evntBank = (EvioDataBank) event.getBank("EVENT::particle");
+            int nrows = evntBank.rows();
+            for(int loop = 0; loop < nrows; loop++){
+                int status = evntBank.getByte("status", loop);
+                int pid    = evntBank.getInt("pid", loop);
+                if(PDGDatabase.isValidPid(pid)==true){
+                    Particle part = new Particle(
+                            evntBank.getInt("pid", loop),
+                            evntBank.getFloat("px", loop),
+                            evntBank.getFloat("py", loop),
+                            evntBank.getFloat("pz", loop),
+                            evntBank.getFloat("vx", loop),
+                            evntBank.getFloat("vy", loop),
+                            evntBank.getFloat("vz", loop));
+                    if(status>0) physEvent.addParticle(part);
+                } else {
+                    Particle part = new Particle();
+                    part.setParticleWithMass(evntBank.getFloat("mass", loop),
+                            evntBank.getByte("charge", loop),
+                            evntBank.getFloat("px", loop),
+                            evntBank.getFloat("py", loop),
+                            evntBank.getFloat("pz", loop),
+                            evntBank.getFloat("vx", loop),
+                            evntBank.getFloat("vy", loop),
+                            evntBank.getFloat("vz", loop)
+                    );
+                    if(status>0) physEvent.addParticle(part);
                 }
             }
         }

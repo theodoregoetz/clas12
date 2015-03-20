@@ -26,6 +26,10 @@ public class PDGDatabase {
         //ArrayList<String> ff = null;
     }
     
+    public static boolean isValidPid(int pid){
+        return particleDatabase.containsKey(pid);
+    }
+    
     static public PDGParticle getParticleById(int pid)
     {
         if(particleDatabase.containsKey(pid)==true){

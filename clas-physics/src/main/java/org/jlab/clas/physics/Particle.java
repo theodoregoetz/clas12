@@ -294,10 +294,10 @@ public class Particle {
     public String toString()
     {
         StringBuilder str = new StringBuilder();
-        str.append(String.format("%6d %3d %9.5f %9.5f %9.5f %9.5f %9.5f %9.5f %9.5f %9.5f",
+        str.append(String.format("%6d %3d %9.5f %9.5f %9.5f %9.5f %9.5f %9.5f %9.5f",
                 particleID,particleCharge,partVector.mass(),
-                partVector.px(),
-                partVector.py(),partVector.pz(),partVector.p(),
+                partVector.p(),
+                Math.toDegrees(partVector.theta()),Math.toDegrees(partVector.phi()),
                 partVertex.x(),partVertex.y(),partVertex.z()
                 ));
         return str.toString();

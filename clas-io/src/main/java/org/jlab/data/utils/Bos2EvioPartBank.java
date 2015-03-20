@@ -24,8 +24,8 @@ public class Bos2EvioPartBank {
     private TreeMap<String,EvioDataBank>  evioDataBanks = new TreeMap<String,EvioDataBank>();
     private TreeMap<String,BosDataBank>    bosDataBanks = new TreeMap<String,BosDataBank>();
     private EvioDataDictionary            dictionary    = null;
-    public Bos2EvioPartBank(){
-        
+    
+    public Bos2EvioPartBank(){        
         dictionary = EvioFactory.getDictionary();
     }
     

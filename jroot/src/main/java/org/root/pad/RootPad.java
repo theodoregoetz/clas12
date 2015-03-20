@@ -237,7 +237,8 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
             padFits.get(loop).draw(graphAxisX, graphAxisY, g2d);
         }
         g2d.setClip(null);
-        g2d.setFont(this.graphAxisFont);        
+        //g2d.setFont(this.graphAxisFont);
+        
         this.graphAxisX.draw(g2d);
         this.graphAxisY.draw(g2d);
         
