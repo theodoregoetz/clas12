@@ -201,7 +201,7 @@ public class CLASReconstruction {
 
         //}
         
-        String serviceList  = "FMT:DCHB:DCTB:BST:FTCAL:FTHODO:FTMATCH:FTOF:EC:EB";
+        String serviceList  = "FMT:DCHB:DCTB:BST:FTCAL:FTHODO:FTMATCH:FTOF:CTOF:EC:EB";
         if(cmdParser.hasOption("-s")){
            serviceList = cmdParser.asString("-s");
         }

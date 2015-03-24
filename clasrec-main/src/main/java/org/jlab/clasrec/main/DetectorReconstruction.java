@@ -21,6 +21,7 @@ import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.base.Detector;
 import org.jlab.geom.detector.dc.DCFactory;
 import org.jlab.geom.detector.ec.ECFactory;
+import org.jlab.geom.detector.ft.FTCALFactory;
 import org.jlab.geom.detector.ftof.FTOFFactory;
 
 /**
@@ -109,6 +110,16 @@ public abstract class DetectorReconstruction implements ICService {
             ConstantProvider  data = DataBaseLoader.getTimeOfFlightConstants();
             Detector geomFTOF = factory.createDetectorCLAS(data);
             detectorGeometry.put("FTOF", geomFTOF);
+            System.err.println(mainModuleName + "geometry for detector " +
+                    geometryPackage + " is loaded...");
+            return;
+        }
+        
+        if(geometryPackage.compareTo("FTCAL")==0){
+            FTCALFactory factory = new FTCALFactory();
+            ConstantProvider  data = DataBaseLoader.getConstantsFTCAL();
+            Detector geomFTCAL = factory.createDetectorCLAS(data);
+            detectorGeometry.put("FTCAL", geomFTCAL);
             System.err.println(mainModuleName + "geometry for detector " +
                     geometryPackage + " is loaded...");
             return;
