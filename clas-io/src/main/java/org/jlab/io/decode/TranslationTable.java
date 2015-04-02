@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  * @author gavalian
  */
 public class TranslationTable {
+    
     private final TreeMap<Integer,TranslationTableEntry>  entryStore = 
             new TreeMap<Integer,TranslationTableEntry>();
     

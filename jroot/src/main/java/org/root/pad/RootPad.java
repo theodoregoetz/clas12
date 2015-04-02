@@ -149,6 +149,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisX.setTitle(hist.getXTitle());
         this.graphAxisY.setTitle(hist.getYTitle());
         this.addSeries(h1d);
+        this.repaint();
     }
     
     public void addSeries(H2D hist){
@@ -157,6 +158,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisX.setTitle(hist.getXTitle());
         this.graphAxisY.setTitle(hist.getYTitle());
         this.addSeries(h2d);
+        this.repaint();
     }
     
     public void addSeries(DataSetXY xydata){
@@ -211,9 +213,9 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.graphAxisY.setWidth(w);
         this.graphAxisY.setVertical(true);
         
-        this.graphAxisY.drawFancyGrid(g2d);
-        this.graphAxisX.drawGrid(g2d);
-        this.graphAxisY.drawGrid(g2d);
+        
+        //this.graphAxisX.drawGrid(g2d);
+        //this.graphAxisY.drawGrid(g2d);
         
         g2d.setFont(this.graphAxisTitleFont);
         double titleX = this.drawMarginLeftX + 0.5*w - 0.5*(titleFM.stringWidth(titleString));
@@ -227,6 +229,10 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
                     padSeries.get(0).getMaxY());
         }
         
+        this.graphAxisY.drawFancyGrid(g2d);
+        this.graphAxisX.drawGrid(g2d);
+        this.graphAxisY.drawGrid(g2d);
+        
         Rectangle clipping = new Rectangle(axisX,axisY - h,w,h);
         g2d.setClip(clipping);
         for(int loop = 0; loop < padSeries.size(); loop++){
@@ -239,6 +245,7 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         g2d.setClip(null);
         //g2d.setFont(this.graphAxisFont);
         
+                
         this.graphAxisX.draw(g2d);
         this.graphAxisY.draw(g2d);
         

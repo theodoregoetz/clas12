@@ -148,6 +148,7 @@ public class GraphAxis {
     public void drawGrid(Graphics2D g2d){
         
         FontMetrics  fm = g2d.getFontMetrics(fontAxisTicks);
+        g2d.setFont(fontAxisTicks);
         if(this.axisGridStyle==2){
             this.drawFancyGrid(g2d);
         }

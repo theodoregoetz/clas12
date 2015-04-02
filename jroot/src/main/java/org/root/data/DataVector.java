@@ -88,6 +88,12 @@ public class DataVector {
         }
         return max;
     }
+    public void copy(DataVector vec){
+        this.datavec.clear();
+        for(int loop = 0; loop < vec.getSize(); loop++){
+            this.add(vec.getValue(loop));
+        }
+    }
     
     public boolean isOrdered(){ return isVectorOrdered;}
     

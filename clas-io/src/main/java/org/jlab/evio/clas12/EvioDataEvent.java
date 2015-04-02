@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -350,10 +351,17 @@ public class EvioDataEvent implements DataEvent {
         //System.out.println("-----> event show");
         //dictionary.show();
         String[] bankList = this.getBankList();
-        TablePrintout table = new TablePrintout("bank:nrows:ncols","24:12:12");
+        TablePrintout table = new TablePrintout("bank:nrows:ncols","48:12:12");
         
         if(bankList!=null){
+            ArrayList<String>  bankNames = new ArrayList<String>();
             for(String bank : bankList){
+                bankNames.add(bank);
+            }
+            
+            Collections.sort(bankNames);
+            
+            for(String bank : bankNames){
                 String[] tokens = new String[3];
                 tokens[0] = bank;
                 DataBank dbank = this.getBank(bank);

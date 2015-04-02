@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @author gavalian
  */
 public class RawData {
+    
     private Integer MODE = 1;
     private final ArrayList<Object> dataArray = new  ArrayList<Object>();
 

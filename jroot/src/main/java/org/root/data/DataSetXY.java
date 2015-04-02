@@ -43,6 +43,15 @@ public class DataSetXY implements EvioWritableTree {
     
     public String getName(){ return this.dataSetName;}
     
+    public DataSetXY(String name, DataVector x, DataVector y){
+        this.dataSetName = name;
+        dataX.copy(x);
+        dataY.copy(y);
+        this.attr.addFillProperties();
+        this.attr.addLineProperties();
+        this.attr.addMarkerAttributes();
+    }
+    
     public DataSetXY(String name, double[] x, double[] y){
         this.dataSetName = name;
         dataX.set(x);

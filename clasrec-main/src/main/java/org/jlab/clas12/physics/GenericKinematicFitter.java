@@ -22,6 +22,7 @@ public class GenericKinematicFitter {
     private final   EventFilter filter = new EventFilter();
     private Double  beamEnergy  = 11.0;
     private Boolean forceFilter = false;
+    private Boolean generatedEventMatching = true;
     
     public GenericKinematicFitter(double beam, String filterString){
         this.beamEnergy = beam;
@@ -51,7 +52,7 @@ public class GenericKinematicFitter {
             if(event.hasBank("EVENTHB::particle")==true){
                 PhysicsEvent genEvent = this.getGeneratedEvent(event);
                 PhysicsEvent recEvent =  this.getPhysicsEventClas12((EvioDataEvent) event);
-                this.matchGenerated(genEvent, recEvent);
+                if(this.generatedEventMatching==true) this.matchGenerated(genEvent, recEvent);
                 return recEvent;
             }
             if(event.hasBank("EVENT::particle")==true){
@@ -62,6 +63,10 @@ public class GenericKinematicFitter {
         return new PhysicsEvent(this.beamEnergy);
     }    
     
+    public void setMatching(Boolean matching_flag){
+        this.generatedEventMatching = matching_flag;
+    }
+    
     public void matchGenerated(PhysicsEvent gen, PhysicsEvent rec){
         int nrows = rec.count();
         for(int loop = 0; loop < nrows; loop++){
@@ -71,11 +76,13 @@ public class GenericKinematicFitter {
                 if(rpart.charge()!=0){
                     rpart.changePid(gpart.pid());
                 } else {
-                    double px = rpart.px()*gpart.p();
-                    double py = rpart.py()*gpart.p();
-                    double pz = rpart.pz()*gpart.p();
-                    rpart.vector().setPxPyPzM(px, py, pz, 0.0);
-                    rpart.changePid(22);
+                    if(Math.toDegrees(gpart.theta())>6.0){
+                        double px = rpart.px()*gpart.p();
+                        double py = rpart.py()*gpart.p();
+                        double pz = rpart.pz()*gpart.p();
+                        rpart.vector().setPxPyPzM(px, py, pz, 0.0);
+                        rpart.changePid(22);
+                    }
                 }
             }
         }
@@ -149,15 +156,31 @@ public class GenericKinematicFitter {
             EvioDataBank evntBank = (EvioDataBank) event.getBank("EVENTHB::particle");
             int nrows = evntBank.rows();
             for(int loop = 0; loop < nrows; loop++){
-                physEvent.addParticle(new Particle(
-                        evntBank.getInt("pid", loop),
-                        evntBank.getFloat("px", loop),
-                        evntBank.getFloat("py", loop),
-                        evntBank.getFloat("pz", loop),
-                        evntBank.getFloat("vx", loop),
-                        evntBank.getFloat("vy", loop),
-                        evntBank.getFloat("vz", loop)
-                ));                
+                
+                int pid    = evntBank.getInt("pid", loop);
+                if(PDGDatabase.isValidPid(pid)==true){
+                    Particle part = new Particle(
+                            evntBank.getInt("pid", loop),
+                            evntBank.getFloat("px", loop),
+                            evntBank.getFloat("py", loop),
+                            evntBank.getFloat("pz", loop),
+                            evntBank.getFloat("vx", loop),
+                            evntBank.getFloat("vy", loop),
+                            evntBank.getFloat("vz", loop));
+                    physEvent.addParticle(part);
+                } else {
+                    Particle part = new Particle();
+                    part.setParticleWithMass(evntBank.getFloat("mass", loop),
+                            evntBank.getByte("charge", loop),
+                            evntBank.getFloat("px", loop),
+                            evntBank.getFloat("py", loop),
+                            evntBank.getFloat("pz", loop),
+                            evntBank.getFloat("vx", loop),
+                            evntBank.getFloat("vy", loop),
+                            evntBank.getFloat("vz", loop)
+                    );
+                    physEvent.addParticle(part);
+                }
             }
         }
         return physEvent;

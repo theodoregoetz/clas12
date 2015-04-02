@@ -26,6 +26,12 @@
       </dependency>
 
       <dependency>
+        <groupId>net.objecthunter</groupId>
+        <artifactId>exp4j</artifactId>
+        <version>0.4.4</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.freehep</groupId>
 	<artifactId>jminuit</artifactId>
         <version>1.0</version>
