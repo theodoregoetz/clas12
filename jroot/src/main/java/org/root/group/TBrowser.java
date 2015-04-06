@@ -37,9 +37,22 @@ public class TBrowser extends JFrame implements ActionListener {
     private JTree           canvasTree;
     private JSplitPane      splitPane;
     private JMenuBar        browserMenuBar = null;
+    private ITreeViewer     treeViewer = null;
+    
     
     public TBrowser(){
         
+    }
+    
+    public TBrowser(ITreeViewer viewer){
+        super("TBrowser");
+        this.treeViewer = viewer;
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        UIManager.put("Tree.rendererFillBackground", false);        
+        this.initMenuBar();
+        this.initComponents();
+        this.pack();
+        this.setVisible(true);
     }
     
     public TBrowser(TDirectory dir){
@@ -87,7 +100,9 @@ public class TBrowser extends JFrame implements ActionListener {
     }
     
     public void updateTreeView(){
-         DefaultTreeModel treeModel = new DefaultTreeModel(this.browserDirectory.getTree());
+        
+        //DefaultTreeModel treeModel = new DefaultTreeModel(this.browserDirectory.getTree());
+        DefaultTreeModel treeModel = new DefaultTreeModel(this.treeViewer.getTree());
         canvasTree.setModel(treeModel);
     }
     
@@ -146,6 +161,21 @@ public class TBrowser extends JFrame implements ActionListener {
     
     public void doMouseClicked(MouseEvent me){
         if(me.getClickCount()==2){
+            TreePath tp = canvasTree.getPathForLocation(me.getX(), me.getY());
+            if (tp != null){
+                int ncount = tp.getPathCount();
+                StringBuilder str = new StringBuilder();
+                for(int loop = 1 ; loop < ncount; loop++){
+                    if(loop!=1) str.append("/");
+                    str.append(tp.getPathComponent(loop));
+                }
+                String objectname  = str.toString();
+                this.treeViewer.draw(objectname, "", "", sciCanvas);
+                //tp.getPathComponent(loop);
+            }
+        }
+        /*
+        if(me.getClickCount()==2){
             //System.out.println(" Mouse was clicked");
             TreePath tp = canvasTree.getPathForLocation(me.getX(), me.getY());
             if (tp != null){
@@ -176,7 +206,7 @@ public class TBrowser extends JFrame implements ActionListener {
                     }
                 }
             }
-        }
+        }*/
     }
 
     public void openFile(String fullpath, String filename){

@@ -9,12 +9,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jlab.clas12.raw.RawDataEntry;
 
 /**
  *
@@ -81,6 +83,10 @@ public class TranslationTable {
                 Logger.getLogger(TranslationTable.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public void translateEntries(ArrayList<RawDataEntry>  rawdata){
+        
     }
     
     @Override

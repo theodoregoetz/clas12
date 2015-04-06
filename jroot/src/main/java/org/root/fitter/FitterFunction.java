@@ -16,6 +16,7 @@ import org.root.func.Function1D;
  * @author gavalian
  */
 public class FitterFunction implements FCNBase {
+    
     private DataVector  vectorX;
     private DataVector  vectorY;
     private Function1D  function;
@@ -51,7 +52,11 @@ public class FitterFunction implements FCNBase {
                     //System.err.println("adding to chi2 " + chi2
                     //+ "  " + (yv-fv)*(yv-fv)/fv + " x = " + xv 
                     //+ " y = " + yv + " fv = " + fv);
-                    chi2 += (yv-fv)*(yv-fv)/yv;
+                    //double chi2step  = (yv-fv)*(yv-fv)/fv;
+                    //double chi2step2 = (yv-fv)*(yv-fv)/yv;
+                    //System.out.println(" CHI TEST " + chi2step + "  "
+                    //        + chi2step2);                    
+                    chi2 += (yv-fv)*(yv-fv);
                 }
             }
         }

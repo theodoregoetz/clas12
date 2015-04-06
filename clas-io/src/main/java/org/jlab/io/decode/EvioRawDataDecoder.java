@@ -10,6 +10,7 @@ import java.util.Set;
 import org.jlab.clas12.raw.EvioRawDataBank;
 import org.jlab.clas12.raw.EvioRawDataSource;
 import org.jlab.clas12.raw.RawData;
+import org.jlab.clas12.raw.RawDataEntry;
 import org.jlab.evio.clas12.EvioDataBank;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioDataSync;
@@ -22,7 +23,7 @@ import org.jlab.evio.clas12.EvioFactory;
 public class EvioRawDataDecoder {
     private EvioRawDataSource  reader = new EvioRawDataSource();
     private EvioDataSync       writer = new EvioDataSync();
-    private TranslationTable   transTable = new TranslationTable();
+    private TranslationTableSVT   transTable = new TranslationTableSVT();
     
     public EvioRawDataDecoder(){
         this.init();
@@ -40,7 +41,6 @@ public class EvioRawDataDecoder {
         EvioDataEvent  outEvent = writer.createEvent(EvioFactory.getDictionary());
         return outEvent;
     }
-    
     
     public ArrayList<SVTDataRecord>  getRecordsSVT(EvioRawDataBank bank){
         int crate  = bank.getCrate();
@@ -121,7 +121,7 @@ public class EvioRawDataDecoder {
         return svtBank;
     }
         
-    public void process(String filename, String outfilename){                
+    public void processOLD(String filename, String outfilename){                
         
         reader.open(filename);
         writer.open(outfilename);
@@ -174,6 +174,48 @@ public class EvioRawDataDecoder {
         writer.close();
     }
     
+    public void process(String filename, String outfilename){                
+        
+        reader.open(filename);
+        writer.open(outfilename);
+        Set<Integer>  decoderCreates = this.transTable.getCreateList();
+        int icounter = 0;
+        //for(int loop = 0; loop < 200; loop++){
+        while(reader.hasEvent()){
+            EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
+            //System.err.println("************ EVENT " + icounter + " ********** ");
+            //ArrayList<SVTDataRecord>  svtRecords = new ArrayList<SVTDataRecord>();
+            ArrayList<RawDataEntry>   svtDataEntries = new ArrayList<RawDataEntry>();
+            for(Integer create : decoderCreates){
+                //System.err.println("LOOKING FOR CREATE ------------> " + create);
+                ArrayList<RawDataEntry> cratebank = reader.getDataEntries(event, create);
+                if(cratebank!=null){
+                    for(RawDataEntry entry : cratebank){
+                        svtDataEntries.add(entry);
+                    }                    
+                }
+            }
+            
+            if(svtDataEntries.size()>0){
+                this.transTable.translateEntries(svtDataEntries);
+                int irows = svtDataEntries.size();
+                EvioDataEvent outputEvent = writer.createEvent(EvioFactory.getDictionary());
+                EvioDataBank  svtBank = EvioFactory.createBank("BST::dgtz", irows);
+                for(int loop = 0; loop < irows; loop++){
+                    RawDataEntry  svtEntry = svtDataEntries.get(loop);
+                    svtBank.setInt("sector", loop, svtEntry.getSector());
+                    svtBank.setInt("layer", loop, svtEntry.getLayer());
+                    svtBank.setInt("strip", loop, svtEntry.getComponent());
+                    svtBank.setInt("bco", loop, svtEntry.getTDC());
+                    svtBank.setInt("ADC", loop, svtEntry.getADC());
+                }
+                outputEvent.appendBanks(svtBank);
+                writer.writeEvent(outputEvent);
+            }
+            icounter++;
+        }
+        writer.close();
+    }
     
     public static void main(String[] args){
         //System.setProperty("CLAS12DIR", "/Users/gavalian/Work/Software/Release-7.0/COATJAVA/coatjava/");

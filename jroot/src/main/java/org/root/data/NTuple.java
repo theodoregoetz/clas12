@@ -10,14 +10,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.tree.DefaultMutableTreeNode;
+import org.root.group.ITreeViewer;
+import org.root.group.TDirectory;
+import org.root.pad.RootCanvas;
 
 /**
  *
  * @author gavalian
  */
-public class NTuple {
+public class NTuple implements ITreeViewer {
     
     private ArrayList<NTupleRow>  tupleRows = new ArrayList<NTupleRow>();
     private ArrayList<DataVector> processResults = new ArrayList<DataVector>();
@@ -171,6 +176,19 @@ public class NTuple {
             }
         }
         return vec;
+    }
+
+    public DefaultMutableTreeNode getTree() {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("tuple");
+        for(String item : this.tupleVariables){
+            root.add(new DefaultMutableTreeNode(item));
+        }
+        return root;
+    }
+
+    public void draw(String obj, String selection, String options, RootCanvas canvas) {
+        System.out.println("NOT IMPLEMENTED YET to DRAW " + obj);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

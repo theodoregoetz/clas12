@@ -52,8 +52,9 @@ public class RawDataEntry {
             dataArray.add(shortData[loop]);
         }
     }
+       
     
-    public void setSVT(Byte half, Byte channel, Byte adc, Byte tdc){
+    public void setSVT(Byte half, Byte channel, Byte tdc, Byte adc){
         this.MODE = 4;
         this.dataArray.clear();
         this.dataArray.add(EvioDataConvertor.getShortFromByte(tdc));
@@ -65,6 +66,9 @@ public class RawDataEntry {
     public int getCrate()   { return this.CRATE;}
     public int getSlot()    { return this.SLOT;}
     public int getChannel() { return this.CHANNEL;}
+    public int getSector()  { return this.SECTOR; }
+    public int getLayer()  { return this.LAYER; }
+    public int getComponent()  { return this.COMPONENT; }
     
     public void setSectorLayerComponent(int _sc, int _lay, int _comp){
         this.SECTOR = _sc;
@@ -73,8 +77,11 @@ public class RawDataEntry {
     }
 
     public Integer getADC(){
-        if(this.MODE==7 || this.MODE==4){
-            return (Integer) dataArray.get(1);
+        if(this.MODE==7){
+            return (Integer)  dataArray.get(1);
+        }
+        if(this.MODE==4){
+            return (Integer) (((Short) dataArray.get(1))&(0x0000FFFF));
         }
         return 0;
     }
@@ -103,7 +110,7 @@ public class RawDataEntry {
     
     public Integer getSVTHalf(){
         Short firstShort  = (Short) this.dataArray.get(2);
-        Integer half      =  (firstShort & 0x00000008);
+        Integer half      =  (firstShort & 0x00000008)>>3;
         return  half;
     }
     
@@ -127,14 +134,15 @@ public class RawDataEntry {
         str.append(String.format("C/S/C [%4d %4d %5d] ", this.CRATE,this.SLOT,this.CHANNEL));
         str.append(String.format("S/L/C [%4d %4d %5d] ", this.SECTOR,this.LAYER,this.COMPONENT));
         if(this.MODE==7){
-            str.append(String.format(" T/A/Min/Max [%6d %6d %6d %6d] \n",this.getTDC(),this.getADC(),
+            str.append(String.format(" T/A/Min/Max [%6d %6d %6d %6d]",this.getTDC(),this.getADC(),
                     this.getPulseMin(),this.getPulseMax()));
         }
         
         if(this.MODE==4){
-            str.append(String.format(" SVT H/C/T/A [%6d %6d %6d %6d] \n",this.getSVTHalf(),
+            str.append(String.format(" SVT H/CID/C/T/A [%6d %6d %6d %6d %6d]",this.getSVTHalf(),
+                    this.getSVTChipID(),
                     this.getSVTChannel(),
-                    this.getPulseMin(),this.getPulseMax()));
+                    this.getTDC(),this.getADC()));
         }
         
         return str.toString();
