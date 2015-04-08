@@ -37,12 +37,24 @@ public class Bos2EvioEventBank {
     
     public void initEvioBank(){
         this.evioDataBanks.clear();
+        byte helicity = (byte) -1;
+        if(this.bosDataBanks.containsKey("TGBI")==true){
+            int[] harray = this.bosDataBanks.get("TGBI").getInt("latch1");
+            if(harray.length>0){
+                if((harray[0]&0x00008000)>0){
+                    helicity = 1;
+                }
+            }
+            //if()
+        }
+        
         if(this.bosDataBanks.containsKey("HEVT")==true){
             EvioDataBank  bankHEVT = EvioFactory.createBank("HEADER::info", 1);
             bankHEVT.setInt("nrun", 0, this.bosDataBanks.get("HEVT").getInt("NRUN")[0]);
             bankHEVT.setInt("nevt", 0, this.bosDataBanks.get("HEVT").getInt("NEVENT")[0]);
             bankHEVT.setFloat("stt" , 0, this.bosDataBanks.get("HEVT").getFloat("STT")[0]);
             bankHEVT.setFloat("fc"  , 0, this.bosDataBanks.get("HEVT").getFloat("FC")[0]);
+            bankHEVT.setByte("helicity" , 0, helicity);
             bankHEVT.setFloat("fcg" , 0, this.bosDataBanks.get("HEVT").getFloat("FCG")[0]);
             this.evioDataBanks.put("HEVT", bankHEVT);
         }
@@ -156,6 +168,11 @@ public class Bos2EvioEventBank {
             //BosDataBank hevt = (BosDataBank) bos_event.getBank("HEVT");
             BosDataBank tagr = (BosDataBank) event.getBank("TAGR:1");
             this.bosDataBanks.put(tagr.getDescriptor().getName(), tagr);
+        }
+        
+        if(event.hasBank("TGBI")==true){
+            BosDataBank bTGBI = (BosDataBank) event.getBank("TGBI");
+            this.bosDataBanks.put(bTGBI.getDescriptor().getName(), bTGBI);
         }
         
         if(event.hasBank("HEVT")){

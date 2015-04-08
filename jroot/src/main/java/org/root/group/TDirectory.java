@@ -20,12 +20,13 @@ import org.root.data.DataSetXY;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
 import org.root.histogram.PaveText;
+import org.root.pad.RootCanvas;
 
 /**
  *
  * @author gavalian
  */
-public class TDirectory {
+public class TDirectory implements ITreeViewer {
     
     private final TreeMap<String,TDirectory>     directory = new TreeMap<String,TDirectory>();
     private final TreeMap<String,Object>           content = new TreeMap<String,Object>();
@@ -222,6 +223,7 @@ public class TDirectory {
             }
         }
     }
+    
     public DefaultMutableTreeNode getTree() {
         /*
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(this.directoryName);
@@ -385,5 +387,30 @@ public class TDirectory {
         }*/
         
         return str.toString();
+    }
+
+    public void draw(String obj, String selection, String options, RootCanvas canvas) {
+        //System.out.println(" Asking to draw following object " + obj);
+        int index = obj.lastIndexOf("/");
+        if(index>0&&index<obj.length()){
+            String  directoryL = obj.substring(0, index);
+            String  object    = obj.substring(index+1, obj.length());
+            //System.out.println(" DRAW " + directory + "  " + object);
+            if(this.hasDirectory(directoryL)==true){
+                if(this.getDirectory(directoryL).hasObject(object)==true){
+                    //System.out.println("==========> Drawing ");
+                    Object dirObject = this.getDirectory(directoryL).getObject(object);
+                    if(dirObject instanceof H1D){
+                        H1D h1 = (H1D) dirObject;
+                        canvas.draw(canvas.getCurrentPad(), h1, options);
+                    }
+                    if(dirObject instanceof H2D){
+                        H2D h2 = (H2D) dirObject;
+                        canvas.draw(canvas.getCurrentPad(), h2, options);
+                    }
+                }
+            }
+        }
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

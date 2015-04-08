@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.root.group.ITreeViewer;
 import org.root.group.TDirectory;
+import org.root.histogram.H1D;
 import org.root.pad.RootCanvas;
 
 /**
@@ -188,6 +189,21 @@ public class NTuple implements ITreeViewer {
 
     public void draw(String obj, String selection, String options, RootCanvas canvas) {
         System.out.println("NOT IMPLEMENTED YET to DRAW " + obj);
+        int currentpad = canvas.getCurrentPad();
+        DataVector  vec = null;
+        if(selection.length()>0){
+            vec = this.getVector(obj,selection);
+        } else {
+          vec = this.getVector(obj);//, selection);
+        }
+        System.out.println("VECTOR SIZE = " + vec.size() + " " + vec.getMin()
+        + " " + vec.getMax());
+        H1D H = new H1D(obj,100,vec.getMin(),vec.getMax());
+        for(int loop = 0; loop < vec.getSize(); loop++){
+            H.fill(vec.getValue(loop));
+        }
+        canvas.draw(currentpad, H);
+        canvas.incrementPad();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -55,6 +55,7 @@ public class TBrowser extends JFrame implements ActionListener {
         this.setVisible(true);
     }
     
+    /*
     public TBrowser(TDirectory dir){
         super("TBrowser");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,7 +65,7 @@ public class TBrowser extends JFrame implements ActionListener {
         this.initComponents();
         this.pack();
         this.setVisible(true);
-    }
+    }*/
     
     public final void initComponents(){
         splitPane = new JSplitPane();

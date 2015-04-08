@@ -37,7 +37,8 @@ public class SVTDataRecord {
         //}
         
         int layerOffset = 1;
-        if(chipid>2){
+        //if(chipid>2){
+        if(chipid<3){
             layerOffset = 2;
         }
         

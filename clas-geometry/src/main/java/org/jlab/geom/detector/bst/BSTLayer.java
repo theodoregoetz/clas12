@@ -50,7 +50,7 @@ public class BSTLayer extends AbstractLayer<SiStrip> {
                 List<SiStrip> strips = getAllComponents();
                 for (int componentId=0; componentId<strips.size(); componentId++) {
                     double dist = strips.get(componentId).getLine().distance(line).length();
-                    if(closestDist < dist) {
+                    if(closestDist > dist) {
                         closestDist = dist;
                         closestComponentId = componentId;
                     }
