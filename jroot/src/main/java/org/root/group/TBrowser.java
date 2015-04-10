@@ -125,6 +125,10 @@ public class TBrowser extends JFrame implements ActionListener {
         fileMenu.add(fileQuit);
         
         JMenu  editMenu   = new JMenu("Edit");
+        JMenuItem ts = new JMenuItem("Tree Selector");
+        ts.addActionListener(this);
+        
+        editMenu.add( ts);
         
         JMenu  canvasMenu   = new JMenu("Canvas");
         
@@ -151,13 +155,16 @@ public class TBrowser extends JFrame implements ActionListener {
         splitMenu.add(ssize3x3);
         canvasMenu.add(splitMenu);
         
-        
-
         this.browserMenuBar.add(fileMenu);
         this.browserMenuBar.add(editMenu);
         this.browserMenuBar.add(canvasMenu);
         
         this.setJMenuBar(browserMenuBar);
+    }
+    
+    public void treeSelectior(){
+        TBrowserDrawDialog dialog = new TBrowserDrawDialog(this.treeViewer,this.sciCanvas);
+        dialog.setVisible(true);
     }
     
     public void doMouseClicked(MouseEvent me){
@@ -216,7 +223,11 @@ public class TBrowser extends JFrame implements ActionListener {
         
         this.updateTreeView();
     }
+    
     public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().compareTo("Tree Selector")==0){
+            this.treeSelectior();
+        }
         
         if(e.getActionCommand().compareTo("Open File")==0){
             JFileChooser fc = new JFileChooser();

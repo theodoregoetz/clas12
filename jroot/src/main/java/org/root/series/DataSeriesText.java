@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import org.root.base.IDrawableDataSeries;
+import org.root.func.F1D;
 import org.root.pad.GraphAxis;
 
 /**
@@ -115,6 +116,10 @@ public class DataSeriesText implements IDrawableDataSeries {
 
     public String[] getStatText() {
         return new String[0];
+    }
+
+    public IDrawableDataSeries fit(F1D func, String options) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

@@ -7,6 +7,7 @@
 package org.root.base;
 
 import java.awt.Graphics2D;
+import org.root.func.F1D;
 import org.root.pad.GraphAxis;
 
 /**
@@ -22,4 +23,5 @@ public interface IDrawableDataSeries {
     void draw(GraphAxis xaxis, GraphAxis yaxis, Graphics2D g2d);
     Object dataObject();
     IDrawableDataSeries fit(String function, String options);
+    IDrawableDataSeries fit(F1D func, String options);
 }

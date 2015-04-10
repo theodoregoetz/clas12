@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +19,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.root.group.ITreeViewer;
 import org.root.group.TDirectory;
 import org.root.histogram.H1D;
+import org.root.histogram.H2D;
 import org.root.pad.RootCanvas;
 
 /**
@@ -43,8 +46,9 @@ public class NTuple implements ITreeViewer {
     
     public NTuple(String name, String variableList){
         this.tupleName = name;
+        this.init(variableList);
     }
-        
+    
     private void init(String variableList){
         tupleVariables = variableList.split(":");
     }
@@ -104,6 +108,11 @@ public class NTuple implements ITreeViewer {
             str.append(row.toString());
         }
         return str.toString();
+    }
+    
+    public void addRow(double[] rowLine){
+        NTupleRow row = new NTupleRow(rowLine);
+        this.tupleRows.add(row);
     }
     
     public void addRow(String rowLine){
@@ -188,23 +197,56 @@ public class NTuple implements ITreeViewer {
     }
 
     public void draw(String obj, String selection, String options, RootCanvas canvas) {
-        System.out.println("NOT IMPLEMENTED YET to DRAW " + obj);
-        int currentpad = canvas.getCurrentPad();
-        DataVector  vec = null;
-        if(selection.length()>0){
-            vec = this.getVector(obj,selection);
+        if(obj.contains("%")==true){
+            String[] tokens = obj.split("%");
+            System.out.println("NOT IMPLEMENTED YET to DRAW " + tokens[0] + " vs "
+            + tokens[1]);
+            DataVector  vecX = null;
+            DataVector  vecY = null;
+            if(selection.length()>0){
+                vecX = this.getVector(tokens[1], selection);
+                vecY = this.getVector(tokens[0], selection);
+            } else {
+                vecX = this.getVector(tokens[1]);
+                vecY = this.getVector(tokens[0]);
+            }
+
+            H2D H = new H2D(obj,100,vecX.getMin(),vecX.getMax(),100,vecY.getMin(),vecY.getMax());
+            H.setTitle(obj);
+            H.setXTitle(tokens[1]);
+            H.setYTitle(tokens[0]);
+            
+            for(int loop = 0; loop < vecX.size(); loop++){
+                H.fill(vecX.getValue(loop), vecY.getValue(loop));
+            }
+            canvas.draw(canvas.getCurrentPad(), H);
+            canvas.incrementPad();
+            
         } else {
-          vec = this.getVector(obj);//, selection);
+            System.out.println("NOT IMPLEMENTED YET to DRAW " + obj);
+            int currentpad = canvas.getCurrentPad();
+            DataVector  vec = null;
+            if(selection.length()>0){
+                vec = this.getVector(obj,selection);
+            } else {
+                vec = this.getVector(obj);//, selection);
+            }
+            System.out.println("VECTOR SIZE = " + vec.size() + " " + vec.getMin()
+                    + " " + vec.getMax());
+            H1D H = new H1D(obj,100,vec.getMin(),vec.getMax());
+            for(int loop = 0; loop < vec.getSize(); loop++){
+                H.fill(vec.getValue(loop));
+            }
+            canvas.draw(currentpad, H);
+            canvas.incrementPad();
         }
-        System.out.println("VECTOR SIZE = " + vec.size() + " " + vec.getMin()
-        + " " + vec.getMax());
-        H1D H = new H1D(obj,100,vec.getMin(),vec.getMax());
-        for(int loop = 0; loop < vec.getSize(); loop++){
-            H.fill(vec.getValue(loop));
-        }
-        canvas.draw(currentpad, H);
-        canvas.incrementPad();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<String> getVariables() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.addAll(Arrays.asList(this.tupleVariables));
+        return list;
     }
     
 }

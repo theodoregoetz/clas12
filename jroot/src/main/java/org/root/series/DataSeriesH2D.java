@@ -117,5 +117,9 @@ public class DataSeriesH2D implements IDrawableDataSeries {
     public String[] getStatText() {
         return new String[0];
     }
+
+    public IDrawableDataSeries fit(F1D func, String options) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

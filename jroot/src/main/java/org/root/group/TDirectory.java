@@ -8,6 +8,7 @@ package org.root.group;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -412,5 +413,9 @@ public class TDirectory implements ITreeViewer {
             }
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<String> getVariables() {
+        return new ArrayList<String>();
     }
 }

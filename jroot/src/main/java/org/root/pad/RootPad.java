@@ -362,6 +362,17 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         this.drawMarginRightY  = (int) (title.getHeight()*1.5 + axisTicks.getHeight()*1.5);
     }
     
+    public void fitPadData(F1D func){
+        IDrawableDataSeries fitFunction = this.padSeries.get(0).fit(func, "");
+        if(this.padSeries.size()>0){
+            this.statisticsBox.setText(this.padSeries.get(0).getStatText());
+        }
+        this.padFits.clear();
+        this.statisticsBox.addText(fitFunction.getStatText());
+        this.padFits.add(fitFunction);
+        this.repaint();
+    }
+    
     public void fitPadData(String function){
         IDrawableDataSeries fitFunction = this.padSeries.get(0).fit(function, "");
         //this.addSeries(fitFunction);
@@ -577,6 +588,11 @@ public class RootPad extends JPanel implements MouseListener,ActionListener {
         if(e.getActionCommand().compareTo("Gaus+Polynomial")==0){
             this.fitPadData("gaus+p1");
         }
-        
+        if(e.getActionCommand().compareTo("Fit...")==0){
+            FitDialog dialog = new FitDialog(this,
+                    this.padSeries.get(0).getMinX(),
+                    this.padSeries.get(0).getMaxX());
+            dialog.setVisible(true);
+        }
     }
 }

@@ -83,4 +83,8 @@ public class DataSeriesFunc implements IDrawableDataSeries {
         }
         return text;
     }
+
+    public IDrawableDataSeries fit(F1D func, String options) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

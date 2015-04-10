@@ -121,7 +121,7 @@ public class DataSeriesH1D implements IDrawableDataSeries {
     public Object dataObject() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public IDrawableDataSeries fit(String function, String options) {        
         F1D fitfunc = new F1D(function,this.getMinX(),this.getMaxX());
@@ -139,7 +139,19 @@ public class DataSeriesH1D implements IDrawableDataSeries {
         DataSeriesFunc  dataFunc = new DataSeriesFunc(fitfunc);
         return dataFunc;
     }    
-
+    
+    public IDrawableDataSeries fit(F1D func, String options) {
+        DataSetXY  data = this.dataHistogram.getDataSet();
+        double mean = this.dataHistogram.getMean();
+        double rms  = this.dataHistogram.getRMS();
+        //System.out.println("mean = " + mean + "  rms = " + rms);
+        
+        func.show();
+        DataFitter.fit(data, func);
+        func.show();
+        DataSeriesFunc  dataFunc = new DataSeriesFunc(func);
+        return dataFunc;
+    }
     public String[] getStatText() {
         String[] labels = new String[3];
         labels[0] = String.format("%-7s %9d", "Entries",this.dataHistogram.getEntries());
@@ -147,4 +159,6 @@ public class DataSeriesH1D implements IDrawableDataSeries {
         labels[2] = String.format("%-7s %9.4f", "RMS",this.dataHistogram.getRMS());
         return labels;
     }
+
+    
 }
