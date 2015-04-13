@@ -89,6 +89,28 @@ public class EvioInputStream {
         return treemap;
     }
     
+    public TreeMap<Integer,Object> getObjectTree(int event){
+        try {
+            ByteBuffer evioBuffer = evioReader.getEventBuffer(event, true);
+            EvioCompactStructureHandler structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
+            List<EvioNode> nodes   = structure.getNodes();
+            if(nodes==null) return null;
+            for (EvioNode node : nodes) {
+                    //System.err.println("--- adding node --");
+                    if(node.getTag()==200&&
+                            (node.getDataTypeObj()==DataType.ALSOBANK||
+                            node.getDataTypeObj()==DataType.BANK)){
+                        TreeMap<Integer,Object> objects = this.getObjectFromNode(node);
+                        return objects;
+                        //if(objects.size()>0) objectArray.add(objects);
+                    }
+                }
+        } catch (EvioException ex) {
+            Logger.getLogger(EvioInputStream.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     public ArrayList< TreeMap<Integer,Object> > getObjectTree(){
         ArrayList< TreeMap<Integer,Object> > objectArray = new ArrayList< TreeMap<Integer,Object> >();
         for(int loop = 0; loop < currentFileEntries; loop++){

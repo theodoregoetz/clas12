@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.jlab.evio.stream.EvioInputStream;
+import org.jlab.evio.stream.EvioOutputStream;
 import org.root.group.ITreeViewer;
 import org.root.group.TDirectory;
 import org.root.histogram.H1D;
@@ -53,6 +56,19 @@ public class NTuple implements ITreeViewer {
         tupleVariables = variableList.split(":");
     }
     
+    public static boolean isTupleFile(String filename){
+        EvioInputStream inStream = new EvioInputStream();
+        inStream.open(filename);
+        TreeMap<Integer,Object> tree = inStream.getObjectTree(1);
+        if(tree.get(1) instanceof int[]){
+            int[] type = (int[]) tree.get(1);
+            if(type[0]==100){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public void readFile(String filename){
         BufferedReader in = null;
         this.tupleRows.clear();
@@ -65,7 +81,7 @@ public class NTuple implements ITreeViewer {
                 }
                 //NTupleRow  row = new NTupleRow(s);
                 //this.tupleRows.add(row);
-            }               
+            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(NTuple.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -249,4 +265,61 @@ public class NTuple implements ITreeViewer {
         return list;
     }
     
+    public String getTupleFormat(){
+        StringBuilder str = new StringBuilder();
+        for(String item : this.tupleVariables){
+            str.append(item);
+            str.append(":");
+        }        
+        return str.toString();
+    }
+    
+    public void open(String filename){
+        EvioInputStream inStream = new EvioInputStream();
+        inStream.open(filename);
+        TreeMap<Integer,Object> tree = inStream.getObjectTree(1);
+        if(tree.get(1) instanceof int[]){
+            int[] type = (int[]) tree.get(1);
+            if(type[0]==100){
+                byte[] formatBytes = (byte[]) tree.get(2);
+                String format = new String(formatBytes);
+                this.tupleRows.clear();
+                this.init(format);
+                int nentries = inStream.getEntries();
+                for(int loop = 2; loop < nentries; loop++){
+                    tree = inStream.getObjectTree(loop);
+                    if(tree.get(1) instanceof double[]){
+                        double[] array = (double[]) tree.get(1);
+                        NTupleRow  row = new NTupleRow(array);
+                        this.tupleRows.add(row);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void write(String filename){
+        EvioOutputStream outStream = new EvioOutputStream(filename);
+        String format = this.getTupleFormat();
+        TreeMap<Integer,Object> tree = new TreeMap<Integer,Object>();
+        byte[] varEntry = format.getBytes();
+        int[]  fileType = new int[]{100};
+        tree.put(1, fileType);
+        tree.put(2, varEntry);
+        outStream.writeTree(tree);
+        
+        tree.clear();
+        for(int loop = 0; loop < this.tupleRows.size(); loop++){
+            tree.clear();
+            NTupleRow row = this.tupleRows.get(loop);
+            double[] rowData = new double[row.columns()];
+            //float[] rowData = new float[row.columns()];
+            for(int nr = 0; nr < row.columns(); nr++){
+                rowData[nr] =  row.get(nr);
+            }
+            tree.put(1, rowData);
+            outStream.writeTree(tree);
+        }
+        outStream.close();
+    }
 }

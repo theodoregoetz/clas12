@@ -23,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import org.root.data.NTuple;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
 import org.root.pad.RootCanvas;
@@ -218,6 +219,14 @@ public class TBrowser extends JFrame implements ActionListener {
     }
 
     public void openFile(String fullpath, String filename){
+        if(NTuple.isTupleFile(filename)==true){
+            NTuple T = new NTuple("T","a:b");
+            T.open(filename);
+            T.scan();
+            this.treeViewer = T;
+            this.updateTreeView();
+            return;
+        }
         this.browserDirectory = new TDirectory(filename);
         this.browserDirectory.readFile(fullpath);
         

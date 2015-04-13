@@ -88,6 +88,17 @@ public class EvioOutputStream {
                     Logger.getLogger(EvioOutputStream.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
+            if(obj instanceof float[]){
+                try {
+                    EvioBank treeData = new EvioBank(histogramBankTag, DataType.FLOAT32, num);
+                    treeData.setByteOrder(writerByteOrder);
+                    treeData.appendFloatData((float[])  obj);
+                    builder.addChild(baseBank, treeData);                        
+                } catch (EvioException ex) {
+                    Logger.getLogger(EvioOutputStream.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             /**
              * Writing integer values to the bank structure.
              */
