@@ -44,6 +44,10 @@ public class EvioFactory {
         return dict;
     }
     
+    public static void resetDictionary(){
+        EvioFactory.factoryDict.clear();
+    }
+    
     public static EvioDataDictionary getDictionary(){
         return factoryDict;
     }

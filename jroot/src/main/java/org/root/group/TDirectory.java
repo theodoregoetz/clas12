@@ -18,6 +18,8 @@ import org.jlab.evio.stream.EvioInputStream;
 import org.jlab.evio.stream.EvioOutputStream;
 import org.root.base.EvioWritableTree;
 import org.root.data.DataSetXY;
+import org.root.func.F1D;
+import org.root.histogram.GraphErrors;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
 import org.root.histogram.PaveText;
@@ -124,9 +126,10 @@ public class TDirectory implements ITreeViewer {
     private DefaultMutableTreeNode  getTreeNode(DefaultMutableTreeNode rootNode, String[] dirpath, int length){
         //System.out.println("--------------------->");
         //System.out.print(" LOOKING FOR : ");
+        /*
         for(int loop = 0 ; loop < length; loop ++ ) System.out.print( dirpath[loop] + " / ");
             System.out.println();
-           
+          */ 
         Enumeration<DefaultMutableTreeNode> en = rootNode.preorderEnumeration();
         while (en.hasMoreElements())
         {
@@ -152,10 +155,10 @@ public class TDirectory implements ITreeViewer {
     }
     
     private void makeTreeDirectory(DefaultMutableTreeNode rootNode, String dir){
-        System.out.println("--------------------->");
+        //System.out.println("--------------------->");
 
         String[] tokens = dir.split("/");
-        System.out.println("ANALYZING Directory : " + dir + "  size = " + tokens.length);
+        //System.out.println("ANALYZING Directory : " + dir + "  size = " + tokens.length);
         //ArrayList<DefaultMutableTreeNode>  nodesArray = new ArrayList<DefaultMutableTreeNode>();
         DefaultMutableTreeNode node = this.getTreeNode(rootNode, tokens, 1);
         if(node==null){
@@ -164,16 +167,17 @@ public class TDirectory implements ITreeViewer {
         
         for(int loop = 1; loop < tokens.length; loop++){
             
-            System.out.print("---->  LOOK FOR : " + loop );
+            //System.out.print("---->  LOOK FOR : " + loop );
+            /*
             for(int i = 0 ; i <= loop ; i++) System.out.print(" " + tokens[i]);
             System.out.println();
-            
+            */
             DefaultMutableTreeNode dirnode = this.getTreeNode(rootNode, tokens, loop+1);
-            System.out.println("result ----> " + dirnode);
+            //System.out.println("result ----> " + dirnode);
             if(dirnode==null){
                 DefaultMutableTreeNode parent = this.getTreeNode(rootNode, tokens,loop);
-                System.out.println(" =====> Creating " + tokens[loop] + 
-                        "  in parent " + parent.toString());
+                //System.out.println(" =====> Creating " + tokens[loop] + 
+                 //       "  in parent " + parent.toString());
                 parent.add(new DefaultMutableTreeNode(tokens[loop]));
             }  
         }
@@ -355,6 +359,17 @@ public class TDirectory implements ITreeViewer {
                 this.getDirectory(tokens[1]).add(h);
             }
             
+            if(type[0]==7){
+                F1D h = new F1D("gaus",0.0,1.0);
+                h.fromTreeMap(treemap);
+                
+                String[] tokens = this.getPathComponents(h.getName());
+                if(this.directory.containsKey(tokens[1])==false){
+                    this.directory.put(tokens[1], new TDirectory(tokens[1]));
+                }
+                h.setName(tokens[2]);
+                this.getDirectory(tokens[1]).add(h);
+            }
             if(type[0]==14){
                 PaveText h = new PaveText(0.0,0.0);
                 h.fromTreeMap(treemap);
@@ -404,10 +419,27 @@ public class TDirectory implements ITreeViewer {
                     if(dirObject instanceof H1D){
                         H1D h1 = (H1D) dirObject;
                         canvas.draw(canvas.getCurrentPad(), h1, options);
+                        canvas.incrementPad();
                     }
                     if(dirObject instanceof H2D){
                         H2D h2 = (H2D) dirObject;
                         canvas.draw(canvas.getCurrentPad(), h2, options);
+                        canvas.incrementPad();
+                    }
+                    if(dirObject instanceof GraphErrors){
+                        GraphErrors gr = (GraphErrors) dirObject;
+                        canvas.draw(canvas.getCurrentPad(), gr);
+                        canvas.incrementPad();
+                    }
+                    if(dirObject instanceof DataSetXY){
+                        DataSetXY gr = (DataSetXY) dirObject;
+                        canvas.draw(canvas.getCurrentPad(), gr);
+                        canvas.incrementPad();
+                    }
+                    if(dirObject instanceof F1D){
+                        F1D func = (F1D) dirObject;
+                        canvas.draw(canvas.getCurrentPad(), func);
+                        canvas.incrementPad();
                     }
                 }
             }

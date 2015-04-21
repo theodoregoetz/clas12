@@ -10,14 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jlab.coda.jevio.DataType;
 import org.jlab.coda.jevio.EventBuilder;
-import org.jlab.coda.jevio.EventWriter;
 import org.jlab.coda.jevio.EvioBank;
 import org.jlab.coda.jevio.EvioCompactEventWriter;
-import org.jlab.coda.jevio.EvioCompactStructureHandler;
 import org.jlab.coda.jevio.EvioEvent;
 import org.jlab.coda.jevio.EvioException;
 import org.jlab.data.io.DataEvent;
@@ -28,11 +28,53 @@ import org.jlab.data.io.DataSync;
  * @author gavalian
  */
 public class EvioDataSync implements DataSync {
+    
+    private String    evioOutputDirectory   = null;
+    private String    evioOutputFile        = null;
+    private Integer   evioCurrentFileNumber = 0;
+    //private Long      maximumBytesToWrite = (long) 1*1024*1024*1024;
+    private Long      maximumBytesToWrite = (long) 1932735283;
+    private Long      currentBytesWritten = (long) 0;
+    
     private ByteOrder writerByteOrder = ByteOrder.LITTLE_ENDIAN;
     private EvioCompactEventWriter evioWriter    = null;
     
     @Override
     public void open(String filename) {
+        //this.openFileForWriting(filename);
+        this.initFileNames(filename);
+        this.openFileForWriting();
+    }
+    
+    public void initFileNames(String filename){
+        Path filepath = Paths.get(filename);
+        this.evioOutputFile = filepath.getFileName().toString();
+        if(filepath.getParent()==null){
+            this.evioOutputDirectory = "";
+        } else {
+            this.evioOutputDirectory = filepath.getParent().toString();
+        }
+        int extensionIndex = this.evioOutputFile.lastIndexOf(".");
+        if(extensionIndex>=0&&extensionIndex<this.evioOutputFile.length()){
+            this.evioOutputFile = this.evioOutputFile.substring(0, extensionIndex);
+        }
+        System.out.println("dir  - > " + this.evioOutputDirectory);
+        System.out.println("file - > " + this.evioOutputFile);
+        
+    }
+    
+    private void openFileForWriting(){
+        StringBuilder str = new StringBuilder();
+        if(this.evioOutputDirectory.length()>2){
+            str.append(this.evioOutputDirectory);
+            str.append("/");
+        }
+        str.append(this.evioOutputFile);
+        str.append(".");
+        str.append(this.evioCurrentFileNumber);
+        str.append(".evio");
+        String filename = str.toString();
+        this.currentBytesWritten = (long) 0;
         File file = new File(filename);
         try {
             evioWriter = new EvioCompactEventWriter(filename, null,
@@ -50,9 +92,19 @@ public class EvioDataSync implements DataSync {
     
     @Override
     public void writeEvent(DataEvent event) {
+        
+        if(this.currentBytesWritten>this.maximumBytesToWrite){
+            this.evioWriter.close();
+            this.evioCurrentFileNumber++;
+            this.openFileForWriting();
+            System.out.println("open file # " + this.evioCurrentFileNumber);
+        }
+        
         try {
             //System.err.println("[sync] ---> buffer size = " + event.getEventBuffer().limit());
             ByteBuffer original = event.getEventBuffer();
+            Long bufferSize = (long) original.capacity();
+            this.currentBytesWritten += bufferSize;            
             ByteBuffer clone = ByteBuffer.allocate(original.capacity());
             clone.order(original.order());
             original.rewind();

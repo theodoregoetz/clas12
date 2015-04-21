@@ -186,11 +186,44 @@ public class F1D extends Function1D implements EvioWritableTree {
     public TreeMap<Integer, Object> toTreeMap() {
         TreeMap<Integer, Object> hcontainer = new TreeMap<Integer, Object>();
         hcontainer.put(1, new int[]{7});
-        hcontainer.put(2, new int[]{1});
+        //hcontainer.put(2, new int[]{1});
+        
+        byte[] nameBytes = this.functionName.getBytes();
+        byte[] funcBytes = this.functionString.getBytes();
+        
+        hcontainer.put(2, nameBytes);
+        hcontainer.put(3, funcBytes);
+        
+        double[] minmax = new double[2];
+        minmax[0] = this.getMin();
+        minmax[1] = this.getMax();
+        hcontainer.put(4, minmax);
+        int nparams = this.getNParams();        
+        double[]  pars = new double[nparams];
+        for(int loop = 0; loop < pars.length; loop++){
+            pars[loop] = this.getParameter(loop);
+        }
+        hcontainer.put(5, pars);
         return hcontainer;
     }
 
     public void fromTreeMap(TreeMap<Integer, Object> map) {
+        if(map.containsKey(1)==true){
+            if(map.get(1) instanceof int[]){
+                int[] type = (int[]) map.get(1);
+                if(type[0]==7){
+                    byte[] nameBytes = (byte[]) map.get(2);
+                    byte[] funcBytes = (byte[]) map.get(3);
+                    double[] minmax = (double[]) map.get(4);
+                    double[] params = (double[]) map.get(5);
+                    this.functionName = new String(nameBytes);
+                    this.initFunction(new String(funcBytes), minmax[0], minmax[1]);
+                    for(int loop = 0; loop < params.length; loop++){
+                        this.setParameter(loop, params[loop]);
+                    }
+                }
+            }
+        }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

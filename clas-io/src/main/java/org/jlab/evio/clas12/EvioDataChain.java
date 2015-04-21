@@ -16,6 +16,7 @@ import org.jlab.coda.jevio.EvioException;
 import org.jlab.data.io.DataEvent;
 import org.jlab.data.io.DataEventList;
 import org.jlab.data.io.DataSource;
+import org.jlab.utils.FileUtils;
 
 /**
  *
@@ -38,11 +39,26 @@ public class EvioDataChain  {
         printoutTimeLast = System.currentTimeMillis();
     }
     
+    public void addDir(String directory){ 
+        this.addDir(directory, "evio");
+    }
+    
+    public void addDir(String directory, String extension){
+        ArrayList<String> list = FileUtils.filesInFolder(new File(directory), extension);
+        fileList.clear();
+        for(String item : list){
+            System.out.println("add : " + item);
+            fileList.add(item);
+        }
+    }
+    
     public void addFile(String filename){
         fileList.add(filename);
     }
     
     public void open() {
+        System.err.println("** OPENNING STREAM WITH FILE # = " + this.fileList.size()
+        + " **");
         
         try {
             reader = new EvioCompactReader(fileList.get(0));
@@ -55,6 +71,26 @@ public class EvioDataChain  {
         } catch (IOException ex) {
             Logger.getLogger(EvioDataChain.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public boolean hasEvent(){
+        if(this.currentFileNumber==this.fileList.size()-1){
+            if(this.currentFilePosition<this.currentFileNumberOfEvents){
+                return true;
+            } else {
+                return false;
+            }
+        } 
+        return true;
+    }
+    
+    public EvioDataEvent getNextEvent(){
+        this.nextEvent();
+        if(EvioFactory.getDictionary()!=null){
+            EvioDataEvent event = new EvioDataEvent(this.eventBuffer,EvioFactory.getDictionary());
+            return event;
+        }
+        return new EvioDataEvent(this.eventBuffer);
     }
     
     public boolean nextEvent() {

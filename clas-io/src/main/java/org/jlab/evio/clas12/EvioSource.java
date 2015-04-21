@@ -4,18 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.jlab.coda.jevio.EvioCompactReader;
 import org.jlab.coda.jevio.EvioException;
 import org.jlab.data.io.DataEvent;
 
 import org.jlab.data.io.DataSource;
 import org.jlab.data.io.DataEventList;
-import org.xml.sax.SAXException;
 
 public class EvioSource implements DataSource {
     

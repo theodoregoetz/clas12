@@ -149,7 +149,6 @@ public class NTuple implements ITreeViewer {
         return -1;
     }
     
-    
     private void process(String[] variables, NTupleSelector selector){
         this.processResults.clear();
         ArrayList<Integer>  index = new ArrayList<Integer>();
@@ -172,6 +171,7 @@ public class NTuple implements ITreeViewer {
     
     
     public void draw(String var, String selection){
+        //if(selection.length()<2) return this.getVector(var);
         String[] tokens = var.split(":");
         NTupleSelector selector = new NTupleSelector(selection,this.tupleVariables);
         this.process(tokens, selector);
@@ -190,7 +190,33 @@ public class NTuple implements ITreeViewer {
         return vec;
     }
     
+    public H1D histogram1D(String var, String selection, int bins, double min, double max){
+        H1D h = new H1D("H_"+var,bins,min,max);
+        DataVector  vector  = this.getVector(var, selection);                    
+        for(int loop = 0; loop < vector.getSize(); loop++){
+            h.fill(vector.getValue(loop));
+        }
+        return h;
+    }
+    
+    
+    
+    public H1D histogram1D(String var, String selection, int bins){
+        DataVector  vector  = this.getVector(var, selection);
+        H1D h = new H1D("H_"+var,bins,vector.getMin(),vector.getMax());
+        for(int loop = 0; loop < vector.getSize(); loop++){
+            h.fill(vector.getValue(loop));
+        }
+        return h;        
+    }
+    
+    public H1D histogram1D(String var, String selection){
+        return this.histogram1D(var, selection, 100);
+    }
+    
+    
     public DataVector  getVector(String variable,String selection){
+        if(selection.length()<2) return this.getVector(variable);
         NTupleSelector selector = new NTupleSelector(selection,this.tupleVariables);
         DataVector vec = new DataVector();
         int index = this.varibleIndex(variable);

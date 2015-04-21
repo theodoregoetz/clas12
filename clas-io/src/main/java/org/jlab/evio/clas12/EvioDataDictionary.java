@@ -78,6 +78,10 @@ public class EvioDataDictionary implements DataDictionary {
         this.initWithDir(dict_path);
     }
     
+    public final void clear(){
+        this.descriptors.clear();
+    }
+    
     public final void initWithEnv(String envname){
         this.initWithEnv(envname,"etc/bankdefs/clas12");
     }

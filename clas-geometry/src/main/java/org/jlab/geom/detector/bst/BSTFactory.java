@@ -1,6 +1,5 @@
 package org.jlab.geom.detector.bst;
 
-import org.jlab.geom.DetectorId;
 import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.base.DetectorTransformation;
 import org.jlab.geom.base.Factory;
@@ -9,7 +8,6 @@ import org.jlab.geom.prim.Line3D;
 import org.jlab.geom.prim.Plane3D;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Transformation3D;
-import org.jlab.geom.prim.Transformation3D.TranslationXYZ;
 import org.jlab.geom.prim.Triangle3D;
 import org.jlab.geom.prim.Vector3D;
 
