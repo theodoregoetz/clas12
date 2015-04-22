@@ -46,6 +46,7 @@ public class SVTDataRecord {
         if(chipid%2==0){
             this.STRIP = channel + 128;
         }
+        this.STRIP = this.STRIP + 1;
         this.LAYER = (this.REGION-1)*2 + (layerOffset);
     }
     
