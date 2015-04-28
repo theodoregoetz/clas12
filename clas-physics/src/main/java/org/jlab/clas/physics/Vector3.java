@@ -13,6 +13,12 @@ public class Vector3 {
     double fY;
     double fZ;
     
+    public Vector3(Vector3 v){
+        this.fX = v.fX;
+        this.fY = v.fY;
+        this.fZ = v.fZ;
+    }
+    
     public Vector3()
     {
         fX = 0.0;

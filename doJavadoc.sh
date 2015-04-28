@@ -8,4 +8,4 @@ javadoc -d javadoc/jroot   -sourcepath jroot/src/main/java/ -subpackages org
 javadoc -d javadoc/clas-geometry -sourcepath clas-geometry/src/main/java/ -subpackages org
 javadoc -d javadoc/clas-physics -sourcepath clas-physics/src/main/java/ -subpackages org
 
-scp -r javadoc/* ifarm65:/group/clas/www/clasweb/html/clas12offline/docs/javadocs/.
+scp -r javadoc/* clas12@ifarm65:/group/clas/www/clasweb/html/clas12offline/docs/javadocs/.

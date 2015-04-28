@@ -6,6 +6,7 @@
 package org.jlab.clasrec.rec;
 
 import java.util.ArrayList;
+import org.jlab.clas.tools.benchmark.ProgressPrintout;
 import org.jlab.clasrec.main.DetectorMonitoring;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioSource;
@@ -28,6 +29,8 @@ public class CLASMonitoring {
     
     
     public void process(){
+        ProgressPrintout printout = new ProgressPrintout("Monitoring ");
+        printout.setInterval(1.0);
         
         detectorFactory.get(0).init();
         EvioSource  reader = new EvioSource();
@@ -43,6 +46,9 @@ public class CLASMonitoring {
                 + icounter);
                 e.printStackTrace();
             }
+            
+            printout.setAsInteger("nevents", icounter);
+            printout.updateStatus();
          }
         detectorFactory.get(0).analyze();
     }

@@ -21,6 +21,11 @@ public class LorentzVector {
         energy   = 0.0;
     }
     
+    public LorentzVector(LorentzVector v){
+        this.vector.copy(v.vector);
+        this.energy = v.energy;
+    }
+    
     public LorentzVector(double px, double py, double pz, double en)
     {
         vector = new Vector3();

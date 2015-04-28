@@ -160,4 +160,8 @@ public class TCanvas extends JFrame {
     public RootCanvas  embededCanvas(){
         return this.embededCanvas;
     }
+    
+    public void save(String name){
+        this.embededCanvas.export(name);
+    }
 }

@@ -19,7 +19,7 @@ import java.awt.geom.GeneralPath;
 public class MarkerPainter {
     private Color markerFillColor = new Color(221,  75,  57);
     private Color markerStrokeColor = Color.BLACK;
-    private Stroke markerStroke     = new BasicStroke(2);
+    private Stroke markerStroke     = new BasicStroke(1);
     
     public MarkerPainter(){
         
@@ -34,7 +34,17 @@ public class MarkerPainter {
             int linecolor, int linewidth){
         
         switch (mtype){
-            case 1: 
+            case 1: {
+                g2d.setColor(ColorPalette.getColor(mcolor));
+                g2d.drawOval(x-msize/2, y-msize/2, msize, msize);
+            } break;
+                
+            case 2: {
+                this.markerFillColor   = ColorPalette.getColor(mcolor);
+                this.markerStrokeColor = ColorPalette.getColor(linecolor);
+                this.drawCircle(g2d, x, y, msize); 
+                //g2d.setColor(ColorPalette.getColor(mcolor));                
+            } break;
         }
     }
     
@@ -49,7 +59,6 @@ public class MarkerPainter {
             case 6  : this.drawTriangle(g2d, x, y, msize,-1); ; break;
             default : g2d.drawRect(x-msize/2, y-msize/2, msize, msize); break;
         }
-
     }
     
     public void drawCircle(Graphics2D g2d, int x, int y,int msize){

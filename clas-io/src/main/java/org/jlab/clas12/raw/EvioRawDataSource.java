@@ -192,6 +192,17 @@ public class EvioRawDataSource implements DataSource {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
    
+    public ArrayList<RawDataEntry> getDataEntries(EvioDataEvent event){
+        ArrayList<RawDataEntry>  rawEntries = new ArrayList<RawDataEntry>();
+        List<EvioTreeBranch> branches = this.getEventBranches(event);
+        for(EvioTreeBranch branch : branches){
+            ArrayList<RawDataEntry>  list = this.getDataEntries(event,branch.getTag());
+            if(list != null){
+                rawEntries.addAll(list);
+            }
+        }
+        return rawEntries;
+    }
     
     public ArrayList<RawDataEntry> getDataEntries(EvioDataEvent event, Integer crate){
         ArrayList<EvioTreeBranch> branches = this.getEventBranches(event);

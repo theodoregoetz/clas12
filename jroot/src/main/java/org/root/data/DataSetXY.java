@@ -8,13 +8,15 @@ package org.root.data;
 
 import java.util.TreeMap;
 import org.root.attr.Attributes;
+import org.root.base.DataRegion;
 import org.root.base.EvioWritableTree;
+import org.root.base.IDataSet;
 
 /**
  *
  * @author gavalian
  */
-public class DataSetXY implements EvioWritableTree {
+public class DataSetXY implements EvioWritableTree,IDataSet {
     
     private final DataVector dataX = new DataVector();
     private final DataVector dataY = new DataVector();
@@ -277,5 +279,32 @@ public class DataSetXY implements EvioWritableTree {
     
     public int getMarkerSize(){
         return Integer.parseInt(this.attr.getProperties().getProperty("marker-size"));
+    }
+
+    public DataRegion getDataRegion() {
+        DataRegion  region = new DataRegion();
+        region.MINIMUM_X = this.dataX.getMin();
+        region.MAXIMUM_X = this.dataX.getMax();
+        region.MINIMUM_Y = this.dataY.getMin();
+        region.MAXIMUM_Y = this.dataY.getMax();
+        region.growX(0.1, 0.1);
+        region.growY(0.1, 0.1);
+        return region;
+    }
+
+    public Integer getDataSize() {
+        return this.dataX.size();
+    }
+
+    public Double getDataX(int index) {
+        return this.dataX.getValue(index);
+    }
+
+    public Double getDataY(int index) {
+        return this.dataY.getValue(index);
+    }
+
+    public Attributes getAttributes() {
+        return this.attr;
     }
 }
