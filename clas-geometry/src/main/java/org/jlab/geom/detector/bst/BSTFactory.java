@@ -409,7 +409,7 @@ public class BSTFactory implements Factory <BSTDetector, BSTSector, BSTSuperlaye
         double phi = -layerId*Math.PI*2.0/nsectors;
         Transformation3D  layerTransform = new Transformation3D();
         layerTransform.translateXYZ(0.0, y, zstart);
-        layerTransform.rotateZ(phi);
+        layerTransform.rotateZ(-phi);
         return layerTransform;
                 //.append(new TranslationXYZ(0.0,y,zstart));
     }
