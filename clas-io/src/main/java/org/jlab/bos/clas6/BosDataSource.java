@@ -10,9 +10,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -85,6 +87,20 @@ public class BosDataSource implements DataSource {
     @Override
     public DataEventList getEventList(int nrecords) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public  void dumpBufferToFile(String filename){
+        System.out.println("DUMPING EVENT # " + this.currentEventInBuffer + "  BUFF " + this.currentBufferPosition);
+        try {
+            boolean append = false;
+            FileChannel wChannel = new FileOutputStream(new File(filename),append).getChannel();            
+            wChannel.write(this.ioFileBuffer);            
+            wChannel.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private int findStructure(String struct, int startpos){
@@ -188,8 +204,12 @@ public class BosDataSource implements DataSource {
                 System.err.println("[BosDataSource]----> ERROR while reading the file...");
             }            
         }
-        
-        if(currentEventInBuffer==eventIndex.size()-1){
+        /*
+         * THIS PART WAS MODIFIED ON MAY/13/2015 before it was:
+         * currentEventInBuffer==eventIndex.size()-1
+         * Will check later if this makes sense.
+         */
+        if(currentEventInBuffer==eventIndex.size()-2){
             /*
             System.out.println("[BosDataSource]----> current size " 
                     + ioFileBuffer.array().length + "  " + eventIndex.get(eventIndex.size()-2));
@@ -201,7 +221,8 @@ public class BosDataSource implements DataSource {
         
         //System.err.println(" current event = " + currentEventInBuffer + " index size = "
         //+ eventIndex.size());
-        if(currentEventInBuffer>=0&&currentEventInBuffer<eventIndex.size()-1){
+        // THIS WAS CHANGED from if(currentEventInBuffer>=0&&currentEventInBuffer<eventIndex.size()-2){
+        if(currentEventInBuffer>=0&&currentEventInBuffer<eventIndex.size()-2){
             //System.err.println("[BosDataSource]----> creating an event start pos = "
             //        + eventIndex.get(currentEventInBuffer) + "  end pos = "
             //        + eventIndex.get(currentEventInBuffer+1));

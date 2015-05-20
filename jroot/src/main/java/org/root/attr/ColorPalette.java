@@ -110,9 +110,10 @@ public class ColorPalette {
         colors.put(6,new Color(222,82,111));
         colors.put(7,new Color(230,130,58));
         colors.put(8,new Color(90,207,161));
-        colors.put(8,new Color(106,120,203));
-        
+        colors.put(9,new Color(106,120,203));
+    
         
         return colors;
     }
+    
 }

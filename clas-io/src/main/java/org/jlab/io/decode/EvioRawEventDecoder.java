@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.jlab.clas12.raw.RawDataEntry;
+import org.jlab.data.detector.DetectorDataBank;
+import org.jlab.data.detector.DetectorType;
 
 /**
  *
@@ -19,6 +21,8 @@ public class EvioRawEventDecoder {
     
     private TreeMap<String,IDetectorTranslationTable> translationTables
             = new TreeMap<String,IDetectorTranslationTable>();
+    
+    
     public EvioRawEventDecoder(){
         
     }
@@ -36,6 +40,53 @@ public class EvioRawEventDecoder {
         }
     }    
     
+    public DetectorDataBank  getDetectorBank(String name, List<RawDataEntry> raw){
+        
+        DetectorType  type = DetectorType.getType(name);
+        DetectorDataBank  bank = new DetectorDataBank(type,raw.size());
+        
+        for(int loop = 0; loop < raw.size(); loop++){
+            bank.setSectorLayerComponent(
+                    raw.get(loop).getSector(), 
+                    raw.get(loop).getLayer(),
+                    raw.get(loop).getComponent()
+                    ,loop);
+            if(type==DetectorType.BST){
+                //System.out.println(" FILLING BST = " + raw.get(loop).getADC() +  raw.get(loop).getTDC());
+                bank.setADC((short) (raw.get(loop).getADC()&0xFFFF), loop);
+                bank.setTDC((short) (raw.get(loop).getTDC()&0xFFFF), loop);
+            }
+            
+            if(type==DetectorType.EC){
+                bank.setADC((short) (raw.get(loop).getADC()&0xFFFF), loop);
+                bank.setTDC((short) (raw.get(loop).getTDC()&0xFFFF), loop);
+            }
+            
+            if(type==DetectorType.DC){
+                bank.setTDC((short) (raw.get(loop).getTDC()&0xFFFF), loop);
+            }
+            
+            if(type==DetectorType.FTOF){
+                bank.setADCL((short) (raw.get(loop).getADC()&0xFFFF), loop);
+                bank.setADCR((short) (raw.get(loop).getADC()&0xFFFF), loop);
+            }
+        }
+        return bank;
+    }
+    
+    
+    
+    public DetectorDataBank getDecodedDetectorBank(List<RawDataEntry> dataEntries, IDetectorTranslationTable table){
+        DetectorType type = DetectorType.getType(table.getName());
+        if(type==DetectorType.UNDEFINED){
+            System.err.println("[EvioRawEventDecoder] ERROR: detector with name [" + table.getName()
+            +"]  does not exist");
+            return null;
+        }
+        List<RawDataEntry>  entries = this.getDecodedData(dataEntries, table);
+        return this.getDetectorBank(table.getName(), entries);
+    }
+    
     public List<RawDataEntry>  getDecodedData(List<RawDataEntry> dataEntries, IDetectorTranslationTable table){
         ArrayList<RawDataEntry>  rawdata = new ArrayList<RawDataEntry>();
         for(RawDataEntry data : dataEntries){
@@ -52,6 +103,18 @@ public class EvioRawEventDecoder {
     
     public void addTranslationTable(IDetectorTranslationTable table){
         this.translationTables.put(table.getName(), table);
+    }
+    
+    public List<DetectorDataBank>  getDecodedDetectorBanks(ArrayList<RawDataEntry> data){
+        ArrayList<DetectorDataBank>  banks = new ArrayList<DetectorDataBank>();
+        for(Map.Entry<String,IDetectorTranslationTable> tbl : this.translationTables.entrySet()){
+            List<RawDataEntry>  entry = this.getDecodedData(data, tbl.getValue());
+            DetectorDataBank bank = this.getDecodedDetectorBank(entry, tbl.getValue());
+            if(bank.getRows()>0){
+                banks.add(bank);
+            }
+        }
+        return banks;
     }
     
     @Override

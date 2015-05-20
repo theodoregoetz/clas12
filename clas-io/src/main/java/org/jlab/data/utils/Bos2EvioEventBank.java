@@ -72,6 +72,7 @@ public class Bos2EvioEventBank {
                 
                 evioEVNTp.setByte("dcstat", loop, (byte) bEVNT.getInt("DCstat")[loop]);
                 evioEVNTp.setByte("ecstat", loop, (byte) bEVNT.getInt("ECstat")[loop]);
+                evioEVNTp.setByte("lcstat", loop, (byte) bEVNT.getInt("LCstat")[loop]);
                 evioEVNTp.setByte("scstat", loop, (byte) bEVNT.getInt("SCstat")[loop]);
                 evioEVNTp.setByte("ccstat", loop, (byte) bEVNT.getInt("CCstat")[loop]);
                 
@@ -122,7 +123,25 @@ public class Bos2EvioEventBank {
             this.evioDataBanks.put("ECPB", evioECPB);
             //banklist.add(evioECPB);
         }
-         
+         if(this.bosDataBanks.containsKey("LCPB")==true){
+            BosDataBank bLCPB = (BosDataBank) this.bosDataBanks.get("LCPB");
+            int rows = bLCPB.rows();
+            EvioDataBank evioLCPB = EvioFactory.createEvioBank("DETECTOR::lcpb", rows);
+            for(int loop = 0; loop < rows; loop++){
+                int scht = bLCPB.getInt("ScHt")[loop];
+                int sector = (int) scht/100;
+                evioLCPB.setByte("sector", loop, (byte) sector);
+                evioLCPB.setFloat("etot", loop, bLCPB.getFloat("Etot")[loop]);
+                evioLCPB.setFloat("ein" , loop, bLCPB.getFloat("Ein")[loop]);
+                evioLCPB.setFloat("time", loop, bLCPB.getFloat("Time") [loop]);
+                evioLCPB.setFloat("path", loop, bLCPB.getFloat("Path") [loop]);
+                evioLCPB.setFloat("x", loop, bLCPB.getFloat("X") [loop]);
+                evioLCPB.setFloat("y", loop, bLCPB.getFloat("Y") [loop]);
+                evioLCPB.setFloat("z", loop, bLCPB.getFloat("Z") [loop]);
+            }
+            this.evioDataBanks.put("LCPB", evioLCPB);
+            //banklist.add(evioECPB);
+        }
          if(this.bosDataBanks.containsKey("SCPB")){
             BosDataBank bSCPB = (BosDataBank) this.bosDataBanks.get("SCPB");
             int rows = bSCPB.rows();
@@ -189,6 +208,12 @@ public class Bos2EvioEventBank {
             BosDataBank bECPB = (BosDataBank) event.getBank("ECPB");
             this.bosDataBanks.put(bECPB.getDescriptor().getName(), bECPB);
         }
+        
+        if(event.hasBank("LCPB")){
+            BosDataBank bLCPB = (BosDataBank) event.getBank("LCPB");
+            this.bosDataBanks.put(bLCPB.getDescriptor().getName(), bLCPB);
+        }
+        
         if(event.hasBank("SCPB")){
             BosDataBank bSCPB = (BosDataBank) event.getBank("SCPB");
             this.bosDataBanks.put(bSCPB.getDescriptor().getName(), bSCPB);

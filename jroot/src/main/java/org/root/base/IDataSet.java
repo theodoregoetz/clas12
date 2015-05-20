@@ -18,6 +18,8 @@ public interface IDataSet {
     Integer     getDataSize();
     Double      getDataX(int index);
     Double      getDataY(int index);
+    Double      getErrorX(int index);
+    Double      getErrorY(int index);
     Attributes  getAttributes();
     
 }

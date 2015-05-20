@@ -23,6 +23,7 @@ import org.jlab.data.io.DataSource;
 import org.jlab.data.utils.EvioDataConvertor;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioSource;
+import org.jlab.io.decode.EvioRawEventDecoder;
 
 /**
  *
@@ -31,6 +32,7 @@ import org.jlab.evio.clas12.EvioSource;
 public class EvioRawDataSource implements DataSource {
     
     private EvioSource reader = new EvioSource();
+    /*private EvioRawEventDecoder decoder = new EvioRawEventDecoder();*/
     
     @Override
     public boolean hasEvent() {
@@ -77,6 +79,10 @@ public class EvioRawDataSource implements DataSource {
         return reader.getNextEvent();
     }
 
+    /*
+    public EvioRawEventDecoder getDecoder(){
+        return this.decoder;
+    }*/
     
     public ADCData compositeToADC(CompositeData cdata){
         ADCData adcdata = new ADCData(0,0,(long) 0);

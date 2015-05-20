@@ -99,6 +99,10 @@ public class Bos2Evio {
                             //outevent.appendBank(evioBanks.get("ECPB"));
                             detectorBanks.add(evioBanks.get("ECPB"));
                         }
+                        if(evioBanks.containsKey("LCPB")==true){
+                            //outevent.appendBank(evioBanks.get("ECPB"));
+                            detectorBanks.add(evioBanks.get("LCPB"));
+                        }
                         if(evioBanks.containsKey("SCPB")==true){
                             //outevent.appendBank(evioBanks.get("ECPB"));
                             detectorBanks.add(evioBanks.get("SCPB"));

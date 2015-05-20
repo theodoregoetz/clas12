@@ -2,7 +2,9 @@ package org.root.histogram;
 
 import java.util.TreeMap;
 import org.root.attr.Attributes;
+import org.root.base.DataRegion;
 import org.root.base.EvioWritableTree;
+import org.root.base.IDataSet;
 import org.root.data.DataSetXY;
 import org.root.data.StatNumber;
 import org.root.fitter.DataFitter;
@@ -15,7 +17,7 @@ import org.root.func.F1D;
  * @author Erin Kirby
  * @version 062614
  */
-public class H1D implements EvioWritableTree {
+public class H1D implements EvioWritableTree,IDataSet {
 
     Axis  xAxis;
     Axis  yAxis;
@@ -687,7 +689,9 @@ public class H1D implements EvioWritableTree {
     public void setLineColor(Integer color){
         this.attr.getProperties().setProperty("line-color", color.toString());
     }
-    
+    public void setFillColor(Integer color){
+        this.attr.getProperties().setProperty("fill-color", color.toString());
+    }
     public void setLineStyle(Integer style){
         this.attr.getProperties().setProperty("line-style", style.toString());
     }
@@ -702,5 +706,39 @@ public class H1D implements EvioWritableTree {
     
     public int getLineStyle(){
         return Integer.parseInt(this.attr.getProperties().getProperty("line-style"));
+    }
+
+    public DataRegion getDataRegion() {
+        DataRegion  region = new DataRegion();
+        region.MINIMUM_X = this.getXaxis().getBinCenter(0) - this.getXaxis().getBinWidth(0)/2.0;
+        region.MAXIMUM_X = this.getXaxis().getBinCenter(this.getDataSize()-1) + 
+                this.getXaxis().getBinWidth(this.getDataSize()-1)/2.0;
+        region.MINIMUM_Y = 0.0;
+        region.MAXIMUM_Y = this.getBinContent(this.getMaximumBin())*1.2;
+        return region;
+    }
+
+    public Integer getDataSize() {
+        return this.getXaxis().getNBins();
+    }
+
+    public Double getDataX(int index) {
+        return this.getXaxis().getBinCenter(index);
+    }
+
+    public Double getDataY(int index) {
+        return this.getBinContent(index);
+    }
+
+    public Double getErrorX(int index) {
+        return this.getXaxis().getBinWidth(index);        
+    }
+
+    public Double getErrorY(int index) {
+        return Math.sqrt(this.getBinContent(index));
+    }
+
+    public Attributes getAttributes() {
+        return this.attr;
     }
 }

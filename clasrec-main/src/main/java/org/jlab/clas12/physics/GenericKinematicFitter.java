@@ -24,6 +24,16 @@ public class GenericKinematicFitter {
     private Boolean forceFilter = false;
     private Boolean generatedEventMatching = true;
     
+    public GenericKinematicFitter(double beam){
+        this.beamEnergy = beam;
+        this.filter.setFilter("X+:X-:Xn");
+    }
+    
+    public GenericKinematicFitter(){
+        this.beamEnergy = 11.0;
+        this.filter.setFilter("X+:X-:Xn");
+    }
+    
     public GenericKinematicFitter(double beam, String filterString){
         this.beamEnergy = beam;
         this.filter.setFilter(filterString);

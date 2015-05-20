@@ -108,7 +108,10 @@ public class BSTFactory implements Factory <BSTDetector, BSTSector, BSTSuperlaye
         return superlayer;
     }
     
-    public BSTLayer  createRingLayer(ConstantProvider cp, int ringId, int superlayerId, int layerId){
+    public BSTLayer  createRingLayer(ConstantProvider cp, int ringId, int superlayerId, int layerIdtrue){
+        
+        int layerId = 0;
+        if(layerIdtrue==0) layerId = 1;
         final int nsectors    = cp.getInteger("/geometry/bst/region/nsectors", ringId);
         
         if(!(0<=ringId && ringId<4))
@@ -137,9 +140,16 @@ public class BSTFactory implements Factory <BSTDetector, BSTSector, BSTSuperlaye
             y += siliconWidth + layergap;
         
         Plane3D bPlane = new Plane3D(0, 0, totLength - deadLen1, 0, 0, -1);
+        /*
         Plane3D lPlane = (superlayerId == 0)?
                 new Plane3D( activeWidth*0.5, 0, 0, 1, 0, 0) :
                 new Plane3D(-activeWidth*0.5, 0, 0, 1, 0, 0);
+        */
+         
+        Plane3D lPlane = (layerId == 0)?
+                new Plane3D( activeWidth*0.5, 0, 0, 1, 0, 0) :
+                new Plane3D(-activeWidth*0.5, 0, 0, 1, 0, 0);
+        
         
         Point3D p0 = new Point3D();
         Point3D p1 = new Point3D();
@@ -222,8 +232,8 @@ public class BSTFactory implements Factory <BSTDetector, BSTSector, BSTSuperlaye
             b3.set( activeWidth*0.5, 0, dz+activeLength);
             triangle0.set(b1, b0, b2);
             triangle1.set(b3, b2, b0);
-            triangle0.translateXYZ(0, y+0.5*siliconWidth, zstart);
-            triangle1.translateXYZ(0, y+0.5*siliconWidth, zstart);
+            //triangle0.translateXYZ(0, y+0.5*siliconWidth, zstart);
+            //triangle1.translateXYZ(0, y+0.5*siliconWidth, zstart);
             triangle0.rotateZ(-phi);
             triangle1.rotateZ(-phi);
             layer.getBoundary().addFace(triangle0);

@@ -30,6 +30,12 @@ public class Particle {
         this.initParticleWithMass(0.0, 0.,0.,0.,0.,0.,0.);
     }
     
+    public Particle(Particle p){
+        this.initParticle(p.pid(),
+                p.px(),p.py(),p.pz(),
+                p.vertex().x(),p.vertex().y(),p.vertex().z()
+                );
+    }
     public Particle(int pid, double px, double py, double pz, double vx, double vy, double vz)
     {
         this.initParticle(pid, px, py, pz, vx, vy, vz);
@@ -42,7 +48,7 @@ public class Particle {
         particleCharge = (byte) charge;
     }
     
-    void initParticleWithMass(double mass,double px, double py, double pz, double vx, double vy, double vz)
+    final void initParticleWithMass(double mass,double px, double py, double pz, double vx, double vy, double vz)
     {
         particleCharge = 0;
         partVector = new LorentzVector();
@@ -51,7 +57,7 @@ public class Particle {
         particleProperties = new HashMap<String,Double>();
     }
     
-    void initParticle(int pid, double px, double py, double pz, double vx, double vy, double vz)
+    final void initParticle(int pid, double px, double py, double pz, double vx, double vy, double vz)
     {
         PDGParticle particle = PDGDatabase.getParticleById(pid);
         if(particle==null)

@@ -108,6 +108,19 @@ public class ParticleSwimmer {
     }
     
     public Path3D particlePath(Particle part){
+        
+        if(part.charge()==0){
+            Path3D  ppath = new Path3D();
+            ppath.addPoint(part.vertex().x(), 
+                    part.vertex().y(),part.vertex().z());
+            ppath.addPoint(
+                    1500.0 * part.px(),
+                    1500.0 * part.py(),
+                    1500.0 * part.pz()
+                    );
+            return ppath;
+        }
+        
         DefaultListener listener = new DefaultListener();
         DefaultSwimStopper stopper = new DefaultSwimStopper(rmax);
         

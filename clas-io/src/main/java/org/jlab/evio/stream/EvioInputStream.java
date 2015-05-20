@@ -23,6 +23,7 @@ import org.jlab.coda.jevio.EvioCompactReader;
 import org.jlab.coda.jevio.EvioCompactStructureHandler;
 import org.jlab.coda.jevio.EvioException;
 import org.jlab.coda.jevio.EvioNode;
+import org.jlab.coda.jevio.EvioReader;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioSource;
 

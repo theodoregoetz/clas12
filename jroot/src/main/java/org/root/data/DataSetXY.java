@@ -307,4 +307,12 @@ public class DataSetXY implements EvioWritableTree,IDataSet {
     public Attributes getAttributes() {
         return this.attr;
     }
+
+    public Double getErrorX(int index) {
+        return 0.0;
+    }
+
+    public Double getErrorY(int index) {
+        return 0.0;
+    }
 }

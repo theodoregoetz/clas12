@@ -18,8 +18,11 @@ import org.root.base.AbsDataSetDraw;
 import org.root.base.AxisRegion;
 import org.root.base.DataRegion;
 import org.root.base.DataSetCollection;
+import org.root.base.DataSetPad;
 import org.root.base.IDataSet;
+import org.root.base.LatexText;
 import org.root.data.DataSetXY;
+import org.root.histogram.H1D;
 
 /**
  *
@@ -27,32 +30,35 @@ import org.root.data.DataSetXY;
  */
 public class EmbeddedPad extends JPanel {
     
-    private AxisRegion  padAxisFrame = new AxisRegion();
-    private DataSetCollection collection = new DataSetCollection();
+    private  DataSetPad   dPad = new DataSetPad();
     
     public EmbeddedPad(){
         super();
         this.setPreferredSize(new Dimension(500,500));
     }
     
+    public EmbeddedPad(int xsize, int ysize){
+        super();
+        this.setPreferredSize(new Dimension(xsize,ysize));
+    }
+    
+    
+    public DataSetPad getPad(){ return this.dPad;}
+    
     public void drawOnCanvas(Graphics2D g2d, int xoffset, int yoffset, int w, int h){
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        this.padAxisFrame.getFrame().setBounds(80, 80, w-110, h-110);
-        AbsDataSetDraw.drawAxisFrame(padAxisFrame, g2d,0,0,w,h);
-        
-        DataRegion  region = this.collection.getDataRegion();
-        this.padAxisFrame.getDataRegion().copy(region);
-        System.out.println(region);
-        
-        for(int loop = 0; loop < this.collection.getCount(); loop++){
-            System.out.println(" DRAWING COLLECTION ITEM # " + loop);
-            AbsDataSetDraw.drawDataSetAsGraph(padAxisFrame, g2d, 
-                    collection.getDataSet(loop), 0 , 0, w, h);
-        }
+        dPad.drawOnCanvas(g2d, xoffset, yoffset, w, h);
     }
     
     public void add(IDataSet ds){
-        this.collection.addDataSet(ds);
+        this.dPad.add(ds);
+    }
+    
+    public void addText(LatexText txt){
+        this.dPad.addText(txt);
+    }
+    
+    public void setAutoScale(Boolean flag){
+        this.dPad.setAutoScale(flag);
     }
     
     @Override
@@ -71,6 +77,7 @@ public class EmbeddedPad extends JPanel {
         }*/
     }
     
+    
     public static void main(String[] args){
         JFrame frame = new JFrame();
         
@@ -81,17 +88,40 @@ public class EmbeddedPad extends JPanel {
         DataSetXY  dsXY = new DataSetXY("data",x,y);
         dsXY.setMarkerStyle(2);
         dsXY.setMarkerColor(3);
-        dsXY.setMarkerSize(15);
+        dsXY.setMarkerSize(10);
         
         DataSetXY  dsXY2 = new DataSetXY("data",x,yn);
         dsXY2.setMarkerStyle(2);
         dsXY2.setMarkerColor(4);
-        dsXY2.setMarkerSize(5);
+        dsXY2.setMarkerSize(10);
         
-        EmbeddedPad pad  = new EmbeddedPad();
-        pad.add(dsXY);
-        pad.add(dsXY2);
+        H1D  h1 = new H1D("h1",50,0.0,2.0);
+        H1D  h2 = new H1D("h1",50,0.0,2.0);
+        for(int loop = 0; loop < 5000; loop++){
+            h1.fill(Math.random()*2.0);
+        }
         
+        for(int loop = 0; loop < 3000; loop++){
+            h2.fill(Math.random()*2.0);
+        }
+        
+        h1.setLineColor(1);
+        h1.setFillColor(3);
+        h1.setLineWidth(1);
+        
+        h2.setFillColor(9);
+        
+        EmbeddedPad pad  = new EmbeddedPad(); 
+        pad.add(h1);
+        pad.add(h2);
+        LatexText tex = new LatexText("M^x(ep#rarrow e^'p #pi^+ #pi^- (#gamma) (e^#uarrow^#darrow) )",0.05,0.1);
+        tex.setColor(0);
+        tex.setFontSize(24);
+        pad.addText(tex);
+        
+        //pad.add(dsXY);
+        //pad.add(dsXY2);
+        pad.setAutoScale(Boolean.TRUE);
         frame.setLayout(new GridLayout(1,3));
         frame.setSize(800, 600);
         frame.add(pad);
