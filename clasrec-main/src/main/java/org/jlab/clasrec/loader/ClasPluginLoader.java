@@ -25,9 +25,26 @@ public class ClasPluginLoader {
     public ClasPluginLoader(){
         
     }
-    
-    
+        
     public JarPluginLoader getPluginLoader(){ return pluginLoader;}
+    
+    public void loadPluginDirectory(String dirname,String classname){
+        String pluginDirectory = ResourcesUtils.getResourceDir("CLAS12DIR", dirname);
+        if(pluginDirectory==null){
+            System.err.println("[ERROR] Can not find directory : lib/plugins ");
+            return;
+        }
+        
+        List<String> pluginFiles = FileUtils.getFilesInDir(pluginDirectory);
+        System.err.println("[JarFileLoader] ----> directory   : " + pluginDirectory);
+        System.err.println("[JarFileLoader] ----> files found : " + pluginFiles.size());
+        pluginLoader.clear();
+        
+        for(String jarFile : pluginFiles){
+            System.err.println("[JarFileLoader] ----> scanning file : " + jarFile);
+            pluginLoader.scan(jarFile,classname);
+        }
+    }
     
     public void loadPluginDirectory(){
         String pluginDirectory = ResourcesUtils.getResourceDir("CLAS12DIR", "lib/plugins");

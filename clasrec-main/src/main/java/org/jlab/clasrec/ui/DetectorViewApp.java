@@ -15,6 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
+import org.jlab.clasrec.loader.ClasPluginChooseDialog;
 import org.jlab.clasrec.utils.DataBaseLoader;
 import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.detector.ec.ECDetector;
@@ -126,16 +127,32 @@ public class DetectorViewApp extends JFrame implements IDetectorComponentSelecti
     private void initMenuBar(){
         JMenuBar menubar = new JMenuBar();
         JMenu    file = new JMenu("File");
+        JMenu    plugins = new JMenu("Plugins");
+        
         menubar.add(file);
+        menubar.add(plugins);
+        
         JMenuItem file_open = new JMenuItem("Process File..");
         file_open.addActionListener(this);
-        file.add(file_open);        
+        file.add(file_open);
+        
+        JMenuItem load_plugin = new JMenuItem("Load Plugin");
+        load_plugin.addActionListener(this);
+        plugins.add(load_plugin);
+        
+        
         this.setJMenuBar(menubar);
     }
     
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().compareTo("Process File..")==0){
             
+        }
+        
+        if(e.getActionCommand().compareTo("Load Plugin")==0){
+            ClasPluginChooseDialog dialog = new ClasPluginChooseDialog("");
+            dialog.setModal(true);
+            dialog.setVisible(true);
         }
     }
 }
