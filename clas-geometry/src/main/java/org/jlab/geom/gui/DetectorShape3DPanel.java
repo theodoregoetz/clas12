@@ -17,16 +17,23 @@ import javax.swing.JPanel;
  *
  * @author gavalian
  */
-public class DetectorLayerPanel extends JPanel implements MouseListener , MouseMotionListener {
-    public  DetectorLayerUI layerUI = new DetectorLayerUI();
+public class DetectorShape3DPanel extends JPanel implements MouseListener , MouseMotionListener {
+    
+    private DetectorShape3DStore shapeStore = new DetectorShape3DStore();
     public  IDetectorComponentSelection  selectionListener = null;
     public  Boolean MOUSEOVER_CALLBACK = true;
     
-    public DetectorLayerPanel(){
+    public DetectorShape3DPanel(){
         super();
         this.setPreferredSize(new Dimension(300,300));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+    }
+    
+    public DetectorShape3DStore  getStore(){ return this.shapeStore;}
+    
+    public void setSelectionListener(IDetectorComponentSelection listener){
+        this.selectionListener = listener;
     }
     
     @Override
@@ -35,34 +42,29 @@ public class DetectorLayerPanel extends JPanel implements MouseListener , MouseM
         int xsize = this.getSize().width;
         int ysize = this.getSize().height;
         Graphics2D g2d = (Graphics2D) g;
-        layerUI.draw2D(g2d, 0, 0, xsize, ysize);
+        this.shapeStore.draw2D(g2d, 0, 0, xsize, ysize);
     }
-
-    public void setSelectionListener(IDetectorComponentSelection listener){
-        this.selectionListener = listener;
+    
+    public void setColorIntensity(IDetectorShapeIntensity intens){
+        this.shapeStore.setIntensityMap(intens);
     }
     
     public void mouseClicked(MouseEvent e) {
-        System.out.println("\n\n==================================>");
-        System.out.println("Mouse clicked (# of clicks: "
-                    + e.getClickCount() + ")" + e.getX() + "  " + e.getY());
-        DetectorComponentUI cui = this.layerUI.getClickedComponent(e.getX(),e.getY(),
+        DetectorShape3D cui = this.shapeStore.getSelectedShape(e.getX(),e.getY(),
                 this.getSize().width, this.getSize().height);
         this.repaint();
-        System.out.println(" REGION = " + this.layerUI.drawRegion);
+        //System.out.println(" REGION = " + this.layerUI.drawRegion);
         if(cui!=null){
-            System.out.println("FOUND A HIT " + cui.COMPONENT);
+            //System.out.println("FOUND A HIT " + cui.COMPONENT);
             if(this.selectionListener!=null){
                 this.selectionListener.detectorSelected(cui.SECTOR,cui.LAYER,cui.COMPONENT);
             }
         }
+
     }
 
     public void mousePressed(MouseEvent e) {
-        /*
-        System.out.println("Mouse PRESSED (# of clicks: "
-                    + e.getClickCount() + ")" + e);
-                */
+        
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -78,23 +80,25 @@ public class DetectorLayerPanel extends JPanel implements MouseListener , MouseM
     }
 
     public void mouseDragged(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     public void mouseMoved(MouseEvent e) {
-        System.out.println("MOUSE MOVED");
+        
         if(this.MOUSEOVER_CALLBACK==true){
-            DetectorComponentUI cui = this.layerUI.getClickedComponent(e.getX(),e.getY(),
+            this.shapeStore.reaset();
+            DetectorShape3D cui = this.shapeStore.getSelectedShape(e.getX(),e.getY(),
                 this.getSize().width, this.getSize().height);
-            this.repaint();
-            if(cui!=null){
+        this.repaint();
+        //System.out.println(" REGION = " + this.layerUI.drawRegion);
+        if(cui!=null){
             //System.out.println("FOUND A HIT " + cui.COMPONENT);
             if(this.selectionListener!=null){
                 this.selectionListener.detectorSelected(cui.SECTOR,cui.LAYER,cui.COMPONENT);
             }
         }
         }
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
     
 }

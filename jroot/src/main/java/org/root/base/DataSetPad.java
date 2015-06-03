@@ -74,7 +74,9 @@ public class DataSetPad {
     public void add(IDataSet ds){
         this.collection.addDataSet(ds);
         if(this.collection.getCount()==1){
-            //this.padAxisFrame.setXTitle();
+            this.padAxisFrame.setTitle(ds.getAttributes().getProperties().getProperty("title"));
+            this.padAxisFrame.setXTitle(ds.getAttributes().getProperties().getProperty("xtitle"));
+            this.padAxisFrame.setYTitle(ds.getAttributes().getProperties().getProperty("ytitle"));           
         }
     }
     

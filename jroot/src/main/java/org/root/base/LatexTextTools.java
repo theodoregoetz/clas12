@@ -57,7 +57,7 @@ public class LatexTextTools {
             //newString = newString.replaceFirst("^", "");
             newString = newString.substring(0, index) + newString.substring(index+1);
             index = newString.indexOf("_");
-            System.out.println(newString);
+            //System.out.println(newString);
         }
         
         AttributedString  string = new AttributedString(newString);
@@ -77,19 +77,19 @@ public class LatexTextTools {
         int index = line.indexOf("^");
         String newString = line;
         while(index>=0){
-            System.out.println("adding index = " + index);
+            //System.out.println("adding index = " + index);
             supindex.add(index);
             //newString = newString.replaceFirst("^", "");
             newString = newString.substring(0, index) + newString.substring(index+1);
             index = newString.indexOf("^");
-            System.out.println(newString);
+            //System.out.println(newString);
         }
         
         AttributedString  string = new AttributedString(newString);
         
         for(Integer indx : supindex){
             if(indx>0){
-                System.out.println(" L = " + indx);
+                //System.out.println(" L = " + indx);
                 string.addAttribute(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER, indx,indx+1);
             }
         }

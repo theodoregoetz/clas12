@@ -8,6 +8,7 @@ package org.jlab.bos.clas6;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.table.TableModel;
 import org.jlab.data.io.DataBank;
 import org.jlab.data.io.DataDescriptor;
 
@@ -219,6 +220,10 @@ public class BosDataBank implements DataBank {
 
     @Override
     public byte getByte(String path, int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public TableModel getTableModel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

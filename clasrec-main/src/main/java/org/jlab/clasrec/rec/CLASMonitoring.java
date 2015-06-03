@@ -8,14 +8,16 @@ package org.jlab.clasrec.rec;
 import java.util.ArrayList;
 import org.jlab.clas.tools.benchmark.ProgressPrintout;
 import org.jlab.clasrec.main.DetectorMonitoring;
+import org.jlab.clasrec.ui.IDetectorHistogramDraw;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioSource;
+import org.root.pad.EmbeddedCanvas;
 
 /**
  *
  * @author gavalian
  */
-public class CLASMonitoring {
+public class CLASMonitoring implements IDetectorHistogramDraw {
     
     private final ArrayList<DetectorMonitoring>  detectorFactory =
             new ArrayList<DetectorMonitoring>();
@@ -51,5 +53,17 @@ public class CLASMonitoring {
             printout.updateStatus();
          }
         detectorFactory.get(0).analyze();
+    }
+
+    public void drawComponent(int sector, int layer, int component, EmbeddedCanvas canvas) {
+        
+    }
+
+    public void drawLayer(int sector, int layer, EmbeddedCanvas canvas) {
+        
+    }
+
+    public void drawSector(int sector, EmbeddedCanvas canvas) {
+        
     }
 }

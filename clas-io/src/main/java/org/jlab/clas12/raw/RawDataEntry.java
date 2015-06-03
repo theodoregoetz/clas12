@@ -45,6 +45,8 @@ public class RawDataEntry {
         this.dataArray.add(pulseMax);
     }
     
+    public int getMode(){ return this.MODE; }
+    
     public void setRawPulse(short[] shortData){
         this.MODE = 1;
         this.dataArray.clear();

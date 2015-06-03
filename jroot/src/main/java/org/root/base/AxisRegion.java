@@ -22,7 +22,7 @@ public class AxisRegion {
     private Attributes        axisAttributes  = new Attributes();
     private AxisNiceScale     axisX           = new AxisNiceScale(0.0,1.0);
     private AxisNiceScale     axisY           = new AxisNiceScale(0.0,1.0);
-    public  Integer           axisLabelSize   = 24;
+    public  Integer           axisLabelSize   = 18;
     private LatexText         axisTitleX      = new LatexText("#pi^2 [GeV]",0.5,0.0);
     private LatexText         axisTitleY      = new LatexText("#gamma^3 [deg]",0.0,0.5);
     private LatexText         frameTitle      = new LatexText("ep^#uarrow #rarrowe^'#pi^- X(#gamma)",0.5,1.0);

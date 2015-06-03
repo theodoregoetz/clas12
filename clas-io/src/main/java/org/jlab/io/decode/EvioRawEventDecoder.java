@@ -121,7 +121,7 @@ public class EvioRawEventDecoder {
     public String toString(){
         StringBuilder str = new StringBuilder();
         for(Map.Entry<String,IDetectorTranslationTable> entry : this.translationTables.entrySet()){
-            str.append(String.format("TRANSLATION : [%12s]", entry.getKey()));
+            str.append(String.format("TRANSLATION TABLE : [%12s]", entry.getKey()));
         }
         return str.toString();
     }
