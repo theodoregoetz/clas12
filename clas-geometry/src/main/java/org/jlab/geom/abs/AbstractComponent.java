@@ -192,6 +192,7 @@ public abstract class AbstractComponent implements Component {
         for (int e=0; e<getNumVolumeEdges(); e++) {
             Point3D pt = new Point3D();
             if (crossPlane.intersectionSegment(getVolumeEdge(e), pt) == 1) {
+            //if (crossPlane.intersection(getVolumeEdge(e), pt) == 1) {
                 inv.apply(pt);
                 points.add(pt);
                 sx += pt.x();
