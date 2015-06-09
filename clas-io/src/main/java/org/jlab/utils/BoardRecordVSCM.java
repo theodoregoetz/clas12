@@ -17,6 +17,8 @@ public class BoardRecordVSCM {
     public int bco     = 0;
     public int adc     = 0;
     public int hfcbid  = 0;
+    public int bcostart = 0;
+    public int bcostop  = 0;
     
     @Override
     public String toString(){

@@ -149,11 +149,16 @@ public class BoardDecoderVSCM {
         return sector;*/
     }
     
+    
+    public ArrayList<BoardRecordVSCM> getRecords(){ return this.boardEvent;}
+    
     public void decode(int[] array){
         int unixtime = 0;
         int totalLength = array.length;
         int icount = 0;
         int ievent = 0;
+        int bcostart = 0;
+        int bcostop  = 0;
         boardEvent.clear();
         //ArrayList<BoardRecordVSCM> boardevent = null;
         int  slotid = 0;        
@@ -180,8 +185,14 @@ public class BoardDecoderVSCM {
                         //System.err.println("-> BLOCK TRAILER in position = " + icount 
                         //+ " N WORDS = " + nwords + "  slot id = " + slotid);
                         break;
+                    case DATA_TYPE_BCOTIME:
+                        //System.out.println("FOUND BCO TIME " + String.format("%X", word));
+                        bcostop   = (int) ((word>>16) & 0x00FF);
+                        bcostart  = (int) ((word) & 0x00FF);
+                        break;
                     case DATA_TYPE_EVTHDR:
                         ievent = 0;
+                        //System.out.println("FOUND EVENT HEADER " + String.format("%X", word));
                         //System.err.println("---------> EVENT HEADER in position = " + icount);                                                
                         break;
                     case DATA_TYPE_TRGTIME:                       
@@ -197,12 +208,14 @@ public class BoardDecoderVSCM {
                         int hfcbID = (int) (word >> 22) & 0x1;
                         BoardRecordVSCM record = new BoardRecordVSCM();
                         record.slotid = slotid;
-                        if(record.slotid>=11) record.slotid = slotid - 2;
+                        //if(record.slotid>=11) record.slotid = slotid - 2;
                         record.adc = adc;
                         record.channel = channel;
                         record.bco = bco;
                         record.chipid = chipID;
                         record.hfcbid = hfcbID;
+                        record.bcostart = bcostart;
+                        record.bcostop = bcostop;
                         if(boardEvent!=null) {
                             //System.err.println(record);
                             boardEvent.add(record);

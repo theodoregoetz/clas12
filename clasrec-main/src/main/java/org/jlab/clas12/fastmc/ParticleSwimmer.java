@@ -71,7 +71,7 @@ public class ParticleSwimmer {
          compositeField = new CompositeField();
          
          if (torus != null) {
-             
+             /*
              if(torusScale<0) {
                  if(torus.isInvertField()==false)
                      torus.setInvertField(true);
@@ -82,14 +82,14 @@ public class ParticleSwimmer {
                      torus.setInvertField(false);
              }
              
-             torus.setScaleField(true);
-             torus.setScaleFactor(Math.abs(torusScale));
+             torus.setScaleField(true);*/
+             torus.setScaleFactor(torusScale);
              
              compositeField.add(torus);
          }
          
          if (solenoid != null) {
-             
+             /*
              if(solenoidScale<0) {
                  if(solenoid.isInvertField()==false)
                      solenoid.setInvertField(true);
@@ -100,7 +100,8 @@ public class ParticleSwimmer {
                      solenoid.setInvertField(false);
              }
              solenoid.setScaleField(true);
-             solenoid.setScaleFactor(Math.abs(solenoidScale));
+             */
+             solenoid.setScaleFactor(solenoidScale);
              
              compositeField.add(solenoid);
              

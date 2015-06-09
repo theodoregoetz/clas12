@@ -75,25 +75,25 @@
   <dependency>
     <groupId>org.jlab.clas</groupId>
     <artifactId>clas-io</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
     <groupId>org.jlab.clas</groupId>
     <artifactId>clas-tools</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
     <groupId>org.jlab.clas</groupId>
     <artifactId>clas-geometry</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
     <groupId>org.jlab.clas</groupId>
     <artifactId>clasrec-main</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
@@ -105,7 +105,7 @@
   <dependency>
     <groupId>org.jlab.clas</groupId>
     <artifactId>jroot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
   </dependency>
 
   <dependency>
@@ -185,7 +185,7 @@
 <dependency>
     <groupId>cnuphys</groupId>
     <artifactId>cnuphys</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
   </dependency>
 
 </dependencies>
