@@ -95,7 +95,7 @@ public class AbsDetectorTranslationTable implements IDetectorTranslationTable {
     public Integer getComponent(int crate, int slot, int channel) {
         Integer key = TranslationTableEntry.getHashCreate(crate, slot, channel);
         if(this.tableEntries.containsKey(key)==true){
-            return this.tableEntries.get(key).layer;
+            return this.tableEntries.get(key).component;
         }
         return -1;
     }
