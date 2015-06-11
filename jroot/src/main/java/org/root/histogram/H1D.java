@@ -221,6 +221,18 @@ public class H1D implements EvioWritableTree,IDataSet {
     	return histName;
     }
     
+    /**
+     * Resets all bins to 0
+     */
+    public void reset(){
+        for(int loop = 0; loop < this.histogramData.length;loop++){
+            this.histogramData[loop] = 0.0;
+            if(this.histogramDataError.length==this.histogramData.length){
+                this.histogramDataError[loop] = 0.0;
+            }
+        }
+    }
+    
     public int getEntries(){
         int entries = 0;
         for(int loop = 0; loop < this.histogramData.length; loop++){
