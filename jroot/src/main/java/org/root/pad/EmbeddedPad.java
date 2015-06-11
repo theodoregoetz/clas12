@@ -65,6 +65,13 @@ public class EmbeddedPad extends JPanel {
         this.dPad.setAxisRange(xmin, xmax, ymin, ymax);
     }
     
+    public void setDivisionsX(int div){
+        this.dPad.setDivisionsX(div);
+    }
+     public void setDivisionsY(int div){
+        this.dPad.setDivisionsY(div);
+    }
+     
     @Override
     public void paint(Graphics g){        
         Graphics2D g2d = (Graphics2D) g;

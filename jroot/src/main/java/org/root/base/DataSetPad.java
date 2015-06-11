@@ -91,4 +91,11 @@ public class DataSetPad {
     public void addText(LatexText txt){
         this.textCollection.add(txt);
     }
+    
+    public void setDivisionsX(int div){
+        this.padAxisFrame.setDivisionsX(div);
+    }
+     public void setDivisionsY(int div){
+        this.padAxisFrame.setDivisionsY(div);
+    }
 }

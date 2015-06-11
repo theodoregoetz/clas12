@@ -94,4 +94,12 @@ public class AxisRegion {
         return yp;
     }
     
+    public void setDivisionsX(int div){
+        this.axisX.setMaxTicks(div);
+    }
+    
+    public void setDivisionsY(int div){
+        this.axisY.setMaxTicks(div);
+    }
+    
 }

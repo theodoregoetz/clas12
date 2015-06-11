@@ -54,6 +54,14 @@ public class EmbeddedCanvas extends JPanel {
          this.canvasPads.get(this.currentPad).repaint();
      }
      
+     public void setDivisionsX(int div){
+         this.getPad().setDivisionsX(div);
+     }
+     
+     public void setDivisionsY(int div){
+         this.getPad().setDivisionsY(div);
+     }
+     
      public EmbeddedPad getPad(){
          return this.canvasPads.get(this.currentPad);
      }
@@ -66,7 +74,7 @@ public class EmbeddedCanvas extends JPanel {
         this.canvasPads.clear();
         this.removeAll();
         this.revalidate();
-        this.setLayout(new GridLayout(rows,cols));
+        this.setLayout(new GridLayout(cols,rows));
         int xsize = this.getWidth()/cols;
         int ysize = this.getHeight()/rows;
         for(int loop = 0; loop < cols*rows; loop++){
