@@ -61,6 +61,10 @@ public class EmbeddedPad extends JPanel {
         this.dPad.setAutoScale(flag);
     }
     
+    public void setAxisRange(double xmin, double xmax, double ymin, double ymax){
+        this.dPad.setAxisRange(xmin, xmax, ymin, ymax);
+    }
+    
     @Override
     public void paint(Graphics g){        
         Graphics2D g2d = (Graphics2D) g;

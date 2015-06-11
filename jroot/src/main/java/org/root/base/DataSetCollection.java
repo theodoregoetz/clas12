@@ -14,7 +14,8 @@ import java.util.ArrayList;
 public class DataSetCollection {
     
     private ArrayList<IDataSet>  dsCollection = new ArrayList<IDataSet>();
-    private Boolean              collectionDataRangeScale = false;
+    private Boolean              collectionDataRangeScale = true;
+    private DataRegion           fixedDataRegion = new DataRegion();
     
     public DataSetCollection(){
         
@@ -30,8 +31,19 @@ public class DataSetCollection {
             for(int loop = 0; loop < this.dsCollection.size(); loop++){
                 region.combine(this.dsCollection.get(loop).getDataRegion());
             }
+        } else {
+            return new DataRegion(this.fixedDataRegion);
         }
         return region;
+    }
+    
+    
+    public void setDataRegion(double xmin, double xmax, double ymin, double ymax){
+        this.fixedDataRegion.MINIMUM_X = xmin;
+        this.fixedDataRegion.MAXIMUM_X = xmax;
+        this.fixedDataRegion.MINIMUM_Y = ymin;
+        this.fixedDataRegion.MAXIMUM_Y = ymax;
+        this.collectionDataRangeScale = false;
     }
     
     public void setAutoScale(boolean flag){

@@ -84,6 +84,10 @@ public class DataSetPad {
         this.collection.setAutoScale(flag);
     }
     
+    public void setAxisRange(double xmin, double xmax, double ymin, double ymax){
+        this.collection.setDataRegion(xmin, xmax, ymin, ymax);
+    }
+    
     public void addText(LatexText txt){
         this.textCollection.add(txt);
     }

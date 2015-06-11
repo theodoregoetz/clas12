@@ -100,6 +100,17 @@ public class AbsDetectorTranslationTable implements IDetectorTranslationTable {
         return -1;
     }
     
+    public void addEntry(int crate, int slot, int channel, int sector,int layer, int component){
+        TranslationTableEntry entry = new TranslationTableEntry(this.tableName);
+        entry.setCreate(crate, slot, channel);
+        entry.setDetector(sector, layer, component);
+        if(this.tableEntries.containsKey(entry.getHashCreate())==true){
+            System.out.println("ERROR : dublicate entry is not being added : " + entry.toString());
+        } else {
+            this.tableEntries.put(entry.getHashCreate(), entry);
+        }
+    }
+    
     public void addEntry(String entryLine){
         TranslationTableEntry entry = new TranslationTableEntry("empty");
         entry.parse(entryLine);

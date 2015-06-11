@@ -93,7 +93,9 @@ public class AbsDataSetDraw {
         }
         
 
-        FontMetrics  fma = g2d.getFontMetrics();
+        FontMetrics  fma = g2d.getFontMetrics(axisFont);
+        g2d.setFont(axisFont);
+        
         
         Rectangle2D rect = fma.getStringBounds(axis.getTitle().getText().getIterator(), 0,
                 axis.getTitle().getText().getIterator().getEndIndex(),g2d);
