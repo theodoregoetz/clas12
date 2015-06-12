@@ -719,7 +719,7 @@ public class H1D implements EvioWritableTree,IDataSet {
     public int getLineStyle(){
         return Integer.parseInt(this.attr.getProperties().getProperty("line-style"));
     }
-
+    
     public DataRegion getDataRegion() {
         DataRegion  region = new DataRegion();
         region.MINIMUM_X = this.getXaxis().getBinCenter(0) - this.getXaxis().getBinWidth(0)/2.0;

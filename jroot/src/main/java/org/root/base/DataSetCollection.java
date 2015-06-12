@@ -27,13 +27,26 @@ public class DataSetCollection {
         }
         
         DataRegion region = new DataRegion(this.dsCollection.get(0).getDataRegion());
-        if(this.collectionDataRangeScale==true){
-            for(int loop = 0; loop < this.dsCollection.size(); loop++){
-                region.combine(this.dsCollection.get(loop).getDataRegion());
-            }
-        } else {
-            return new DataRegion(this.fixedDataRegion);
+        //if(this.collectionDataRangeScale==true){
+        for(int loop = 0; loop < this.dsCollection.size(); loop++){
+            region.combine(this.dsCollection.get(loop).getDataRegion());
         }
+        
+        if(this.collectionDataRangeScale==false){
+            DataRegion fixedRegion = new DataRegion(this.fixedDataRegion);
+            if(fixedRegion.MINIMUM_X==fixedRegion.MAXIMUM_X){
+                fixedRegion.MINIMUM_X = region.MINIMUM_X;
+                fixedRegion.MAXIMUM_X = region.MAXIMUM_X;
+            }
+            if(fixedRegion.MINIMUM_Y==fixedRegion.MAXIMUM_Y){
+                fixedRegion.MINIMUM_Y = region.MINIMUM_Y;
+                fixedRegion.MAXIMUM_Y = region.MAXIMUM_Y;
+            }
+            return fixedRegion;
+        }
+        //} else {
+        //    return new DataRegion(this.fixedDataRegion);
+        //}
         return region;
     }
     

@@ -166,7 +166,8 @@ public class EvioRawEventDecoder {
             if(node.getTag()==57602){
                 //  This is regular integrated pulse mode, used for FTOF
                 // FTCAL and EC/PCAL
-                return this.getDataEntries_57602(crate, node, event);
+                //return this.getDataEntries_57602(crate, node, event);
+                return this.getDataEntries_57602_DEBUG(crate, node, event);
                 //return this.getDataEntriesMode_7(crate,node, event);
             }
             if(node.getTag()==57601){
@@ -265,6 +266,24 @@ public class EvioRawEventDecoder {
         return entries;
     }
     
+    public ArrayList<RawDataEntry>  getDataEntries_57602_DEBUG(Integer crate, EvioNode node, EvioDataEvent event){
+        ArrayList<RawDataEntry>  entries = new ArrayList<RawDataEntry>();
+        
+        if(node.getTag()==57602){
+            try {
+                ByteBuffer     compBuffer = node.getByteData(true);
+                CompositeData  compData = new CompositeData(compBuffer.array(),event.getByteOrder());
+                
+                List<DataType> cdatatypes = compData.getTypes();
+                List<Object>   cdataitems = compData.getItems();
+                System.out.println("DEBUG :  SIZE = " + cdatatypes.size());
+            } catch (EvioException ex) {
+                Logger.getLogger(EvioRawEventDecoder.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return entries;
+    }
+    
     public ArrayList<RawDataEntry>  getDataEntries_57602(Integer crate, EvioNode node, EvioDataEvent event){
         ArrayList<RawDataEntry>  entries = new ArrayList<RawDataEntry>();
         
@@ -275,45 +294,53 @@ public class EvioRawEventDecoder {
                 
                 List<DataType> cdatatypes = compData.getTypes();
                 List<Object>   cdataitems = compData.getItems();
-
+                
                 if(cdatatypes.get(3) != DataType.NVALUE){
                     System.err.println("[EvioRawDataSource] ** error ** corrupted "
                     + " bank. tag = " + node.getTag() + " num = " + node.getNum());
                     return null;
                 }
-                
-                Byte    slot = (Byte)     cdataitems.get(0);
-                Integer trig = (Integer)  cdataitems.get(1);
-                Long    time = (Long)     cdataitems.get(2);
-                
-                //EvioRawDataBank  dataBank = new EvioRawDataBank(crate,slot.intValue(),trig,time);
-                Integer nchannels = (Integer) cdataitems.get(3);
-                //System.out.println("Retrieving the data size = " + cdataitems.size()
-                //+ "  " + cdatatypes.get(3) + " number of channels = " + nchannels);
-                int position = 4;
-                int counter  = 0;
-                while(counter<nchannels){
-                    //System.err.println("Position = " + position + " type =  "
-                    //+ cdatatypes.get(position));
 
-                    Byte channel   = (Byte) cdataitems.get(position);
-                    Integer length = (Integer) cdataitems.get(position+1);
-                    //dataBank.addChannel(channel.intValue());
-
-                    for(int loop = 0; loop < length; loop++){
-                        Short tdc    = (Short) cdataitems.get(position+2);
-                        Integer adc  = (Integer) cdataitems.get(position+3);
-                        Short pmin   = (Short) cdataitems.get(position+4);
-                        Short pmax   = (Short) cdataitems.get(position+5);
-                        RawDataEntry  entry = new RawDataEntry(crate,slot,channel);
-                        entry.setPulse(tdc, adc, pmin, pmax);
-                        entries.add(entry);
-                        //dataBank.addData(channel.intValue(), 
-                         //       new RawData(tdc,adc,pmin,pmax));
+                int position = 0;
+                
+                while(position<cdatatypes.size()){                    
+                
+                    Byte    slot = (Byte)     cdataitems.get(position+0);
+                    Integer trig = (Integer)  cdataitems.get(position+1);
+                    Long    time = (Long)     cdataitems.get(position+2);
+                    
+                    //EvioRawDataBank  dataBank = new EvioRawDataBank(crate,slot.intValue(),trig,time);
+                    Integer nchannels = (Integer) cdataitems.get(position+3);
+                    //System.out.println("Retrieving the data size = " + cdataitems.size()
+                    //+ "  " + cdatatypes.get(3) + " number of channels = " + nchannels);
+                    position += 4;
+                    int counter  = 0;
+                    while(counter<nchannels){
+                        //System.err.println("Position = " + position + " type =  "
+                        //+ cdatatypes.get(position));
+                        //Byte    slot = (Byte)     cdataitems.get(0);
+                        //Integer trig = (Integer)  cdataitems.get(1);
+                        //Long    time = (Long)     cdataitems.get(2);
+                        Byte channel   = (Byte) cdataitems.get(position);
+                        Integer length = (Integer) cdataitems.get(position+1);
+                        //dataBank.addChannel(channel.intValue());
+                        
+                        for(int loop = 0; loop < length; loop++){
+                            Short tdc    = (Short) cdataitems.get(position+2);
+                            Integer adc  = (Integer) cdataitems.get(position+3);
+                            Short pmin   = (Short) cdataitems.get(position+4);
+                            Short pmax   = (Short) cdataitems.get(position+5);
+                            RawDataEntry  entry = new RawDataEntry(crate,slot,channel);
+                            entry.setPulse(tdc, adc, pmin, pmax);
+                            entries.add(entry);
+                            //position+=4;
+                            //dataBank.addData(channel.intValue(), 
+                            //       new RawData(tdc,adc,pmin,pmax));
+                        }
+                        position += 6;
+                        counter++;
                     }
-                    position += 6;
-                    counter++;
-                }                
+                }
                 return entries;
             } catch (EvioException ex) {
                 Logger.getLogger(EvioRawEventDecoder.class.getName()).log(Level.SEVERE, null, ex);

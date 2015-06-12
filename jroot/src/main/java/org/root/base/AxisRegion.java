@@ -38,6 +38,7 @@ public class AxisRegion {
         this.axisAttributes.getProperties().setProperty("background-color", "0");
         this.axisAttributes.getProperties().setProperty("line-color", "1");
         this.axisAttributes.getProperties().setProperty("line-width", "2");
+        
         axisTitleX.setFont("Helvetica");
         axisTitleY.setFont("Helvetica");
         frameTitle.setFont("Helvetica");
