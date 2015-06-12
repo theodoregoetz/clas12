@@ -262,7 +262,9 @@ public class EvioRawEventDecoder {
                 
                 int position = 0;
                 
-                while(position<cdatatypes.size()){
+                while(position<cdatatypes.size()-4){
+                    
+                    
                     
                     Byte    slot = (Byte)     cdataitems.get(position+0);
                     Integer trig = (Integer)  cdataitems.get(position+1);
