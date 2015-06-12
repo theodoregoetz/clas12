@@ -263,12 +263,13 @@ public class EvioRawEventDecoder {
                 int position = 0;
                 
                 while(position<cdatatypes.size()){
+                    
                     Byte    slot = (Byte)     cdataitems.get(position+0);
                     Integer trig = (Integer)  cdataitems.get(position+1);
                     Long    time = (Long)     cdataitems.get(position+2);
                     //EvioRawDataBank  dataBank = new EvioRawDataBank(crate, slot.intValue(),trig,time);
                     
-                    Integer nchannels = (Integer) cdataitems.get(3);
+                    Integer nchannels = (Integer) cdataitems.get(position+3);
                     //System.out.println("Retrieving the data size = " + cdataitems.size()
                     //+ "  " + cdatatypes.get(3) + " number of channels = " + nchannels);
                     position += 4;
