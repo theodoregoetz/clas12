@@ -46,10 +46,15 @@ public class LatexText {
     public AttributedString getText(){ return this.latexString;}
     
     public void setFont(String fontname){
-        latexString.addAttribute(TextAttribute.FAMILY, fontname);
+        if(this.latexString.getIterator().getEndIndex()>0){
+        //System.out.println("INDEX = " + this.latexString.getIterator().getEndIndex());
+            latexString.addAttribute(TextAttribute.FAMILY, fontname);
+        }
     }
     
     public void setFontSize(int size){
-        latexString.addAttribute(TextAttribute.SIZE, (float)size);
+        if(this.latexString.getIterator().getEndIndex()>0){
+            latexString.addAttribute(TextAttribute.SIZE, (float)size);
+        }
     }
 }
