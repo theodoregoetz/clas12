@@ -416,7 +416,7 @@ public class H2D implements EvioWritableTree {
 		String name = "X Projection";
 		double xMin = xAxis.min();
 		double xMax = xAxis.max();
-		int xNum = xAxis.getNBins() + 1;
+		int xNum = xAxis.getNBins();
 		H1D projX = new H1D(name, xNum, xMin, xMax);
 
 		double height = 0.0;
@@ -442,7 +442,7 @@ public class H2D implements EvioWritableTree {
 		String name = "Y Projection";
 		double yMin = yAxis.min();
 		double yMax = yAxis.max();
-		int yNum = yAxis.getNBins() + 1;
+		int yNum = yAxis.getNBins() ;
 		H1D projY = new H1D(name, yNum, yMin, yMax);
 
 		double height = 0.0;
