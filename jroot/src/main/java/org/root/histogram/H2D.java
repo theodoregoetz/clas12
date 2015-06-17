@@ -467,8 +467,8 @@ public class H2D implements EvioWritableTree {
 		String name = "Slice of " + xBin + " X Bin";
 		double xMin = yAxis.min();
 		double xMax = yAxis.max();
-		int xNum    = yAxis.getNBins() + 1;
-		H1D sliceX = new H1D(name, xNum, xMin, xMax);
+		int xNum    = yAxis.getNBins();
+		H1D sliceX = new H1D(name, name, xNum, xMin, xMax);
 
 		for (int x = 0; x <= xNum; x++) {
 			sliceX.setBinContent(x, this.getBinContent(xBin,x));
@@ -486,8 +486,8 @@ public class H2D implements EvioWritableTree {
 		String name = "Slice of " + yBin + " Y Bin";
 		double xMin = xAxis.min();
 		double xMax = xAxis.max();
-		int    xNum = xAxis.getNBins() + 1;
-		H1D sliceY = new H1D(name, xNum, xMin, xMax);
+		int    xNum = xAxis.getNBins();
+		H1D sliceY = new H1D(name, name, xNum, xMin, xMax);
 
 		for (int y = 0; y <= xNum; y++) {
 			sliceY.setBinContent(y, this.getBinContent(y,yBin));

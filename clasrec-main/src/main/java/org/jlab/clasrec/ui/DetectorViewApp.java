@@ -241,6 +241,7 @@ public class DetectorViewApp extends JFrame implements IDetectorComponentSelecti
             this.monitoringClass = (DetectorMonitoring) dialog.getMonitoringClass();
             System.out.println("SELECTED PLUGIN FOR MONITORING : " + this.monitoringClass.getName());
             this.initDetector(this.monitoringClass.getName());
+            
         }
     }
 }

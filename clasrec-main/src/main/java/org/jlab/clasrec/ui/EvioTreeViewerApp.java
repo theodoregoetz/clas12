@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -35,7 +36,7 @@ import org.root.pad.EmbeddedCanvas;
  *
  * @author gavalian
  */
-public class EvioTreeViewerApp extends JFrame implements ActionListener {
+public class EvioTreeViewerApp extends JInternalFrame implements ActionListener {
     private JTable  bankTable = null;
     private JSplitPane splitPane = null;
     private JTree  eventTree = null;
