@@ -17,6 +17,7 @@ import org.jlab.clas12.raw.EvioRawDataSource;
 import org.jlab.clas12.raw.EvioTreeBranch;
 import org.jlab.clas12.raw.RawData;
 import org.jlab.clas12.raw.RawDataEntry;
+import org.jlab.clas12.raw.RawDataTDC;
 import org.jlab.coda.jevio.ByteDataTransformer;
 import org.jlab.coda.jevio.CompositeData;
 import org.jlab.coda.jevio.DataType;
@@ -135,6 +136,26 @@ public class EvioRawEventDecoder {
             if(branch.getTag()==tag) return branch;
         }
         return null;
+    }
+    
+    public List<RawDataTDC>  getTDCEntries(EvioDataEvent event){
+        ArrayList<RawDataTDC> rawTDCs = new ArrayList<RawDataTDC>();
+        ArrayList<EvioTreeBranch> branches = this.getEventBranches(event);
+        for(EvioTreeBranch branch : branches){
+            int  crate = branch.getTag();
+            EvioTreeBranch cbranch = this.getEventBranch(branches, branch.getTag());
+            for(EvioNode node : cbranch.getNodes()){ 
+                if(node.getTag()==57607){
+                    int[] intData = ByteDataTransformer.toIntArray(node.getStructureBuffer(false));
+                    for(int loop = 0; loop < intData.length; loop++){
+                        RawDataTDC  tdc = new RawDataTDC(crate);
+                        tdc.setData(intData[loop]);
+                        rawTDCs.add(tdc);
+                    }
+                }
+            }
+        }
+        return rawTDCs;
     }
     
     public ArrayList<RawDataEntry> getDataEntries(EvioDataEvent event){

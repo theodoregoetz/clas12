@@ -24,6 +24,7 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import org.jlab.clasrec.loader.ClasPluginChooseDialog;
 import org.jlab.clasrec.main.DetectorMonitoring;
+import org.jlab.clasrec.utils.CLASGeometryLoader;
 import org.jlab.clasrec.utils.DataBaseLoader;
 import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.detector.ec.ECDetector;
@@ -77,6 +78,21 @@ public class DetectorViewApp extends JFrame implements IDetectorComponentSelecti
     }
     
     public final void initDetector(String name){
+        
+        if(name.compareTo("BST")==0){
+            CLASGeometryLoader  loader = new CLASGeometryLoader();
+            List<DetectorComponentUI>  components = loader.getLayerUI("BST",0,0);
+            if(components==null){
+                System.out.println("ERROR: no components created");
+            }
+            DetectorLayerUI  layerUI = new DetectorLayerUI();
+            layerUI.setComponents((ArrayList<DetectorComponentUI>) components);
+            layerUI.updateDrawRegion();
+            DetectorLayerPanel panelBST = new DetectorLayerPanel();
+            panelBST.layerUI = layerUI;
+            panelBST.setSelectionListener(this);
+            this.detectorView.addDetectorLayer("BST", panelBST);
+        }
         
         if(name.compareTo("EC")==0){
             ConstantProvider  ecdb  = DataBaseLoader.getConstantsEC();
