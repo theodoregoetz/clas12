@@ -38,7 +38,7 @@ public class DataUtilities {
     public static int getInteger(int data, int bitstart, int bitend){
         int length = bitend - bitstart + 1;
         if(DataUtilities.bitMap.containsKey(length)==true){
-            int value = (data&DataUtilities.bitMap.get(length))>>bitstart;
+            int value = ((data>>bitstart)&DataUtilities.bitMap.get(length));
             return value;
         } else {
             System.out.println("[DataUtilities] : ERROR length = " + length);
