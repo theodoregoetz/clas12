@@ -246,4 +246,30 @@ public class Shape3D implements Transformable, Showable {
         str.deleteCharAt(str.length()-1);
         return str.toString();
     }
+    
+    public String getMeshFXML(){
+        StringBuilder str = new StringBuilder();
+        str.append("\t<mesh>\n");
+        str.append("\t\t<TriangleMesh>\n");
+        str.append("\t\t\t<points>");
+        for(int loop = 0; loop < this.faces.size();loop++){
+            for(int f = 0; f < 3; f++){
+                str.append(String.format("%8.3f %8.3f %8.3f  ", 
+                        this.face(loop).point(f).x(),
+                        this.face(loop).point(f).y(),
+                        this.face(loop).point(f).z()
+                        ));
+            }
+        }
+        str.append("</points>\n");
+        str.append("\t\t\t<faces>");
+        for(int loop = 0; loop < this.faces.size();loop++){
+            str.append(String.format("%d %d %d ", 0 + 3*loop, 1 + 3*loop, 2 + 3*loop));
+        }
+        str.append("</faces>\n");
+        
+        str.append("\t\t</TriangleMesh>\n");
+        str.append("\t</mesh>\n");
+        return str.toString();
+    }
 }

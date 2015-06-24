@@ -153,6 +153,19 @@ public class EvioSource implements DataSource {
         return null;
     }
     
+    public EvioDataEventHandler  getNextEventHandler(){
+        if(currentEvent>currentFileEntries) return null;
+        try {
+            ByteBuffer evioBuffer = evioReader.getEventBuffer(currentEvent, true);
+            EvioDataEventHandler event = new EvioDataEventHandler(evioBuffer.array(),storeByteOrder);
+            currentEvent++;
+            return event;
+        } catch (EvioException ex) {
+            Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     @Override
     public DataEvent getNextEvent() {
         if(currentEvent>currentFileEntries) return null;

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jlab.coda.jevio.ByteDataTransformer;
@@ -30,34 +31,46 @@ public class EvioDataEvent implements DataEvent {
     private HashMap<String,String> eventProperties = new HashMap<String,String>();
     private ByteBuffer evioBuffer;
     private EvioCompactStructureHandler structure = null;
+    private EvioDataEventHandler        eventHandler = null;
     private EvioDataDictionary dictionary = null;
+    private List<EvioNode> eventNodes  = null;
     
     public EvioDataEvent(byte[] buffer, ByteOrder b_order){
+        
         evioBuffer = ByteBuffer.wrap(buffer);
         evioBuffer.order(b_order);
+        eventHandler = new EvioDataEventHandler(evioBuffer);
+        /*
         try {
             structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
+            eventNodes = structure.getChildNodes();
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
         
     }
     public EvioDataEvent(ByteBuffer buff){
         evioBuffer = buff;
+        eventHandler = new EvioDataEventHandler(evioBuffer);
+        /*
         try {
             structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
+            eventNodes = structure.getChildNodes();
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     public EvioDataEvent(ByteBuffer buff,EvioDataDictionary dict){
         evioBuffer = buff;
         dictionary = dict;
+        eventHandler = new EvioDataEventHandler(evioBuffer);
+        /*
         try {
             structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
+            eventNodes = structure.getChildNodes();
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
     public ByteOrder getByteOrder(){
@@ -67,11 +80,14 @@ public class EvioDataEvent implements DataEvent {
    public EvioDataEvent(byte[] buffer, ByteOrder b_order, EvioDataDictionary dict){
         evioBuffer = ByteBuffer.wrap(buffer);
         evioBuffer.order(b_order);
+        this.eventHandler = new EvioDataEventHandler(buffer,b_order);
+        /*
         try {
             structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
+            eventNodes = structure.getChildNodes();
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
         dictionary = dict;
         this.setProperty("banks", "*");
         this.setProperty("variables", "*");
@@ -265,12 +281,24 @@ public class EvioDataEvent implements DataEvent {
                     " there is no descriptor with name " + bank_name);
             return false;
         }
+        if(this.eventHandler==null){
+            System.out.println("SEVERE ERROR Event handler is NULL");
+            return false;
+        }
         
         EvioDataDescriptor desc = (EvioDataDescriptor) this.dictionary.getDescriptor(bank_name);
         if(desc==null) return false;
-        int nodetag = Integer.parseInt(desc.getPropertyString("container_tag"));
-        EvioNode banknode = this.getNodeFromTree(nodetag, 0, DataType.ALSOBANK);
-        if(banknode==null) return false;
+        int parenttag = Integer.parseInt(desc.getPropertyString("parent_tag"));
+        int nodetag   = Integer.parseInt(desc.getPropertyString("container_tag"));
+        EvioNode parentNode = this.eventHandler.getRootNode(parenttag, 0, DataType.ALSOBANK);
+        //System.out.println("looking for parent tag = " + parenttag);
+        if(parentNode==null) return false;
+        //System.out.println("ROOT NODE IS FOUND");
+        EvioNode leafNode = this.eventHandler.getChildNode(parentNode, nodetag, 0, DataType.ALSOBANK);
+        if(leafNode==null) return false;
+        //System.out.println("CHILD NODE IS FOUND");
+        //EvioNode banknode = this.getNodeFromTree(nodetag, 0, DataType.ALSOBANK);
+        //if(banknode==null) return false;
         return true;
     }
     
@@ -278,58 +306,44 @@ public class EvioDataEvent implements DataEvent {
     public DataBank getBank(String bank_name) {
         EvioDataDescriptor desc = (EvioDataDescriptor) this.dictionary.getDescriptor(bank_name);
         if(desc==null) return null;
+        
+        int parenttag = Integer.parseInt(desc.getPropertyString("parent_tag"));
+        int nodetag   = Integer.parseInt(desc.getPropertyString("container_tag"));
+
+        EvioNode parentNode = this.eventHandler.getRootNode(parenttag, 0, DataType.ALSOBANK);
+        if(parentNode==null) return null;
+        
+        EvioNode leafNode = this.eventHandler.getChildNode(parentNode, nodetag, 0, DataType.ALSOBANK);
+        if(leafNode==null) return null;
+        
+        TreeMap<Integer,Object>  dataTree = this.eventHandler.getNodeData(leafNode);
+        
         EvioDataBank bank = new EvioDataBank(desc);
         String[] entries = desc.getEntryList();
-
+        
         for(String item : entries){
             //System.err.println("entry = " + item);
             //if(item.getValue()<20){
             int type = desc.getProperty("type", item);
-            if(DataEntryType.getType(type)==DataEntryType.INTEGER){
-                int[] data = this.getInt(bank_name+"."+item);
-                if(data!=null){
-                    bank.setInt(item, data);
-                } else {
-                    bank.setInt(item, new int[0]);
-                }
+            int num  = desc.getProperty("num" , item);
+            
+            if(DataEntryType.getType(type)==DataEntryType.INTEGER){            
+                bank.setInt(item, (int[]) dataTree.get(num));
             }
+            
             if(DataEntryType.getType(type)==DataEntryType.DOUBLE){
-                
-                double[] data = this.getDouble(bank_name+"."+item);
-                if(data!=null){
-                    bank.setDouble(item, data);
-                } else {
-                    bank.setDouble(item, new double[0]);
-                }                
+                    bank.setDouble(item, (double[]) dataTree.get(num));
             }
             
-            if(DataEntryType.getType(type)==DataEntryType.FLOAT){
-                
-                float[] data = this.getFloat(bank_name+"."+item);
-                if(data!=null){
-                    bank.setFloat(item, data);
-                } else {
-                    bank.setFloat(item, new float[0]);
-                }                
+            if(DataEntryType.getType(type)==DataEntryType.FLOAT){                
+                bank.setFloat(item, (float[]) dataTree.get(num));
             }
-            if(DataEntryType.getType(type)==DataEntryType.SHORT){
-                
-                short[] data = this.getShort(bank_name+"."+item);
-                if(data!=null){
-                    bank.setShort(item, data);
-                } else {
-                    bank.setShort(item, new short[0]);
-                }                
+            if(DataEntryType.getType(type)==DataEntryType.SHORT){               
+                bank.setShort(item, (short[]) dataTree.get(num));
             }
             
-            if(DataEntryType.getType(type)==DataEntryType.BYTE){
-                
-                byte[] data = this.getByte(bank_name+"."+item);
-                if(data!=null){
-                    bank.setByte(item, data);
-                } else {
-                    bank.setByte(item, new byte[0]);
-                }                
+            if(DataEntryType.getType(type)==DataEntryType.BYTE){                
+                    bank.setByte(item, (byte[]) dataTree.get(num));
             }
             //} else {
                 
@@ -377,19 +391,35 @@ public class EvioDataEvent implements DataEvent {
     }
     
     public EvioNode getNodeFromTree(int parent_tag, int tag, int num, DataType type){
+        /*
         try {
             List<EvioNode>  nodes = structure.getChildNodes();
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
         return null;
     }
     
+    /*
+    public EvioNode getChildNode(EvioNode node, int tag, int num, DataType type){
+        
+    }*/
+    
+    
     public EvioNode getNodeFromTree(int tag, int num, DataType type){
+        
         try {
             List<EvioNode> nodes   = structure.getNodes();
-            if(nodes==null) return null;
+            
+            if(nodes==null) {
+                System.out.println("EVENT NODES = NULL");
+                return null;
+            }
+
             for(EvioNode item: nodes){
+                if(item.getDataTypeObj()==type){
+                    //System.out.println("parsin node " + item.getTag() + " looking for " + tag );
+                }
                 if(type==DataType.INT32){
                     if(item.getTag()==tag&&item.getNum()==num&&
                             (item.getDataTypeObj()==DataType.INT32||item.getDataTypeObj()==DataType.UINT32))
@@ -403,7 +433,9 @@ public class EvioDataEvent implements DataEvent {
                 if(item.getTag()==tag&&item.getNum()==num&&
                 item.getDataTypeObj()==type)
                 return item;*/
-            }            
+            }
+            
+            
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
         }

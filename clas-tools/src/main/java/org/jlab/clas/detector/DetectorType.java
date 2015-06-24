@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jlab.data.detector;
+package org.jlab.clas.detector;
 
 /**
  *
  * @author gavalian
  */
 public enum DetectorType {
-    
+      
     UNDEFINED ( 0, "undefined"),
     BST       ( 1, "BST"),
     BMT       ( 1, "BMT"),
