@@ -26,13 +26,13 @@ public class DetectorRawData {
         this.descriptor.setType(type);
     }
     
-    public void set(Integer tdc, Integer adc, Integer min, Integer max){
+    public void set(Short tdc, Integer adc, Short min, Short max){
         this.dataMODE = 7;
         this.detectorData.clear();
-        this.detectorData.add(tdc);
+        this.detectorData.add(DataUtils.getIntFromShort(tdc));
         this.detectorData.add(adc);
-        this.detectorData.add(min);
-        this.detectorData.add(max);
+        this.detectorData.add(DataUtils.getIntFromShort(min));
+        this.detectorData.add(DataUtils.getIntFromShort(max));
     }
     
     public DetectorDescriptor getDescriptor(){return this.descriptor;}
@@ -41,10 +41,10 @@ public class DetectorRawData {
         return this.dataMODE;
     }
     
-    public void set(Integer tdc){
+    public void set(Short tdc){
         this.dataMODE = 10;
         this.detectorData.clear();
-        this.detectorData.add(tdc);
+        this.detectorData.add(DataUtils.getIntFromShort(tdc));
     }
     
     public int getTDC(){

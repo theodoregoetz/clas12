@@ -5,6 +5,8 @@
  */
 package org.jlab.clas.detector;
 
+import org.jlab.clas.tools.utils.DataUtils;
+
 /**
  *
  * @author gavalian
@@ -60,6 +62,30 @@ public class DetectorDescriptor {
         this.dt_SECTOR = sector;
         this.dt_LAYER  = layer;
         this.dt_COMPONENT = comp;
+    }
+    
+    
+    public static int generateHashCode(int s, int l, int c){
+        return  ((s<<16)&0x00FF0000)|
+                ((l<<8)&0x0000FF00)|(c&0x000000FF);
+    }
+    
+    public int getHashCode(){
+        int hash = ((this.dt_SECTOR<<16)&0x00FF0000)|
+                ((this.dt_LAYER<<8)&0x0000FF00)|(this.dt_COMPONENT&0x000000FF);
+        return hash;
+    }
+    
+    public int getSectorFromHash(int hash){
+        return DataUtils.getInteger(hash, 16, 23);
+    }
+    
+    public int getLayerFromHash(int hash){
+        return DataUtils.getInteger(hash, 8, 15);
+    }
+    
+    public int getComponentFromHash(int hash){
+        return DataUtils.getInteger(hash, 0, 7);
     }
     
     @Override

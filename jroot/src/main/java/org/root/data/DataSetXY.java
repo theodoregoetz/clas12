@@ -80,9 +80,9 @@ public class DataSetXY implements EvioWritableTree,IDataSet {
     public String getTitle(){ return this.dataTitle;}
     public String getXTitle(){ return this.dataXtitle;}
     public String getYTitle(){ return this.dataYtitle;}
-    public void setTitle(String t){ this.dataTitle = t;}
-    public void setXTitle(String t){ this.dataXtitle = t;}
-    public void setYTitle(String t){ this.dataYtitle = t;}
+    public void setTitle(String t){ this.attr.getProperties().put("title", t);}
+    public void setXTitle(String t){ this.attr.getProperties().put("xtitle", t);}
+    public void setYTitle(String t){ this.attr.getProperties().put("ytitle", t);}
     
     public void add(double x, double y){
         if(x!=Double.NaN&&y!=Double.NaN&&

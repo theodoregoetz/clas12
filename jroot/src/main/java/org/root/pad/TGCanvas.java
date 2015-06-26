@@ -26,7 +26,7 @@ public class TGCanvas extends JFrame {
     
     public TGCanvas(String name, String title, int xs, int ys, int rows, int cols){
         super(title);
-        embCanvas = new EmbeddedCanvas(600,600,rows,cols);
+        embCanvas = new EmbeddedCanvas(xs,ys,rows,cols);
         this.add(embCanvas,BorderLayout.CENTER);
         this.pack();
         this.setVisible(true);

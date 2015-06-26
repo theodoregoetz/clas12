@@ -196,4 +196,10 @@ public class AbsDataSetDraw {
         g2d.draw(path);
         //g2d.fill(path);
     }
+    
+     public static void drawDataSetAsHistogram2D(AxisRegion axis, Graphics2D g2d, IDataSet ds,
+            int startX, int startY, int gWidth, int gHeight){
+         
+     }
+    
 }

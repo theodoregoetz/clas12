@@ -22,6 +22,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import org.jlab.clas.tools.utils.FileUtils;
 import org.jlab.clasrec.loader.ClasPluginChooseDialog;
 import org.jlab.clasrec.main.DetectorMonitoring;
 import org.jlab.clasrec.utils.CLASGeometryLoader;
@@ -38,6 +39,7 @@ import org.jlab.geom.gui.DetectorLayerPanel;
 import org.jlab.geom.gui.DetectorLayerUI;
 import org.jlab.geom.gui.DetectorViewPanel;
 import org.jlab.geom.gui.IDetectorComponentSelection;
+
 import org.root.pad.EmbeddedCanvas;
 
 /**
@@ -185,6 +187,19 @@ public class DetectorViewApp extends JFrame implements IDetectorComponentSelecti
         }*/
         System.out.println("DONE PROCESSING FILE");
     }
+    public void processDir(List<String> filename){
+        ProcessMonitoringDialog dialog = new ProcessMonitoringDialog(this,filename,this.monitoringClass);
+        dialog.setModalityType(ModalityType.DOCUMENT_MODAL);
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(this);
+        SwingUtilities.invokeLater(dialog);
+        //dialog.run();
+        /*
+        while(dialog.isActive()==true){
+            // Waiting
+        }*/
+        System.out.println("DONE PROCESSING FILE");
+    }
     
     public void detectorSelected(int sectore, int layer, int component) {
         //System.out.println("I GOT CALLBACK");
@@ -225,6 +240,7 @@ public class DetectorViewApp extends JFrame implements IDetectorComponentSelecti
         
         if(e.getActionCommand().compareTo("Process File..")==0){
             final JFileChooser fc = new JFileChooser();
+            /*
             fc.setFileFilter(new javax.swing.filechooser.FileFilter(){
                 public boolean accept(File f) {
                     return f.getName().toLowerCase().endsWith(".evio")
@@ -234,7 +250,8 @@ public class DetectorViewApp extends JFrame implements IDetectorComponentSelecti
                 public String getDescription() {
                     return "EVIO CLAS data format";
                 }
-            });
+            });*/
+            fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             String currentDir = System.getenv("PWD");
             if(currentDir!=null){
                 fc.setCurrentDirectory(new File(currentDir));
@@ -242,8 +259,14 @@ public class DetectorViewApp extends JFrame implements IDetectorComponentSelecti
             int returnVal = fc.showOpenDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                //This is where a real application would open the file.
-               System.out.println("Opening: " + file.getAbsolutePath() + "." );
+                if(file.isDirectory()){
+                    List<String>  files = FileUtils.getFilesInDir(
+                            file.getAbsolutePath());
+                    this.processDir(files);
+                } else {
+                    //This is where a real application would open the file.
+                    System.out.println("Opening: " + file.getAbsolutePath() + "." );
+                }
                this.processFile(file.getAbsolutePath());
             } else {
                 System.out.println("Open command cancelled by user." );

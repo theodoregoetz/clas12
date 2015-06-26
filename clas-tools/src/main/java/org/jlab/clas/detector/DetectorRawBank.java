@@ -14,6 +14,7 @@ import org.jlab.clas.tools.utils.DataUtils;
  * @author gavalian
  */
 public class DetectorRawBank {
+    
     private ArrayList<DetectorRawData> detectorBank = new  ArrayList<DetectorRawData>();
     private DetectorType  detectorType = DetectorType.UNDEFINED;
     
@@ -25,7 +26,13 @@ public class DetectorRawBank {
         this.detectorType = type;
         this.addData(dataEntries);
     }
-        
+    
+    public void add(DetectorRawData dataEntry){
+        if(dataEntry.getDescriptor().getType()==this.detectorType){
+            this.detectorBank.add(dataEntry);
+        }
+    }
+    
     public final void addData(ArrayList<DetectorRawData> dataEntries){
         for(DetectorRawData data : dataEntries){
             if(data.getDescriptor().getType()==this.detectorType){

@@ -74,7 +74,7 @@ public class EvioDataEvent implements DataEvent {
     }
     
     public ByteOrder getByteOrder(){
-        return structure.getByteBuffer().order();
+        return this.eventHandler.getStructure().getByteBuffer().order();
     }
     
    public EvioDataEvent(byte[] buffer, ByteOrder b_order, EvioDataDictionary dict){
@@ -97,7 +97,7 @@ public class EvioDataEvent implements DataEvent {
     public String[] getBankList() {
         try {
             // TODO Auto-generated method stub
-            List<EvioNode> nodes   = structure.getNodes();
+            List<EvioNode> nodes   = this.eventHandler.getStructure().getNodes();
             ArrayList<String> list = new ArrayList<String>();
             String[] descList = dictionary.getDescriptorList();
             for(EvioNode item : nodes){
@@ -124,7 +124,7 @@ public class EvioDataEvent implements DataEvent {
     }
     
     public EvioCompactStructureHandler getStructureHandler(){
-        return structure;
+        return this.eventHandler.getStructure();
     }
     
     public void initEvent(ByteBuffer buffer){
@@ -171,7 +171,7 @@ public class EvioDataEvent implements DataEvent {
          EvioNode node = this.getNodeFromTree(tag, num, DataType.FLOAT32);
         if(node!=null){
              try {
-                 ByteBuffer buffer = structure.getData(node);
+                 ByteBuffer buffer = this.eventHandler.getStructure().getData(node);
                  float[]  nodedata = ByteDataTransformer.toFloatArray(buffer);
                  return nodedata;
              } catch (EvioException ex) {
@@ -208,7 +208,7 @@ public class EvioDataEvent implements DataEvent {
         EvioNode node = this.getNodeFromTree(tag, num, DataType.INT32);
         if(node!=null){
             try {
-                ByteBuffer buffer = structure.getData(node);
+                ByteBuffer buffer = this.eventHandler.getStructure().getData(node);
                 int[] nodedata = ByteDataTransformer.toIntArray(buffer);
                 return nodedata;
             } catch (EvioException ex) {
@@ -256,7 +256,7 @@ public class EvioDataEvent implements DataEvent {
         EvioNode node = this.getNodeFromTree(tag, num, DataType.COMPOSITE);
         if(node!=null){
             try {
-                ByteBuffer buffer = structure.getData(node);
+                ByteBuffer buffer = this.eventHandler.getStructure().getData(node);
                 byte[] nodedata = ByteDataTransformer.toByteArray(buffer);
                 return nodedata;
             } catch (EvioException ex) {
@@ -409,7 +409,7 @@ public class EvioDataEvent implements DataEvent {
     public EvioNode getNodeFromTree(int tag, int num, DataType type){
         
         try {
-            List<EvioNode> nodes   = structure.getNodes();
+            List<EvioNode> nodes   = this.eventHandler.getStructure().getNodes();
             
             if(nodes==null) {
                 System.out.println("EVENT NODES = NULL");
@@ -446,7 +446,7 @@ public class EvioDataEvent implements DataEvent {
         EvioNode node = this.getNodeFromTree(tag,num,DataType.DOUBLE64);
         if(node!=null){
             try {
-                ByteBuffer buffer = structure.getData(node);
+                ByteBuffer buffer = this.eventHandler.getStructure().getData(node);
                 double[] nodedata = ByteDataTransformer.toDoubleArray(buffer);
                 return nodedata;
             } catch (EvioException ex) {
@@ -492,7 +492,7 @@ public class EvioDataEvent implements DataEvent {
         //System.err.println("---------> 4");
 
         EventBuilder builder = new EventBuilder(baseBank);
-        ByteOrder byteOrder = structure.getByteBuffer().order();
+        ByteOrder byteOrder = this.eventHandler.getStructure().getByteBuffer().order();
         
         baseBank.setByteOrder(byteOrder);
         sectionBank.setByteOrder(byteOrder);
@@ -552,12 +552,13 @@ public class EvioDataEvent implements DataEvent {
             baseBank.write(bb);
             bb.flip();
             //System.out.println("-----> prior size = " + structure.getByteBuffer().limit());
-            ByteBuffer newBuffer = structure.addStructure(bb);
+            ByteBuffer newBuffer = this.eventHandler.getStructure().addStructure(bb);
             //System.out.println("---> new byte buffer has size " + newBuffer.limit()            
             //        +  "   changed from " + structure.getByteBuffer().limit());
             //structure.
-            EvioCompactStructureHandler handler = new EvioCompactStructureHandler(structure.getByteBuffer(),DataType.BANK);
-            structure = handler;
+            EvioCompactStructureHandler handler = new EvioCompactStructureHandler(
+                    this.eventHandler.getStructure().getByteBuffer(),DataType.BANK);
+            this.eventHandler.setStructure( handler );
             /*
             for (Map.Entry<String, int[]> bank : integerContainer.entrySet()) {
             EvioBank dataBank = new EvioBank(tag, DataType.INT32, bank.getKey());
@@ -580,7 +581,7 @@ public class EvioDataEvent implements DataEvent {
 
     @Override
     public ByteBuffer getEventBuffer() {
-        return structure.getByteBuffer();
+        return this.eventHandler.getStructure().getByteBuffer();
     }
 
     @Override
@@ -600,7 +601,7 @@ public class EvioDataEvent implements DataEvent {
         EvioNode node = this.getNodeFromTree(tag,num,DataType.CHAR8);
         if(node!=null){
             try {
-                ByteBuffer buffer = structure.getData(node);
+                ByteBuffer buffer = this.eventHandler.getStructure().getData(node);
                 byte[] nodedata = ByteDataTransformer.toByteArray(buffer);
                 return nodedata;
             } catch (EvioException ex) {
@@ -649,7 +650,7 @@ public class EvioDataEvent implements DataEvent {
         try {
             
             EvioEvent baseBank = new EvioEvent(Integer.parseInt(parent_tag), DataType.ALSOBANK, 0);
-            ByteOrder byteOrder = structure.getByteBuffer().order();
+            ByteOrder byteOrder = this.eventHandler.getStructure().getByteBuffer().order();
             baseBank.setByteOrder(byteOrder);
             EventBuilder builder = new EventBuilder(baseBank);
             
@@ -722,12 +723,13 @@ public class EvioDataEvent implements DataEvent {
             baseBank.write(bb);
             bb.flip();
             //System.out.println("-----> prior size = " + structure.getByteBuffer().limit());
-            ByteBuffer newBuffer = structure.addStructure(bb);
+            ByteBuffer newBuffer = this.eventHandler.getStructure().addStructure(bb);
             //System.out.println("---> new byte buffer has size " + newBuffer.limit()            
             //        +  "   changed from " + structure.getByteBuffer().limit());
             //structure.
-            EvioCompactStructureHandler handler = new EvioCompactStructureHandler(structure.getByteBuffer(),DataType.BANK);
-            structure = handler;
+            EvioCompactStructureHandler handler = new EvioCompactStructureHandler(
+                    this.eventHandler.getStructure().getByteBuffer(),DataType.BANK);
+            this.eventHandler.setStructure( handler );
             /*
             for (Map.Entry<String, int[]> bank : integerContainer.entrySet()) {
             EvioBank dataBank = new EvioBank(tag, DataType.INT32, bank.getKey());

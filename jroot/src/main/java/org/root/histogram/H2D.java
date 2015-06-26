@@ -3,7 +3,9 @@ package org.root.histogram;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import org.root.attr.Attributes;
+import org.root.base.DataRegion;
 import org.root.base.EvioWritableTree;
+import org.root.base.IDataSet;
 
 /**
  * Specifies the methods to create a 2D Histogram and operations to fill it and
@@ -12,7 +14,7 @@ import org.root.base.EvioWritableTree;
  * @author Erin Kirby
  * @version 061714
  */
-public class H2D implements EvioWritableTree {
+public class H2D implements EvioWritableTree,IDataSet {
 
 	private String hName = "basic2D";
 	private Axis xAxis = new Axis();
@@ -531,5 +533,41 @@ public class H2D implements EvioWritableTree {
                 System.arraycopy(binc, 0, hBuffer, 0, binc.length);
             }
         }
+    }
+
+    public DataRegion getDataRegion() {
+        DataRegion  region = new DataRegion();
+        region.MINIMUM_X = this.xAxis.getBinCenter(0)-this.xAxis.getBinWidth(0)/2.0;
+        region.MAXIMUM_X = this.xAxis.getBinCenter(this.xAxis.getNBins()-1)-
+                this.xAxis.getBinWidth(this.xAxis.getNBins()-1)/2.0;
+        region.MINIMUM_Y = this.yAxis.getBinCenter(0)-this.yAxis.getBinWidth(0)/2.0;
+        region.MAXIMUM_Y = this.yAxis.getBinCenter(this.yAxis.getNBins()-1)-
+                this.yAxis.getBinWidth(this.yAxis.getNBins()-1)/2.0;
+        return region;
+    }
+
+    public Integer getDataSize() {
+        return this.xAxis.getNBins()*this.yAxis.getNBins();
+    }
+
+    public Double getDataX(int index) {
+        return 1.0;
+    }
+
+    public Double getDataY(int index) {
+        return 1.0;
+    }
+
+    public Double getErrorX(int index) {
+        return 1.0;
+
+    }
+
+    public Double getErrorY(int index) {
+        return 1.0;
+    }
+
+    public Attributes getAttributes() {
+        return this.attr;
     }
 }

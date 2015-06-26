@@ -56,6 +56,8 @@ public class EvioDataEventHandler {
         return null;
     }
     
+    public EvioCompactStructureHandler getStructure(){return this.structure;}
+    public void setStructure(EvioCompactStructureHandler struct){ this.structure = struct;}
     public EvioNode getChildNode(EvioNode rootNode, int tag, int num, DataType type){
         List<EvioNode>  leafs = rootNode.getChildNodes();
         for(EvioNode node : leafs){
