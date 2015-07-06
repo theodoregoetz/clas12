@@ -17,7 +17,7 @@
     <module>clas-io</module>
     <module>clasrec-main</module>
     <module>clas-geometry</module>
-    <module>clas-scigraph</module>
+<!--    <module>clas-scigraph</module> -->
     <module>jroot</module>
   </modules>
 
