@@ -17,7 +17,7 @@
       <dependency>
 	<groupId>org.jlab.coda</groupId>
         <artifactId>jevio</artifactId>
-        <version>4.4</version>
+        <version>4.4.5</version>
       </dependency>
       <dependency>
         <groupId>org.jlab.clas</groupId>

@@ -12,8 +12,8 @@ import java.nio.ByteBuffer;
  * @author gavalian
  */
 public class BosBankStructure {
-    public String bankName = "";
     
+    public String bankName = "";    
     public int  BANKNUMBER = 0;
     public int  NROWS    = 0;
     public int  NCOLS    = 0;
@@ -36,7 +36,7 @@ public class BosBankStructure {
         byte[] data = buffer.array();
         int offset  = 8*4;
         for(int loop = start_index+offset; loop < data.length; loop++){
-            if(data[loop]==' '||data[loop]==')') return loop;
+            if(data[loop]==' '||data[loop]==')') return (loop+1);
         }
         return -1;
     }

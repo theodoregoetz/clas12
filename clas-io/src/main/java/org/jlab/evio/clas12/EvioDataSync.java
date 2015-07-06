@@ -34,7 +34,7 @@ public class EvioDataSync implements DataSync {
     private Integer   evioCurrentFileNumber = 0;
     //private Long      maximumBytesToWrite = (long) 1*1024*1024*1024;
     private Long      maximumBytesToWrite = (long) 1932735283;
-    private Long      maximumRecordsToWrite = (long) 30000;
+    private Long      maximumRecordsToWrite = (long) 8000000;
     private Long      currentBytesWritten = (long) 0;
     private Long      currentRecordsWritten = (long) 0;
     private Boolean   splitFiles          = true;

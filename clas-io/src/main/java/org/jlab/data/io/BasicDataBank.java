@@ -332,8 +332,10 @@ public class BasicDataBank implements DataBank {
         for(Map.Entry<String,byte[]> item : byteContainer.entrySet()){
             System.out.print(String.format("%14s : ",item.getKey()));
             byte[] itemdata = item.getValue();
-            for(int loop = 0; loop < itemdata.length;loop++) 
-                System.out.print(String.format(" %12d  ", itemdata[loop]));
+            if(itemdata!=null){
+                for(int loop = 0; loop < itemdata.length;loop++) 
+                    System.out.print(String.format(" %12d  ", itemdata[loop]));             
+            }
             System.out.println();
         }
         

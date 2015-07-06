@@ -337,13 +337,15 @@ public class EvioDataEvent implements DataEvent {
             
             if(DataEntryType.getType(type)==DataEntryType.FLOAT){                
                 bank.setFloat(item, (float[]) dataTree.get(num));
+                //System.out.println("ADDING FLOAT VALUE : " + bank_name + "  " + item);
             }
             if(DataEntryType.getType(type)==DataEntryType.SHORT){               
                 bank.setShort(item, (short[]) dataTree.get(num));
             }
             
             if(DataEntryType.getType(type)==DataEntryType.BYTE){                
-                    bank.setByte(item, (byte[]) dataTree.get(num));
+                bank.setByte(item, (byte[]) dataTree.get(num));
+                //System.out.println("ADDING BYTE VALUE : " + bank_name + "  " + item);
             }
             //} else {
                 

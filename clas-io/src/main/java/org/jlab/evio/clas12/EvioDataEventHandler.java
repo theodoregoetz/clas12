@@ -99,7 +99,7 @@ public class EvioDataEventHandler {
              /*
             * Adding byte entries to the tree
             */
-            if(node.getDataTypeObj()==DataType.UCHAR8){
+            if(node.getDataTypeObj()==DataType.UCHAR8||node.getDataTypeObj()==DataType.CHAR8){
                 try {
                     ByteBuffer buffer = structure.getData(node);
                     byte[] nodedata = ByteDataTransformer.toByteArray(buffer);

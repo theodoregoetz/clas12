@@ -101,9 +101,11 @@ public class BosDataEvent implements DataEvent {
             int offset = BosBankStructure.dataOffset(bosBCS, index.get(loop));
             int realoffset = offset - index.get(loop);
             
-            int wordoffset = realoffset/4;            
-            if(realoffset%4!=0) wordoffset += 1;
+            int wordoffset = realoffset/4;
+            if((realoffset)%4!=0) wordoffset += 1;
             int dataposition = wordoffset*4;
+            //System.out.println("getBankStructure::: BANK [" + name + "]  " + index.get(loop) + " " + offset +
+            //        " RO " + realoffset + " WO " + wordoffset);
             BosBankStructure  struct = new BosBankStructure();
             
             struct.NROWS = nrows;
