@@ -53,6 +53,8 @@ public class Function1D  {
         return this.funcParams.size();
     }
     
+    public ArrayList<RealParameter>  parameters(){ return this.funcParams;}
+    
     public double[] getParameters(){
         double[] pars = new double[this.funcParams.size()];
         for(int loop = 0; loop < this.funcParams.size();loop++){

@@ -31,7 +31,8 @@ public class EvioDataEventHandler {
         evioBuffer.order(b_order);
          try {
             structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
-            eventNodes = structure.getChildNodes();
+            //eventNodes = structure.getChildNodes();
+            eventNodes = structure.getNodes();
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
         }

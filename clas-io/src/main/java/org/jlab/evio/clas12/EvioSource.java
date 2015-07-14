@@ -58,9 +58,40 @@ public class EvioSource implements DataSource {
         dictionary.show();
     }
     
-    public EvioSource(String dictionary_path){
+    public EvioSource(String filename){
+                String CLAS12DIR = System.getenv("CLAS12DIR");
+        String CLAS12DIRPROP = System.getProperty("CLAS12DIR");
         
+        if(CLAS12DIR==null){
+            System.out.println("---> Warning the CLAS12DIR environment is not defined.");
+            //return;
+        } else {
+            dictionaryPath = CLAS12DIR + "/etc/bankdefs/clas12";
+        }
+        
+        if(CLAS12DIRPROP==null){
+            System.out.println("---> Warning the CLAS12DIR property is not defined.");
+        } else {
+            dictionaryPath = CLAS12DIRPROP + "/etc/bankdefs/clas12";
+        }
+
+        if(CLAS12DIRPROP==null&&CLAS12DIR==null){
+            return;
+        }
+        //dictionary.initWithDir(dictionaryPath);
+        //System.err.println("[EvioSource] ---> Loaded bank Descriptors from    : " +
+        //        dictionaryPath);
+        //System.err.println("[EvioSource] ---> Factory loaded descriptor count : " 
+        //+ dictionary.getDescriptorList().length);
+        
+        EvioFactory.loadDictionary(dictionaryPath);
+        dictionary = EvioFactory.getDictionary();
+        System.err.println("[EvioSource] ---> Factory loaded descriptor count : " 
+                + dictionary.getDescriptorList().length);
+        dictionary.show();
+        this.open(filename);
     }
+    
     @Override
     public void open(File file) {
         this.open(file.getAbsolutePath());        

@@ -34,14 +34,20 @@ public class EvioDataSync implements DataSync {
     private Integer   evioCurrentFileNumber = 0;
     //private Long      maximumBytesToWrite = (long) 1*1024*1024*1024;
     private Long      maximumBytesToWrite = (long) 1932735283;
-    private Long      maximumRecordsToWrite = (long) 8000000;
+    private Long      maximumRecordsToWrite = (long) 2000000;
     private Long      currentBytesWritten = (long) 0;
     private Long      currentRecordsWritten = (long) 0;
     private Boolean   splitFiles          = true;
     private ByteOrder writerByteOrder = ByteOrder.LITTLE_ENDIAN;
     private EvioCompactEventWriter evioWriter    = null;
     
-    
+     public EvioDataSync(){
+         
+     }
+     
+    public EvioDataSync(String filename){
+        this.open(filename);
+    }
     
     
     public void setSplit(boolean flag){
