@@ -44,7 +44,7 @@ public class FTOFDetector extends AbstractDetector<FTOFSector> {
         }
         return components;
     }
-    
+        
     public List<DetectorComponentUI> getLayerUI(int sector, int superlayer, int layer){
         ArrayList<DetectorComponentUI> components = new ArrayList<DetectorComponentUI>();
         List<ScintillatorPaddle> paddles = this.getSector(sector).getSuperlayer(superlayer).getLayer(layer).getAllComponents();

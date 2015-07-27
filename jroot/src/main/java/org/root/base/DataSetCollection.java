@@ -21,6 +21,10 @@ public class DataSetCollection {
         
     }
     
+    public void clear(){
+        this.dsCollection.clear();
+    }
+    
     public DataRegion getDataRegion(){
         if(this.dsCollection.isEmpty()){
             return new DataRegion(0.0,1.0,0.0,1.0);

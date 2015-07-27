@@ -7,6 +7,7 @@ package org.jlab.geom.gui;
 
 import java.awt.Polygon;
 import org.jlab.geom.DetectorId;
+import org.jlab.geom.prim.Path3D;
 
 /**
  *
@@ -22,14 +23,29 @@ public class DetectorShape3D {
     public DetectorId  detectorType = DetectorId.UNDEFINED;
     //public Path3D     shapePolygon = new Path3D();
     public Polygon     shapePolygon = new Polygon();
+    public Path3D      shapePath    = new Path3D();
     
     public DetectorShape3D(){
         
     }
     
+    public DetectorShape3D(DetectorId type, int sector, int layer, int component){
+        this.detectorType = type;
+        this.SECTOR = sector;
+        this.LAYER  = layer;
+        this.COMPONENT = component;
+    }
+    
+    public void addPathPoint(double x, double y){
+        this.shapePath.addPoint(x,y,0.0);
+    }
+    
+    public Path3D getPath(){ return this.shapePath;}
+    
     public void addPoint(double x, double y){
         this.shapePolygon.addPoint((int) x, (int) y);
     }
+    
     public void setPoints(double[] x, double[] y){
         shapePolygon.reset();
         for(int loop = 0; loop < x.length; loop++){

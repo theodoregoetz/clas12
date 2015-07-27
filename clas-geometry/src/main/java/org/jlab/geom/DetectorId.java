@@ -16,6 +16,7 @@ public enum DetectorId implements Showable {
     UNDEFINED ( 0, "undefined"),
     BST       ( 1, "BST"),
     CND       ( 3, "CND"),
+    RICH      ( 6, "RICH"),
     FTCAL     ( 9, "FTCAL"),
     CTOF      (11, "CTOF"),
     FTOF      (10, "FTOF"),

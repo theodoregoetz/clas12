@@ -88,6 +88,21 @@ public class DetectorDescriptor {
         return DataUtils.getInteger(hash, 0, 7);
     }
     
+    public void copy(DetectorDescriptor desc){
+        this.detectorType = desc.detectorType;
+        this.dt_SECTOR    = desc.dt_SECTOR;
+        this.dt_LAYER     = desc.dt_LAYER;
+        this.dt_COMPONENT = desc.dt_COMPONENT;
+    }
+    
+    public boolean compare(DetectorDescriptor desc){
+        if(this.detectorType==desc.detectorType&&
+                this.dt_SECTOR==desc.dt_SECTOR&&
+                this.dt_LAYER==desc.dt_LAYER&&
+                this.dt_COMPONENT==desc.dt_COMPONENT) return true;
+        return false;
+    }
+    
     @Override
     public String toString(){
         return String.format("D [%6s ] C/S/C [%4d %4d %4d ]  S/L/C [%4d %4d %4d ]", 

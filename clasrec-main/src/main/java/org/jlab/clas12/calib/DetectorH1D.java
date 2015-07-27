@@ -60,6 +60,8 @@ public class DetectorH1D {
         if(ch1d!=null) ch1d.fill(x);
     }
     
+    public TreeMap<Integer,ComponentH1D>  container(){ return this.componentH1D; }
+    
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();

@@ -14,7 +14,7 @@ public class AxisNiceScale {
     
     private double minPoint;
     private double maxPoint;
-    private double maxTicks = 10;
+    private int    maxTicks = 10;
     private double tickSpacing;
     private double range;
     private double niceMin;
@@ -176,9 +176,13 @@ public class AxisNiceScale {
      *
      * @param maxTicks the maximum number of tick marks for the axis
      */
-    public void setMaxTicks(double maxTicks) {
+    public void setMaxTicks(int maxTicks) {
         this.maxTicks = maxTicks;
         calculate();
+    }
+    
+    public int getMaxTicks(){
+        return this.maxTicks;
     }
     
     public int getSigFig(){

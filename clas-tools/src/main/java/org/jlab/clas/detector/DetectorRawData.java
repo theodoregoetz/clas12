@@ -85,6 +85,12 @@ public class DetectorRawData {
         this.detectorData.add(pulse);
     }
     
+    public int    getDataSize(){ return this.detectorData.size();}
+    
+    public Object getDataObject(int index){
+        return this.detectorData.get(index);
+    }
+    
     public int getIntegral(int min, int max){
         int integral = 0;
         if(this.dataMODE==1){

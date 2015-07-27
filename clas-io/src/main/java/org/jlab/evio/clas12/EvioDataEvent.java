@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -290,8 +291,14 @@ public class EvioDataEvent implements DataEvent {
         if(desc==null) return false;
         int parenttag = Integer.parseInt(desc.getPropertyString("parent_tag"));
         int nodetag   = Integer.parseInt(desc.getPropertyString("container_tag"));
+        //System.out.println("Looking for bank " + bank_name + " TAGS = " + 
+        //        parenttag + " / " + nodetag);
+        
         EvioNode parentNode = this.eventHandler.getRootNode(parenttag, 0, DataType.ALSOBANK);
+        //System.out.println("Looking for bank " + bank_name + " TAGS = " + 
+        //        parenttag + " / " + nodetag + "  " + parentNode);
         //System.out.println("looking for parent tag = " + parenttag);
+        if(bank_name.compareTo("GenPart::true")==0&&parentNode!=null) return true;
         if(parentNode==null) return false;
         //System.out.println("ROOT NODE IS FOUND");
         EvioNode leafNode = this.eventHandler.getChildNode(parentNode, nodetag, 0, DataType.ALSOBANK);
@@ -314,9 +321,14 @@ public class EvioDataEvent implements DataEvent {
         if(parentNode==null) return null;
         
         EvioNode leafNode = this.eventHandler.getChildNode(parentNode, nodetag, 0, DataType.ALSOBANK);
-        if(leafNode==null) return null;
+        if(leafNode==null&&bank_name.compareTo("GenPart::true")!=0) return null;
         
-        TreeMap<Integer,Object>  dataTree = this.eventHandler.getNodeData(leafNode);
+        TreeMap<Integer,Object>  dataTree = null;
+        if(bank_name.compareTo("GenPart::true")==0){
+            dataTree = this.eventHandler.getNodeData(parentNode);
+        } else {
+            dataTree = this.eventHandler.getNodeData(leafNode);
+        }
         
         EvioDataBank bank = new EvioDataBank(desc);
         String[] entries = desc.getEntryList();
@@ -367,6 +379,10 @@ public class EvioDataEvent implements DataEvent {
         //System.out.println("-----> event show");
         //dictionary.show();
         String[] bankList = this.getBankList();
+        /*
+        ArrayList<String>  bList =  new ArrayList<String>();
+        bList.addAll(Arrays.asList(bankList));
+        */
         TablePrintout table = new TablePrintout("bank:nrows:ncols","48:12:12");
         
         if(bankList!=null){

@@ -24,6 +24,7 @@ import org.jlab.geom.detector.ec.ECFactory;
 import org.jlab.geom.detector.ftof.FTOFDetector;
 import org.jlab.geom.detector.ftof.FTOFFactory;
 import org.jlab.geom.gui.DetectorComponentUI;
+import org.jlab.geom.gui.DetectorShape3D;
 import org.jlab.geom.prim.Line3D;
 import org.jlab.geom.prim.Path3D;
 import org.jlab.geom.prim.Point3D;
@@ -143,6 +144,7 @@ public class CLASGeometryLoader {
     
     
     public List<DetectorComponentUI>  getLayerUI(String detector, int sector, int layer){
+        
         if(detector.compareTo("BST")==0){
             ArrayList<DetectorComponentUI>  uiList = new ArrayList<DetectorComponentUI>();
             int[] sectors = new int[]{10,14,18,24};
@@ -171,7 +173,7 @@ public class CLASGeometryLoader {
                     xp = (radius[region] + offset + width/4.0)*Math.cos(Math.toRadians(angle*sec - angle/2.0 + angleGap));
                     yp = (radius[region] + +offset+ width/4.0)*Math.sin(Math.toRadians(angle*sec - angle/2.0 + angleGap));
                     comp.shapePolygon.addPoint((int) yp,(int) -xp);
-
+                    
                     xp = (radius[region] + offset + width/4.0)*Math.cos(Math.toRadians(angle*sec + angle/2.0 - angleGap));
                     yp = (radius[region] + offset + width/4.0)*Math.sin(Math.toRadians(angle*sec + angle/2.0 - angleGap));
                     comp.shapePolygon.addPoint((int) yp,(int) -xp);
@@ -291,4 +293,46 @@ public class CLASGeometryLoader {
         DetectorHit hit = new DetectorHit(DetectorId.BST,sector,region,layer,cid,ip);
         return hit;
     }
+    
+    public ArrayList<DetectorShape3D> getDetectorShapes(DetectorType type, int sector, int layer){
+        if(type==DetectorType.FTOF){
+            
+            ArrayList<DetectorShape3D> components = new ArrayList<DetectorShape3D>();
+            List<ScintillatorPaddle> paddles = this.clasDetectors.get("FTOF").getSector(sector).getSuperlayer(layer).getLayer(0).getAllComponents();
+            for(ScintillatorPaddle paddle : paddles){
+                DetectorShape3D entry = new DetectorShape3D();
+                entry.SECTOR = sector;
+                entry.LAYER  = layer;
+                entry.COMPONENT = paddle.getComponentId();
+                
+                entry.shapePath.addPoint(
+                        (int) paddle.getVolumePoint(0).x(),
+                        (int) paddle.getVolumePoint(0).y(),
+                        0.0
+                );
+                entry.shapePath.addPoint(
+                        (int) paddle.getVolumePoint(1).x(),
+                        (int) paddle.getVolumePoint(1).y(),
+                        0.0
+                );
+                entry.shapePath.addPoint(
+                        (int) paddle.getVolumePoint(5).x(),
+                        (int) paddle.getVolumePoint(5).y(),
+                        0.0
+                );
+                entry.shapePath.addPoint(
+                        (int) paddle.getVolumePoint(4).x(),
+                        (int) paddle.getVolumePoint(4).y(),
+                        0.0
+                );
+                
+                
+            components.add(entry);
+            }
+            return components;
+        }
+        return null;
+    }
+
+    
 }

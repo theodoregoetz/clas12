@@ -77,6 +77,7 @@ public class ColorPalette {
         
         if(mode==3){
             palette.clear();
+            palette.add(new Color(255,255,255));
             for(int loop = 0; loop < red.length; loop++){
                 int pred   = (int) (255.0*red[loop]);
                 int pgreen = (int) (255.0*green[loop]);
