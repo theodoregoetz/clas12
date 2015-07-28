@@ -25,6 +25,7 @@ import org.jlab.coda.jevio.EvioException;
 import org.jlab.coda.jevio.EvioNode;
 import org.jlab.data.detector.DetectorDataBank;
 import org.jlab.evio.clas12.EvioDataEvent;
+import org.jlab.evio.clas12.EvioSource;
 import org.jlab.io.decode.EvioRawEventDecoder;
 import org.jlab.io.decode.IDetectorTranslationTable;
 
@@ -547,12 +548,17 @@ public class EvioEventDecoder {
         ArrayList<EvioTreeBranch>  branches = new ArrayList<EvioTreeBranch>();
         EvioNode mainNODE = event.getStructureHandler().getScannedStructure();
         List<EvioNode>  eventNodes = mainNODE.getChildNodes();
+        //List<EvioNode>  eventNodes = mainNODE.getAllNodes();
         if(eventNodes==null){
             return branches;
         }
         
+        System.out.println(" ************** BRANCHES ARRAY SIZE = " + eventNodes.size());
         for(EvioNode node : eventNodes){
+            
             EvioTreeBranch eBranch = new EvioTreeBranch(node.getTag(),node.getNum());
+            //branches.add(eBranch);
+            //System.out.println("  FOR DROP : " + node.getTag() + "  " + node.getNum());
             List<EvioNode>  childNodes = node.getChildNodes();
             if(childNodes!=null){
                 for(EvioNode child : childNodes){
@@ -572,5 +578,31 @@ public class EvioEventDecoder {
             str.append(String.format("TRANSLATION TABLE : [%12s]", entry.getKey()));
         }
         return str.toString();
+    }
+    
+    public static void main(String[] args){
+        EvioEventDecoder decoder = new EvioEventDecoder();
+        EvioSource reader = new EvioSource();
+        reader.open("/Users/gavalian/Work/DataSpace/FTCAL/run_JLabFadc_000665.evio.0");
+        while(reader.hasEvent()){
+            System.out.println("\n\n====================>  EVENT");
+            EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
+            decoder.list(event);
+            ArrayList<DetectorRawData> entries = decoder.getDataEntries(event,1);
+            if(entries!=null)
+                for(DetectorRawData entry : entries){
+                    System.out.println(
+                            entry.getDescriptor().getCrate() + "  " +
+                                    entry.getDescriptor().getSlot() + "  " +
+                                    entry.getDescriptor().getChannel() + "  " 
+                            
+                    );
+                }
+            ArrayList<EvioTreeBranch> branches = decoder.getEventBranches(event);
+            System.out.println(" BRANCHES SIZE = " + branches.size());
+            for(EvioTreeBranch branch : branches){
+                System.out.println(branch);
+            }
+        }
     }
 }

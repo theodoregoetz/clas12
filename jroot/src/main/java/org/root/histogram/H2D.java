@@ -422,9 +422,9 @@ public class H2D implements EvioWritableTree,IDataSet {
 		H1D projX = new H1D(name, xNum, xMin, xMax);
 
 		double height = 0.0;
-		for (int x = 0; x <= xAxis.getNBins(); x++) {
+		for (int x = 0; x < xAxis.getNBins(); x++) {
 			height = 0.0;
-			for (int y = 0; y <= yAxis.getNBins(); y++) {
+			for (int y = 0; y < yAxis.getNBins(); y++) {
 				height += this.getBinContent(x, y);
 			}
 			projX.setBinContent(x, height);
@@ -448,9 +448,9 @@ public class H2D implements EvioWritableTree,IDataSet {
 		H1D projY = new H1D(name, yNum, yMin, yMax);
 
 		double height = 0.0;
-		for (int y = 0; y <= yAxis.getNBins(); y++) {
+		for (int y = 0; y < yAxis.getNBins(); y++) {
 			height = 0.0;
-			for (int x = 0; x <= xAxis.getNBins(); x++) {
+			for (int x = 0; x < xAxis.getNBins(); x++) {
 				height += this.getBinContent(x, y);
 			}
 			projY.setBinContent(y, height);
@@ -472,7 +472,7 @@ public class H2D implements EvioWritableTree,IDataSet {
 		int xNum    = yAxis.getNBins();
 		H1D sliceX = new H1D(name, name, xNum, xMin, xMax);
 
-		for (int x = 0; x <= xNum; x++) {
+		for (int x = 0; x < xNum; x++) {
 			sliceX.setBinContent(x, this.getBinContent(xBin,x));
 		}
 		return sliceX;
@@ -491,7 +491,7 @@ public class H2D implements EvioWritableTree,IDataSet {
 		int    xNum = xAxis.getNBins();
 		H1D sliceY = new H1D(name, name, xNum, xMin, xMax);
 
-		for (int y = 0; y <= xNum; y++) {
+		for (int y = 0; y < xNum; y++) {
 			sliceY.setBinContent(y, this.getBinContent(y,yBin));
 		}
 
