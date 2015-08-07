@@ -15,6 +15,7 @@ import org.jlab.geom.base.ConstantProvider;
 public class DataBaseLoader {
     
     public static ConstantProvider getDriftChamberConstants(){
+        
         DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.loadTable("/geometry/dc/dc");
         provider.loadTable("/geometry/dc/region");

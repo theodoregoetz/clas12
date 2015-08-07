@@ -5,19 +5,23 @@
  */
 package org.jlab.clasrec.main;
 
+import java.awt.Color;
+import org.jlab.clasrec.ui.IDetectorHistogramDraw;
 import org.jlab.clasrec.utils.ServiceConfiguration;
 import org.jlab.evio.clas12.EvioDataEvent;
+import org.jlab.geom.gui.IDetectorShapeIntensity;
 import org.root.group.PlotDirectory;
 import org.root.group.PlotGroup;
 import org.root.group.TDirectory;
 import org.root.histogram.H1D;
 import org.root.histogram.H2D;
+import org.root.pad.EmbeddedCanvas;
 
 /**
  *
  * @author gavalian
  */
-public abstract class DetectorMonitoring {
+public abstract class DetectorMonitoring implements IDetectorHistogramDraw,IDetectorShapeIntensity {
     
     private String moduleName      = "undef";
     private String moduleVersion   = "0.5";
@@ -37,6 +41,8 @@ public abstract class DetectorMonitoring {
     public abstract void init();
     public abstract void configure(ServiceConfiguration c);
     public abstract void analyze();
+    
+    public String getName(){ return moduleName;}
     
     public void addDirectory(TDirectory dir){
         this.monDirectory.addDirectory(dir);
@@ -109,4 +115,25 @@ public abstract class DetectorMonitoring {
     public PlotDirectory getDirectory(){
         return hDirectory;
     }    
+
+    public void drawComponent(int sector, int layer, int component, EmbeddedCanvas canvas) {
+        
+    }
+
+    public void drawLayer(int sector, int layer, EmbeddedCanvas canvas) {
+        
+    }
+
+    public void drawSector(int sector, EmbeddedCanvas canvas) {
+        
+    }
+    
+    public Color getColor(int sector, int layer, int component) {
+        
+        if(component%2==0){
+            return  new Color(77,176,221);
+        }
+        return new Color(137,216,68);
+    }
+    
 }

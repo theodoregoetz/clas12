@@ -43,7 +43,7 @@ public class ECDetector extends AbstractDetector<ECSector> {
         for(ScintillatorPaddle paddle : paddles){
             DetectorComponentUI entry = new DetectorComponentUI();
             entry.SECTOR = sector;
-            entry.LAYER  = superlayer;
+            entry.LAYER  = layer;
             entry.COMPONENT = paddle.getComponentId();
             
             entry.shapePolygon.addPoint(

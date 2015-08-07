@@ -18,7 +18,7 @@ import javax.swing.JPanel;
  * @author gavalian
  */
 public class DetectorLayerPanel extends JPanel implements MouseListener , MouseMotionListener {
-    public DetectorLayerUI layerUI = new DetectorLayerUI();
+    public  DetectorLayerUI layerUI = new DetectorLayerUI();
     public  IDetectorComponentSelection  selectionListener = null;
     public  Boolean MOUSEOVER_CALLBACK = true;
     

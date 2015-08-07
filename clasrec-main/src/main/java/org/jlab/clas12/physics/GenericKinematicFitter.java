@@ -130,6 +130,8 @@ public class GenericKinematicFitter {
             int nrows = evntBank.rows();
             for(int loop = 0; loop < nrows; loop++){
                 int status = evntBank.getByte("status", loop);
+                int dcstat = evntBank.getByte("dcstat", loop);
+                int scstat = evntBank.getByte("scstat", loop);
                 int pid    = evntBank.getInt("pid", loop);
                 if(PDGDatabase.isValidPid(pid)==true){
                     Particle part = new Particle(
@@ -140,7 +142,9 @@ public class GenericKinematicFitter {
                             evntBank.getFloat("vx", loop),
                             evntBank.getFloat("vy", loop),
                             evntBank.getFloat("vz", loop));
+                    
                     if(status>0) physEvent.addParticle(part);
+                    
                 } else {
                     Particle part = new Particle();
                     part.setParticleWithMass(evntBank.getFloat("mass", loop),

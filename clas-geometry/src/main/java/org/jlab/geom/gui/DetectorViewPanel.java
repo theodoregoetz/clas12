@@ -33,4 +33,8 @@ public class DetectorViewPanel extends JPanel {
     public void addDetectorLayer(String name, DetectorLayerPanel panel){
         tabbedPane.addTab( name, panel);
     }
+    
+    public void addDetectorLayer(String name, DetectorShape3DPanel panel){
+        tabbedPane.addTab( name, panel);
+    }
 }

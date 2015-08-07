@@ -1,5 +1,7 @@
 package org.jlab.data.io;
 
+import javax.swing.table.TableModel;
+
 public interface DataBank {
     /**
      * Get the names of the columns in the bank.
@@ -88,4 +90,9 @@ public interface DataBank {
      * @param rows number of rows for each column to allocate 
      */
     void allocate(int rows);
+    /**
+     * Returns a table model for displaying the bank information
+     * @return 
+     */
+    TableModel getTableModel();
 }

@@ -64,6 +64,24 @@ public class ClasPluginLoader {
         }
     }
     
+    public void loadPluginDirectoryMonitoring(){
+        String pluginDirectory = ResourcesUtils.getResourceDir("CLAS12DIR", "lib/plugins");
+        if(pluginDirectory==null){
+            System.err.println("[ERROR] Can not find directory : lib/plugins ");
+            return;
+        }
+        
+        List<String> pluginFiles = FileUtils.getFilesInDir(pluginDirectory);
+        System.err.println("[JarFileLoader] ----> directory   : " + pluginDirectory);
+        System.err.println("[JarFileLoader] ----> files found : " + pluginFiles.size());
+        pluginLoader.clear();
+        
+        for(String jarFile : pluginFiles){
+            System.err.println("[JarFileLoader] ----> scanning file : " + jarFile);
+            pluginLoader.scanMonitoring(jarFile);
+        }
+    }
+    
     public void show(){
         TreeMap<String,ICService> detectors = pluginLoader.getClassMap();
         for(Map.Entry<String,ICService> entry : detectors.entrySet()){

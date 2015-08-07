@@ -15,6 +15,7 @@ import org.root.base.IDataSet;
  */
 public class TGCanvas extends JFrame {
     private EmbeddedCanvas embCanvas = null;
+    
     public TGCanvas(){
         super();
         embCanvas = new EmbeddedCanvas(600,600);
@@ -23,6 +24,19 @@ public class TGCanvas extends JFrame {
         this.setVisible(true);
     }
     
+    public TGCanvas(String name, String title, int xs, int ys, int rows, int cols){
+        super(title);
+        embCanvas = new EmbeddedCanvas(xs,ys,rows,cols);
+        this.add(embCanvas,BorderLayout.CENTER);
+        this.pack();
+        this.setVisible(true);
+    }
+    
+    public  EmbeddedCanvas getCanvas(){return this.embCanvas;}
+    
+    public void setAxisRange(double xmin, double xmax, double ymin, double ymax){
+        this.getCanvas().setAxisRange(xmin, xmax, ymin, ymax);
+    }
     public void cd(int pad){
         this.embCanvas.cd(pad);
     }

@@ -8,6 +8,8 @@ package org.jlab.data.io;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -55,7 +57,8 @@ public class BasicDataBank implements DataBank {
     
     @Override
     public String[] getColumnList() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -329,8 +332,10 @@ public class BasicDataBank implements DataBank {
         for(Map.Entry<String,byte[]> item : byteContainer.entrySet()){
             System.out.print(String.format("%14s : ",item.getKey()));
             byte[] itemdata = item.getValue();
-            for(int loop = 0; loop < itemdata.length;loop++) 
-                System.out.print(String.format(" %12d  ", itemdata[loop]));
+            if(itemdata!=null){
+                for(int loop = 0; loop < itemdata.length;loop++) 
+                    System.out.print(String.format(" %12d  ", itemdata[loop]));             
+            }
             System.out.println();
         }
         
@@ -457,6 +462,34 @@ public class BasicDataBank implements DataBank {
             }
         }
         return 0;
+    }
+
+    public TableModel getTableModel() {
+        String[] columns = this.bankDescriptor.getEntryList();
+        int nrows = this.rows();
+        
+        Object[][] objects = new Object[nrows][columns.length];
+        for(int loop = 0; loop < columns.length; loop++){
+            for(int row = 0; row < nrows; row++){
+                if(this.byteContainer.containsKey(columns[loop])==true){
+                    objects[row][loop] = new Byte(this.getByte(columns[loop], row));
+                }
+                if(this.shortContainer.containsKey(columns[loop])==true){
+                    objects[row][loop] = new Short(this.getShort(columns[loop], row));
+                }
+                if(this.intContainer.containsKey(columns[loop])==true){
+                    objects[row][loop] = new Integer(this.getInt(columns[loop], row));
+                }
+                if(this.floatContainer.containsKey(columns[loop])==true){
+                    //objects[row][loop] = new Float(this.getFloat(columns[loop], row));
+                    objects[row][loop] = String.format("%12.5f", this.getFloat(columns[loop], row));
+                }
+                if(this.doubleContainer.containsKey(columns[loop])==true){
+                    objects[row][loop] = String.format("%12.5f",this.getDouble(columns[loop], row));
+                }
+            }
+        }
+        return new DefaultTableModel(objects,columns);
     }
     
 }

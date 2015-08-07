@@ -74,7 +74,9 @@ public class DataSetPad {
     public void add(IDataSet ds){
         this.collection.addDataSet(ds);
         if(this.collection.getCount()==1){
-            //this.padAxisFrame.setXTitle();
+            this.padAxisFrame.setTitle(ds.getAttributes().getProperties().getProperty("title"));
+            this.padAxisFrame.setXTitle(ds.getAttributes().getProperties().getProperty("xtitle"));
+            this.padAxisFrame.setYTitle(ds.getAttributes().getProperties().getProperty("ytitle"));           
         }
     }
     
@@ -82,7 +84,18 @@ public class DataSetPad {
         this.collection.setAutoScale(flag);
     }
     
+    public void setAxisRange(double xmin, double xmax, double ymin, double ymax){
+        this.collection.setDataRegion(xmin, xmax, ymin, ymax);
+    }
+    
     public void addText(LatexText txt){
         this.textCollection.add(txt);
+    }
+    
+    public void setDivisionsX(int div){
+        this.padAxisFrame.setDivisionsX(div);
+    }
+     public void setDivisionsY(int div){
+        this.padAxisFrame.setDivisionsY(div);
     }
 }

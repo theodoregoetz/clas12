@@ -94,6 +94,16 @@ public class AbsDataSetDraw {
         
 
         FontMetrics  fma = g2d.getFontMetrics();
+        //g2d.setFont(axisFont);
+        
+        axis.getTitle().setFont("Helvetica");
+        axis.getTitle().setFontSize(axis.axisLabelSize);
+        
+        axis.getXTitle().setFont("Helvetica");
+        axis.getXTitle().setFontSize(axis.axisLabelSize);
+        
+        axis.getYTitle().setFont("Helvetica");
+        axis.getYTitle().setFontSize(axis.axisLabelSize);
         
         Rectangle2D rect = fma.getStringBounds(axis.getTitle().getText().getIterator(), 0,
                 axis.getTitle().getText().getIterator().getEndIndex(),g2d);
@@ -101,7 +111,7 @@ public class AbsDataSetDraw {
         double xt = axis.getFramePointX(axis.getXTitle().getX());
         double yt = axis.getFramePointY(axis.getXTitle().getY());
         
-        g2d.drawString(axis.getXTitle().getText().getIterator(), (int) xt, (int) yt+48);
+        g2d.drawString(axis.getXTitle().getText().getIterator(), (int) (xt - rect.getWidth()/2.0), (int) yt+48);
         
         xt = axis.getFramePointX(axis.getTitle().getX());
         yt = axis.getFramePointY(axis.getTitle().getY());
@@ -115,7 +125,8 @@ public class AbsDataSetDraw {
         AffineTransform orig = g2d.getTransform();
         g2d.rotate(-Math.PI/2);
         //g2d.setFont(new Font(Font.SANS_SERIF,Font.BOLD,24));
-        g2d.drawString(axis.getYTitle().getText().getIterator(), (int) xt, (int) yt);
+        g2d.drawString(axis.getYTitle().getText().getIterator(), (int) (xt ),
+                (int) yt);
         g2d.setTransform(orig);
     }
     
@@ -185,4 +196,10 @@ public class AbsDataSetDraw {
         g2d.draw(path);
         //g2d.fill(path);
     }
+    
+     public static void drawDataSetAsHistogram2D(AxisRegion axis, Graphics2D g2d, IDataSet ds,
+            int startX, int startY, int gWidth, int gHeight){
+         
+     }
+    
 }

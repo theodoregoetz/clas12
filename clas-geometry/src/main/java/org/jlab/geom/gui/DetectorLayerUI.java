@@ -22,7 +22,10 @@ public class DetectorLayerUI {
     private ArrayList<DetectorComponentUI>  components = new ArrayList<DetectorComponentUI>();
     public  Rectangle  drawRegion = new Rectangle();
     public  IDetectorComponentSelection  selectionListener = null;
-
+    public  Color   componentColorEven = new Color(77,176,221);
+    public  Color   componentColorOdd  = new Color(137,216,68);
+    public  Color   componentColorSelected = new Color(210,79,68);
+    
     public DetectorLayerUI(){
         
     }
@@ -70,6 +73,10 @@ public class DetectorLayerUI {
         if(drawRegion.width>drawRegion.height){
             drawRegion.height = drawRegion.width;
         } else {
+            drawRegion.width = drawRegion.height;
+        }
+        
+        if(drawRegion.height>drawRegion.width){
             drawRegion.width = drawRegion.height;
         }
         
@@ -132,7 +139,7 @@ public class DetectorLayerUI {
              RenderingHints.KEY_TEXT_ANTIALIASING,
              RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHints(rh);
-        Color activeColor = new Color(210,79,68);
+        //Color activeColor = new Color(210,79,68);
         
         g2d.setColor(new Color(165,155,155));
         g2d.fillRect(xoff, yoff, width, height);
@@ -151,9 +158,9 @@ public class DetectorLayerUI {
             path.closePath();
             //g2d.draw(path);
             
-            g2d.setColor(new Color(77,176,221));
-            if(comp.COMPONENT%2==0) g2d.setColor(new Color(137,216,68));
-            if(comp.isActive) g2d.setColor(activeColor);
+            g2d.setColor(this.componentColorOdd);
+            if(comp.COMPONENT%2==0) g2d.setColor(this.componentColorEven);
+            if(comp.isActive) g2d.setColor(this.componentColorSelected);
             
             g2d.fill(path);
             g2d.setColor(Color.black);

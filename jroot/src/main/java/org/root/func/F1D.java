@@ -9,18 +9,23 @@ package org.root.func;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeMap;
+import org.root.attr.Attributes;
+import org.root.base.DataRegion;
 import org.root.base.EvioWritableTree;
+import org.root.base.IDataSet;
 import org.root.histogram.PaveText;
 
 /**
  *
  * @author gavalian
  */
-public class F1D extends Function1D implements EvioWritableTree {
+public class F1D extends Function1D implements EvioWritableTree,IDataSet {
     
     private final ArrayList<String> functionList = new ArrayList<String>();
     private String  functionString = "";
     private String functionName = "f1";
+    private Integer functionDrawResolution = 200;
+    private Attributes attr = new Attributes();
     
     public F1D(String function){
         this.initFunction(function,0.0,1.0);
@@ -233,5 +238,47 @@ public class F1D extends Function1D implements EvioWritableTree {
 
     public String getName() {
         return this.functionName;
+    }
+
+    public DataRegion getDataRegion() {
+        DataRegion region = new DataRegion();
+        region.MINIMUM_X = this.getMin();
+        region.MAXIMUM_X = this.getMax();
+        double ymin = this.getDataY(0);
+        double ymax = this.getDataY(0);
+        for(int loop = 0; loop < this.functionDrawResolution; loop++){
+            double y = this.getDataY(loop);
+            if(y>ymax) ymax = y;
+            if(y<ymin) ymin = y;
+        }
+        region.MINIMUM_Y = ymin;
+        region.MAXIMUM_Y = ymax;
+        return region;
+    }
+
+    public Integer getDataSize() {
+        return this.functionDrawResolution;
+    }
+
+    public Double getDataX(int index) {
+        double step = (this.getMax()-this.getMin())/this.functionDrawResolution;
+        return this.getMin() + index*step;
+    }
+
+    public Double getDataY(int index) {
+        double x = this.getDataX(index);
+        return this.eval(x);
+    }
+
+    public Double getErrorX(int index) {
+        return 0.0;
+    }
+
+    public Double getErrorY(int index) {
+        return 0.0;
+    }
+
+    public Attributes getAttributes() {
+        return this.attr;
     }
 }

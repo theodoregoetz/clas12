@@ -45,6 +45,14 @@ public class RawDataEntry {
         this.dataArray.add(pulseMax);
     }
     
+    public void setTDC(Short tdc){
+        this.MODE = 10;
+        this.dataArray.clear();
+        this.dataArray.add(tdc);
+    }
+    
+    public int getMode(){ return this.MODE; }
+    
     public void setRawPulse(short[] shortData){
         this.MODE = 1;
         this.dataArray.clear();
@@ -52,7 +60,29 @@ public class RawDataEntry {
             dataArray.add(shortData[loop]);
         }
     }
-       
+    
+    public int getIntegral(int binstart, int binend){
+        int pedistal = 0;
+        if(this.MODE==1){
+            for(int loop = 0; loop < this.dataArray.size(); loop++){
+                if(loop>=binstart&&loop<binend){
+                    pedistal += (Short) this.dataArray.get(loop);
+                }
+            }
+        }
+        return pedistal;
+    }
+    
+    public short[] getRawPulse(){
+        if(this.MODE==1){
+            short[] buffer = new short[this.dataArray.size()];
+            for(int loop = 0; loop < this.dataArray.size(); loop++){
+                buffer[loop] = (Short) this.dataArray.get(loop);
+            }
+            return buffer;
+        }
+        return new short[0];
+    }
     
     public void setSVT(Byte half, Byte channel, Byte tdc, Byte adc){
         this.MODE = 4;
@@ -87,9 +117,10 @@ public class RawDataEntry {
     }
     
     public Short getTDC(){
-        if(this.MODE==7 || this.MODE==4){
+        if(this.MODE==7 || this.MODE==4 || this.MODE==10){
             return (Short) dataArray.get(0);
         }
+
         //Short result = 0;
         return 0;
     }
@@ -145,6 +176,14 @@ public class RawDataEntry {
                     this.getTDC(),this.getADC()));
         }
         
+        if(this.MODE==10){
+            str.append(String.format(" TDC [ %6d ]",this.getTDC()));
+        }
+        
+        if(this.MODE==1){
+            str.append(String.format(" SIZE/INTEGRAL [ %6d %6d]",this.dataArray.size(),
+                    this.getIntegral(0, this.dataArray.size()-1)));
+        }
         return str.toString();
     }
 }

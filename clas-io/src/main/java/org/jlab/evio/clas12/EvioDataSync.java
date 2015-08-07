@@ -34,10 +34,25 @@ public class EvioDataSync implements DataSync {
     private Integer   evioCurrentFileNumber = 0;
     //private Long      maximumBytesToWrite = (long) 1*1024*1024*1024;
     private Long      maximumBytesToWrite = (long) 1932735283;
+    private Long      maximumRecordsToWrite = (long) 2000000;
     private Long      currentBytesWritten = (long) 0;
-    
+    private Long      currentRecordsWritten = (long) 0;
+    private Boolean   splitFiles          = true;
     private ByteOrder writerByteOrder = ByteOrder.LITTLE_ENDIAN;
     private EvioCompactEventWriter evioWriter    = null;
+    
+     public EvioDataSync(){
+         
+     }
+     
+    public EvioDataSync(String filename){
+        this.open(filename);
+    }
+    
+    
+    public void setSplit(boolean flag){
+        this.splitFiles = flag;
+    }
     
     @Override
     public void open(String filename) {
@@ -75,6 +90,7 @@ public class EvioDataSync implements DataSync {
         str.append(".evio");
         String filename = str.toString();
         this.currentBytesWritten = (long) 0;
+        this.currentRecordsWritten = (long) 0;
         File file = new File(filename);
         try {
             evioWriter = new EvioCompactEventWriter(filename, null,
@@ -93,7 +109,8 @@ public class EvioDataSync implements DataSync {
     @Override
     public void writeEvent(DataEvent event) {
         
-        if(this.currentBytesWritten>this.maximumBytesToWrite){
+        if(this.currentBytesWritten>this.maximumBytesToWrite || 
+                this.currentRecordsWritten>this.maximumRecordsToWrite){
             this.evioWriter.close();
             this.evioCurrentFileNumber++;
             this.openFileForWriting();
@@ -104,7 +121,8 @@ public class EvioDataSync implements DataSync {
             //System.err.println("[sync] ---> buffer size = " + event.getEventBuffer().limit());
             ByteBuffer original = event.getEventBuffer();
             Long bufferSize = (long) original.capacity();
-            this.currentBytesWritten += bufferSize;            
+            this.currentBytesWritten += bufferSize;
+            this.currentRecordsWritten++;
             ByteBuffer clone = ByteBuffer.allocate(original.capacity());
             clone.order(original.order());
             original.rewind();

@@ -221,6 +221,18 @@ public class H1D implements EvioWritableTree,IDataSet {
     	return histName;
     }
     
+    /**
+     * Resets all bins to 0
+     */
+    public void reset(){
+        for(int loop = 0; loop < this.histogramData.length;loop++){
+            this.histogramData[loop] = 0.0;
+            if(this.histogramDataError.length==this.histogramData.length){
+                this.histogramDataError[loop] = 0.0;
+            }
+        }
+    }
+    
     public int getEntries(){
         int entries = 0;
         for(int loop = 0; loop < this.histogramData.length; loop++){
@@ -707,14 +719,16 @@ public class H1D implements EvioWritableTree,IDataSet {
     public int getLineStyle(){
         return Integer.parseInt(this.attr.getProperties().getProperty("line-style"));
     }
-
+    
     public DataRegion getDataRegion() {
         DataRegion  region = new DataRegion();
         region.MINIMUM_X = this.getXaxis().getBinCenter(0) - this.getXaxis().getBinWidth(0)/2.0;
         region.MAXIMUM_X = this.getXaxis().getBinCenter(this.getDataSize()-1) + 
                 this.getXaxis().getBinWidth(this.getDataSize()-1)/2.0;
+        
         region.MINIMUM_Y = 0.0;
         region.MAXIMUM_Y = this.getBinContent(this.getMaximumBin())*1.2;
+        if(region.MAXIMUM_Y==0) region.MAXIMUM_Y = 1.0;
         return region;
     }
 

@@ -28,8 +28,9 @@ import org.jlab.data.io.DataSource;
  * @author gavalian
  */
 public class BosDataSource implements DataSource {
+    
     private String bosFileName = "undef";    
-    private static final int  MAXIMUM_BYTE_READ = 70000;
+    private static final int  MAXIMUM_BYTE_READ = 700000;
     private int  currentBufferPosition = -1;
     private int  currentEventInBuffer = 0;
     private int  currentBufferEventPosition = -1;
@@ -108,7 +109,7 @@ public class BosDataSource implements DataSource {
         byte[] nameBytes   = struct.getBytes();
         for(int loop = startpos; loop < bufferBytes.length; loop++){
             if(bufferBytes[loop]==nameBytes[0] && loop<bufferBytes.length-12){
-                String header = new String(bufferBytes,loop,8);
+                String header = new String(bufferBytes,loop,struct.length());
                 //System.out.println("[StrcutureFinder] ----> Found R at pos = "
                 //+ loop + " header = " + header);
                 if(header.compareTo(struct)==0){
@@ -134,9 +135,11 @@ public class BosDataSource implements DataSource {
     }
     
     private void readAppendEvent(int last_event_start){
+        
+        //System.out.println(" REDING EVENT BUFFER ----> CURRENT EVENT " + this.currentEventInBuffer);
         byte[] a = Arrays.copyOfRange(ioFileBuffer.array(),
                 last_event_start,ioFileBuffer.array().length);
-        byte[] b = new byte[MAXIMUM_BYTE_READ];        
+        byte[] b = new byte[MAXIMUM_BYTE_READ];
         try {
             int bytesRead = buffInputStream.read(b);
             if(bytesRead<MAXIMUM_BYTE_READ){
@@ -162,19 +165,57 @@ public class BosDataSource implements DataSource {
         
     }
     
+    private int findNextPosition(int start){
+        int start_position = start;
+        int position = this.findStructure("RUNEVENT", start_position);
+        int head_position = this.findStructure("HEAD", start_position + 8);
+        int epic_position = this.findStructure("EPIC", start_position + 8);
+        if(epic_position>=0){
+            if(head_position>=0){
+                if(epic_position<head_position){
+                    return (epic_position-position);
+                }
+            }
+        }
+        //System.out.println("POSITION DIFFERENCE = " + position + " " + head_position);        
+        return (head_position-position);
+    }
+    
+    public void showIndex(){
+        System.out.println(" INDEX ARRAY SIZE = " + this.eventIndex.size());
+        int counter = 1;
+        for(Integer index : this.eventIndex){
+            System.out.print(String.format("%8d", index));
+            if(counter%5==0) System.out.println();
+            counter++;
+        }
+    }
     private void updateEventIndex(){
+        ArrayList<Integer> crudeIndex = new ArrayList<Integer>();
         eventIndex.clear();
+        
+        this.findNextPosition(0);
         int start_position = 0;
         int nextPosition   = this.findStructure("RUNEVENT", start_position);
         //System.out.println("------> first position = " + nextPosition);
-        eventIndex.add(nextPosition);
+        //eventIndex.add(nextPosition);
+        crudeIndex.add(nextPosition);
         while(nextPosition>=0){
             start_position = nextPosition + 8;
             nextPosition   = this.findStructure("RUNEVENT", start_position);
             //System.out.println("------> adding position " + nextPosition);
-            if(nextPosition>0) 
-                eventIndex.add(nextPosition);
+            if(nextPosition>0) {
+                crudeIndex.add(nextPosition);
+                //eventIndex.add(nextPosition);
+            }
         }
+        
+        for(Integer index : crudeIndex){
+            if(this.findNextPosition(index)<40){
+                eventIndex.add(index);
+            }
+        }
+        //this.showIndex();
         //System.err.println("[BosDataSource]-----> read buffer contains " +
         //        eventIndex.size() + " events");
         //this.printIndexArray();
@@ -232,6 +273,7 @@ public class BosDataSource implements DataSource {
                 
                 ByteBuffer bcsBOS = ByteBuffer.wrap(bcs);
                 bcsBOS.order(ByteOrder.LITTLE_ENDIAN);
+                
                 currentEventInBuffer++;
                 return new BosDataEvent(bcsBOS,dictionary);
         }                

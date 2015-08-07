@@ -8,6 +8,7 @@ package org.jlab.data.utils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import org.jlab.bos.clas6.BosDataBank;
 import org.jlab.bos.clas6.BosDataEvent;
 import org.jlab.bos.clas6.BosDataSource;
 import org.jlab.evio.clas12.EvioDataBank;
@@ -71,8 +72,22 @@ public class Bos2Evio {
         for(String inFile : inputfiles){
             BosDataSource reader = new BosDataSource();                      
             reader.open(inFile);
+            int counter = 0;
             while(reader.hasEvent()){
+                counter++;
+                //System.out.println("------------------> ANALYZING BUFFER # " + counter);
                 BosDataEvent bosEvent = (BosDataEvent) reader.getNextEvent();
+                if(bosEvent!=null){
+                /*if(bosEvent.hasBank("HEAD")==true){
+                    BosDataBank header = (BosDataBank) bosEvent.getBank("HEAD");
+                    header.show();
+                    BosDataBank hevt = (BosDataBank) bosEvent.getBank("HEVT");
+                    hevt.show();
+                    bosEvent.showBank("HEVT", 0);
+                    bosEvent.showBank("EVNT", 0);
+                    System.out.println(" EVNT = " + bosEvent.hasBank("EVNT")
+                    + "  HEVT = " + bosEvent.hasBank("HEVT"));
+                }*/
                 //convertPART.processBosEvent(bosEvent);
                 EvioDataEvent outevent = writer.createEvent(EvioFactory.getDictionary());
                 /*
@@ -83,10 +98,14 @@ public class Bos2Evio {
                 //*** FILLING WITH EVNT Schema
                 //=============================================================
                 if(method.compareTo("-seb")==0){
-                    convertEVNT.processBosEvent(bosEvent);
+                    try {
+                    convertEVNT.processBosEvent(bosEvent);                   
                     TreeMap<String,EvioDataBank> evioBanks = convertEVNT.getEvioBankStore();
                     if(evioBanks.containsKey("HEVT")==true&&evioBanks.containsKey("EVNT")==true){
-                        
+                        /*if(bosEvent.hasBank("HEAD")==true){
+                            BosDataBank header = (BosDataBank) bosEvent.getBank("HEAD");
+                            header.show();
+                        }*/
                         
                         outevent.appendBank(evioBanks.get("HEVT"));
                         outevent.appendBank(evioBanks.get("EVNT"));
@@ -120,6 +139,11 @@ public class Bos2Evio {
                         }
                         writer.writeEvent(outevent);
                     }
+                    }catch (Exception e) {
+                        System.out.println(" BUFFER IS EMPTY");
+                        bosEvent.dumpBufferToFile();
+                    }
+                }
                 }
                 //=============================================================
                 //*** END OF EVNT Method Fill

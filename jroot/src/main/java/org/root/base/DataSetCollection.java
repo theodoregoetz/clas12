@@ -14,10 +14,15 @@ import java.util.ArrayList;
 public class DataSetCollection {
     
     private ArrayList<IDataSet>  dsCollection = new ArrayList<IDataSet>();
-    private Boolean              collectionDataRangeScale = false;
+    private Boolean              collectionDataRangeScale = true;
+    private DataRegion           fixedDataRegion = new DataRegion();
     
     public DataSetCollection(){
         
+    }
+    
+    public void clear(){
+        this.dsCollection.clear();
     }
     
     public DataRegion getDataRegion(){
@@ -26,12 +31,36 @@ public class DataSetCollection {
         }
         
         DataRegion region = new DataRegion(this.dsCollection.get(0).getDataRegion());
-        if(this.collectionDataRangeScale==true){
-            for(int loop = 0; loop < this.dsCollection.size(); loop++){
-                region.combine(this.dsCollection.get(loop).getDataRegion());
-            }
+        //if(this.collectionDataRangeScale==true){
+        for(int loop = 0; loop < this.dsCollection.size(); loop++){
+            region.combine(this.dsCollection.get(loop).getDataRegion());
         }
+        
+        if(this.collectionDataRangeScale==false){
+            DataRegion fixedRegion = new DataRegion(this.fixedDataRegion);
+            if(fixedRegion.MINIMUM_X==fixedRegion.MAXIMUM_X){
+                fixedRegion.MINIMUM_X = region.MINIMUM_X;
+                fixedRegion.MAXIMUM_X = region.MAXIMUM_X;
+            }
+            if(fixedRegion.MINIMUM_Y==fixedRegion.MAXIMUM_Y){
+                fixedRegion.MINIMUM_Y = region.MINIMUM_Y;
+                fixedRegion.MAXIMUM_Y = region.MAXIMUM_Y;
+            }
+            return fixedRegion;
+        }
+        //} else {
+        //    return new DataRegion(this.fixedDataRegion);
+        //}
         return region;
+    }
+    
+    
+    public void setDataRegion(double xmin, double xmax, double ymin, double ymax){
+        this.fixedDataRegion.MINIMUM_X = xmin;
+        this.fixedDataRegion.MAXIMUM_X = xmax;
+        this.fixedDataRegion.MINIMUM_Y = ymin;
+        this.fixedDataRegion.MAXIMUM_Y = ymax;
+        this.collectionDataRangeScale = false;
     }
     
     public void setAutoScale(boolean flag){

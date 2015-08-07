@@ -19,6 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import org.jlab.clasrec.main.DetectorMonitoring;
 import org.jlab.coda.clara.core.ICService;
 
 /**
@@ -34,7 +35,8 @@ public class ClasPluginChooseDialog extends JDialog implements ActionListener {
     
     public ClasPluginChooseDialog(String classname){
         super();
-        loader.loadPluginDirectory(); 
+        loader.loadPluginDirectoryMonitoring(); 
+        
         this.setPreferredSize(new Dimension(600,400));        
         this.initDialog();
         this.pack();
@@ -50,10 +52,11 @@ public class ClasPluginChooseDialog extends JDialog implements ActionListener {
     private void initDialog(){
         
         model = new DefaultListModel();
-        TreeMap<String,ICService> classes = loader.getPluginLoader().getClassMap();
-        for(Map.Entry<String,ICService> entry : classes.entrySet()){
+        TreeMap<String,DetectorMonitoring> classes = loader.getPluginLoader().getMonitoringClassMap();
+        for(Map.Entry<String,DetectorMonitoring> entry : classes.entrySet()){
             model.addElement(entry.getKey());
         }
+        
         //for (int i = 0; i < 15; i++)
         //    model.addElement("Element " + i);
         
@@ -80,6 +83,13 @@ public class ClasPluginChooseDialog extends JDialog implements ActionListener {
         dialog.setVisible(true);
     }
     
+    public String getSelectedClass(){
+        return this.className;
+    }
+    
+    public DetectorMonitoring getMonitoringClass(){
+        return this.loader.getPluginLoader().getMonitoringClassMap().get(this.className);
+    }
     
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().compareTo("Cancel")==0){
@@ -90,6 +100,7 @@ public class ClasPluginChooseDialog extends JDialog implements ActionListener {
         if(e.getActionCommand().compareTo("Choose")==0){
             int index = classList.getSelectedIndex();
             this.className = (String) classList.getSelectedValue();
+            
             System.out.println("Selected = " + this.className);
             this.setVisible(false);
         }

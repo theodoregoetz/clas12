@@ -16,6 +16,8 @@ public class RealParameter {
     double pMax;
     double pError;
     
+    boolean isRangeLimited = false;
+    
     public RealParameter()
     {
         pName  = "p0";
@@ -47,7 +49,14 @@ public class RealParameter {
     
     public void setError(double error){ pError = error;}
     public void setName(String name) { pName = name;}
-    public void setLimits(double min, double max){pMin = min; pMax=max;}
+    public void setLimits(double min, double max){pMin = min; pMax=max; isRangeLimited = true;}
+    public boolean isLimited(){ return this.isRangeLimited;}
+    
+    public void setFree(){
+        isRangeLimited = false;
+        pMin   = -1e10;
+        pMax   = 1e10;
+    }
     
     public void multLimits(double factor)
     {
