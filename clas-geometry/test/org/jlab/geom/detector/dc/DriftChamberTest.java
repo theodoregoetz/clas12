@@ -5,8 +5,10 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 
+import org.jlab.ccdb.CcdbPackage;
+import org.jlab.ccdb.JDBCProvider;
+
 import org.jlab.geom.detector.dc.DriftChamber;
-//import org.jlab.geom.base.ConstantProvider;
 
 public class DriftChamberTest {
 
@@ -15,12 +17,20 @@ public class DriftChamberTest {
         DriftChamber dcgeom = new DriftChamber();
     }
 
-    /*@Test
-    public void testFetchParameters() {
-        dcgeom = new DriftChamber();
-        ConstantProvider provider = new ConstantProvider();
-        dcgeom.fetch_nominal_parameters();
-    }*/
+    @Test
+    public void testFetchParametersOnConstruction() {
+        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+        provider.connect();
+        DriftChamber dcgeom = new DriftChamber(provider);
+    }
+
+    @Test
+    public void testFetchParametersAfterConstruction() {
+        DriftChamber dcgeom = new DriftChamber();
+        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+        provider.connect();
+        dcgeom.fetch_nominal_parameters(provider);
+    }
 
     public static void main(String args[]) {
         org.junit.runner.JUnitCore.main("org.jlab.geom.detector.dc.DriftChamberTest");

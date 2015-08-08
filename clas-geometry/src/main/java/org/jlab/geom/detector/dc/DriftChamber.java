@@ -1,9 +1,10 @@
 package org.jlab.geom.detector.dc;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
-//import org.jlab.geom.detector.dc;
-//import org.jlab.geom.base.ConstantProvider;
+import org.jlab.ccdb.JDBCProvider;
+import org.jlab.ccdb.Assignment;
 
 /**
  * \brief The drift chamber geometry class for CLAS12
@@ -16,7 +17,7 @@ import java.util.*;
  **/
 public class DriftChamber {
 
-    public ArrayList sectors;
+    private ArrayList sectors;
 
     /**
      * \brief default constructor
@@ -29,11 +30,11 @@ public class DriftChamber {
      * \brief constructor which fetches the nominal geometry from the database
      *
      * This calls DriftChamber.fetch_nominal_parameters(provider)
-     ** /
-    public DriftChamber(ConstantProvider provider) {
+     **/
+    public DriftChamber(JDBCProvider provider) {
         this.sectors = new ArrayList();
         this.fetch_nominal_parameters(provider);
-    }*/
+    }
 
     /**
      * \brief fills the DriftChamber class with the nominal geometry
@@ -45,27 +46,30 @@ public class DriftChamber {
      * obtained from the database in a later method-call.
      *
      * \param [in] dataprovider the ccdb::DataProvider object
-     ** /
-    public void fetch_nominal_parameters(ConstantProvider provider) {
-        static final double deg = 3.14159265358979 / 180.;
-        static final double cm = 1.;
+     **/
+    public void fetch_nominal_parameters(JDBCProvider provider) {
+        final double deg = 3.14159265358979 / 180.;
+        final double cm = 1.;
 
         // here we connect to the CCDB (MySQL) databse and request
         // the nominal geometry parameters for the Drift Chamber.
         // These numbers come from four tables: dc, region, superlayer,
         // and layer.
-        int nsectors = provider.getInteger("/geometry/dc/dc/nsectors",0);
-        int nregions = provider.getInteger("/geometry/dc/dc/nregions",0);
+        Assignment asgmt = provider.getData("/geometry/dc/dc");
+        int nsectors = asgmt.getColumnValuesInt("nsectors").get(0);
+        int nregions = asgmt.getColumnValuesInt("nregions").get(0);
 
-        int[]    superlayers = provider.getIntegerArray("/geometry/dc/region/nsuperlayers");
-        double[] dist2tgt    = provider.getDoubleArray( "/geometry/dc/region/dist2tgt"    );
-        double[] frontgap    = provider.getDoubleArray( "/geometry/dc/region/frontgap"    );
-        double[] midgap      = provider.getDoubleArray( "/geometry/dc/region/midgap"      );
-        double[] backgap     = provider.getDoubleArray( "/geometry/dc/region/backgap"     );
-        double[] thopen      = provider.getDoubleArray( "/geometry/dc/region/thopen"      );
-        double[] thtilt      = provider.getDoubleArray( "/geometry/dc/region/thtilt"      );
-        double[] xdist       = provider.getDoubleArray( "/geometry/dc/region/xdist"       );
+        asgmt = provider.getData("/geometry/dc/region");
+        Vector<Integer> superlayers = asgmt.getColumnValuesInt   ("nsuperlayers");
+        Vector<Double > dist2tgt    = asgmt.getColumnValuesDouble("dist2tgt"    );
+        Vector<Double > frontgap    = asgmt.getColumnValuesDouble("frontgap"    );
+        Vector<Double > midgap      = asgmt.getColumnValuesDouble("midgap"      );
+        Vector<Double > backgap     = asgmt.getColumnValuesDouble("backgap"     );
+        Vector<Double > thopen      = asgmt.getColumnValuesDouble("thopen"      );
+        Vector<Double > thtilt      = asgmt.getColumnValuesDouble("thtilt"      );
+        Vector<Double > xdist       = asgmt.getColumnValuesDouble("xdist"       );
 
+        /*
         int[]    nsenselayers  = provider.getIntegerArray("/geometry/dc/superlayer/nsenselayers" );
         int[]    nguardlayers  = provider.getIntegerArray("/geometry/dc/superlayer/nguardlayers" );
         int[]    nfieldlayers  = provider.getIntegerArray("/geometry/dc/superlayer/nfieldlayers" );
@@ -136,7 +140,10 @@ public class DriftChamber {
                 }
             }
         }
+        */
+    }
 
+    /*
 
         LOG(debug) << "done fetching numbers from database for DC.";
 
