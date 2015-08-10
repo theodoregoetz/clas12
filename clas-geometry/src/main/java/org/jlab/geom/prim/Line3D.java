@@ -3,7 +3,7 @@ package org.jlab.geom.prim;
 import org.jlab.geom.Showable;
 
 /**
- * A 3D line represented by two points, the origin point and the end point. The 
+ * A 3D line represented by two points, the origin point and the end point. The
  * line can be treated as an infinite line, a ray bounded by only the origin
  * point, or a line segment bounded by both the origin point and the end point.
  * <p>
@@ -12,7 +12,7 @@ import org.jlab.geom.Showable;
  * line to a point and from one line to another line can be obtained via
  * {@link #distance(org.jlab.geom.prim.Point3D) distance(Point3D)} and
  * {@link #distance(org.jlab.geom.prim.Line3D) distance(Line3D)}.
- * 
+ *
  * @author gavalian
  */
 public final class Line3D implements Transformable, Showable {
@@ -271,7 +271,7 @@ public final class Line3D implements Transformable, Showable {
         Vector3D w = boundPoint0.vectorTo(point);
         double c1 = w.dot(v);
         if (c1 <= 0) {
-            // The given point lies behind this line's origin point, so the 
+            // The given point lies behind this line's origin point, so the
             // remaining point of the line of closest appproach should be at
             // this line's origin point
             return new Line3D(boundPoint0, point);
@@ -302,14 +302,14 @@ public final class Line3D implements Transformable, Showable {
         Vector3D w = boundPoint0.vectorTo(point);
         double c1 = w.dot(v);
         if (c1 <= 0) {
-            // The given point lies behind this line's origin point, so the 
+            // The given point lies behind this line's origin point, so the
             // remaining point of the line of closest appproach should be at
             // this line's origin point
             return new Line3D(boundPoint0, point);
         }
         double c2 = v.dot(v);
         if (c2 <= c1) {
-            // The given point lies beyond this line's end point, so the 
+            // The given point lies beyond this line's end point, so the
             // remaining point of the line of closest appproach should be at
             // this line's end point
             return new Line3D(boundPoint1, point);

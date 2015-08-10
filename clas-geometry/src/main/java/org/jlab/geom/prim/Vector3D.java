@@ -1,28 +1,30 @@
 package org.jlab.geom.prim;
 
+import static java.lang.Math.*;
+
 import org.jlab.geom.Showable;
 
 /**
  * A 3D vector represented by three Cartesian coordinates (x, y, z).
  * <p>
  * Though internally represented in Cartesian coordinates, the position of a
- * point can be set using spherical coordinates via 
- * {@link #setMagThetaPhi(double, double, double)}, and the spherical 
- * coordinates of any vector can be obtained via {@link #mag()}, 
+ * point can be set using spherical coordinates via
+ * {@link #setMagThetaPhi(double, double, double)}, and the spherical
+ * coordinates of any vector can be obtained via {@link #mag()},
  * {@link #theta()}, and {@link #phi()}.
  * <p>
- * In addition to containing functions for performing normal mathematical 
+ * In addition to containing functions for performing normal mathematical
  * procedures involving vectors such as {@link #negative() negate/inverse},
  * {@link #add(org.jlab.geom.prim.Vector3D) addition},
  * {@link #sub(org.jlab.geom.prim.Vector3D) subtraction},
- * {@link #scale(double) scalar products}, 
+ * {@link #scale(double) scalar products},
  * {@link #dot(org.jlab.geom.prim.Vector3D) dot products},
  * {@link #cross(org.jlab.geom.prim.Vector3D) cross products}, and
  * {@link #unit() normalization}, {@code Vector3D} can be used to rotate a
- * point or vector around an arbitrary axes that passes through the origin via 
+ * point or vector around an arbitrary axes that passes through the origin via
  * {@link #rotate(org.jlab.geom.prim.Point3D, double) rotate(Point3D, doubele)} and
  * {@link #rotate(org.jlab.geom.prim.Vector3D, double) rotate(Vector3D, double)}.
- * The inverse of the rotation functions is provided via 
+ * The inverse of the rotation functions is provided via
  * {@link #angle(Vector3D, Vector3D)}.
  *
  * @author gavalian
@@ -31,9 +33,9 @@ public final class Vector3D implements Transformable, Showable {
     private double x; // the x component
     private double y; // the y component
     private double z; // the z component
-    
+
     /**
-     * Constructs a new empty {@code Vector3D} that is a null vector, ie 
+     * Constructs a new empty {@code Vector3D} that is a null vector, ie
      * (0,0,0).
      */
     public Vector3D() {
@@ -55,15 +57,77 @@ public final class Vector3D implements Transformable, Showable {
     public Vector3D(Vector3D vector) {
         copy(vector);
     }
-    
+
     /**
-     * Sets the components of this vector to be equal the components of the 
+     * Sets the components of this vector to be equal the components of the
      * given vector.
      * @param vector the vector to copy
      */
     public void copy(Vector3D vector) {
         setXYZ(vector.x, vector.y, vector.z);
     }
+
+    /**
+     * Returns a new instance of this vector.
+     * @param x the x component
+     * @param y the y component
+     * @param z the z component
+     */
+    public Vector3D clone() {
+        return new Vector3D(x,y,z);
+    }
+
+    /**
+     * Creates a new Vector3D instance from spherical coordinates
+     * @param r radial distance from the origin
+     * @param phi azimuthal angle from the positive x-axis (right-handed)
+     * @param theta polar angle from the positive z-axis
+     */
+    public static Vector3D fromSpherical(double r, double phi, double theta) {
+        final double tol = 1e-6;
+
+        if (r < 0)
+        {
+            r = abs(r);
+            phi += PI;
+            theta = PI - theta;
+        }
+
+        // phi in (-pi,pi)
+        phi = IEEEremainder(phi, 2.*PI);
+        if (abs(phi) >= PI)
+        {
+            if (phi < 0) {
+                phi -= 2.*PI;
+            } else {
+                phi += 2.*PI;
+            }
+        }
+        if (abs(phi) < tol)
+        {
+            phi = 0.;
+        }
+
+        // theta in [0,pi)
+        theta = abs(theta);
+        if (theta > PI)
+        {
+            theta = IEEEremainder(theta, 2.*PI);
+            if (theta >= PI)
+            {
+                theta = 2.*PI - theta;
+            }
+        }
+        if (theta < tol)
+        {
+            phi = 0.;
+            theta = 0.;
+        }
+
+        double rho = r * sin(theta);
+        return new Vector3D(rho*cos(phi), rho*sin(phi), r*cos(theta));
+    }
+
     /**
      * Sets the x, y and z components of this vector.
      * @param x the x component
@@ -96,7 +160,7 @@ public final class Vector3D implements Transformable, Showable {
     public void setZ(double z) {
         this.z = z;
     }
-    
+
     /**
      * Returns the x component.
      * @return the x component
@@ -118,7 +182,53 @@ public final class Vector3D implements Transformable, Showable {
     public double z() {
         return z;
     }
-    
+
+    public double r2() {
+        return x*x + y*y + z*z;
+    }
+    public double r() {
+        return sqrt(this.r2());
+    }
+    /**
+     * Returns the angle between the x axis and the orthogonal projection of
+     * this vector onto the x-y plane.
+     * @return the phi component of this vector's spherical coordinates
+     */
+    public double phi() {
+        return atan2(y,x);
+    }
+    public double costheta() {
+        final double tol = 1e-6;
+        double l = this.r();
+        double ret;
+        if (l < (2.*tol)) {
+            ret = 1.0;
+        } else {
+            ret = z / l;
+        }
+        return ret;
+    }
+    /**
+     * Returns the angle between this vector and the z axis.
+     * @return the theta component of this vector's spherical coordinates
+     */
+    public double theta() {
+        return acos(this.costheta());
+    }
+
+    public double rho2() {
+        return x*x + y*y;
+    }
+    /**
+     * Returns the length of the orthogonal projection of this vector onto the
+     * x-y plane.
+     * @return sqrt(x*x + y*y)
+     */
+    public double rho() {
+        return sqrt(this.rho2());
+    }
+
+
     /**
      * Returns true if this vector is a null vector.
      * @return true if this vector is a null vector
@@ -126,7 +236,7 @@ public final class Vector3D implements Transformable, Showable {
     public boolean isNull() {
         return x==0 && y==0 && z==0;
     }
-    
+
     /**
      * Returns the square of the magnitude of this vector.
      * @return the square of the magnitude of this vector
@@ -141,12 +251,12 @@ public final class Vector3D implements Transformable, Showable {
     public double mag() {
         return Math.sqrt(mag2());
     }
-    
+
     /**
      * Sets this vector based on the given spherical coordinates.
      * @param mag   the magnitude
      * @param theta the angle between the vector and the z axis
-     * @param phi   the angle between the x axis and the orthogonal projection 
+     * @param phi   the angle between the x axis and the orthogonal projection
      *              of the vector onto the x-y plane
      */
     public void setMagThetaPhi(double mag, double theta , double phi) {
@@ -158,31 +268,7 @@ public final class Vector3D implements Transformable, Showable {
         y = mag * st * sp;
         z = mag * ct;
     }
-    
-    /**
-     * Returns the angle between this vector and the z axis.
-     * @return the theta component of this vector's spherical coordinates 
-     */
-    public double theta() {
-        return Math.acos(z/mag());
-    }
-    /**
-     * Returns the angle between the x axis and the orthogonal projection of
-     * this vector onto the x-y plane.
-     * @return the phi component of this vector's spherical coordinates
-     */
-    public double phi() {
-        return Math.atan2(y, x);
-    }
-    /**
-     * Returns the length of the orthogonal projection of this vector onto the 
-     * x-y plane.
-     * @return sqrt(x*x + y*y)
-     */
-    public double rho() {
-       return Math.sqrt(x*x + y*y);
-    }
-    
+
     /**
      * Negates this vector's components.
      */
@@ -195,19 +281,21 @@ public final class Vector3D implements Transformable, Showable {
      * Adds the given vector to this vector.
      * @param vector the vector to add to this vector
      */
-    public void add(Vector3D vector) {
+    public Vector3D add(Vector3D vector) {
         x += vector.x;
         y += vector.y;
         z += vector.z;
+        return this;
     }
     /**
      * Subtracts the given vector from this vector
      * @param vector the vector to subtract from this vector
      */
-    public void sub(Vector3D vector) {
+    public Vector3D sub(Vector3D vector) {
         x -= vector.x;
         y -= vector.y;
         z -= vector.z;
+        return this;
     }
     /**
      * Scales each of this vectors components by the given scale factor.
@@ -230,7 +318,16 @@ public final class Vector3D implements Transformable, Showable {
         scale(1/m);
         return true;
     }
-    
+    /**
+     * Create unit vector from this
+     * @return unit vector
+     **/
+    public Vector3D asUnit() {
+        Vector3D u = this.clone();
+        u.unit();
+        return u;
+    }
+
     /**
      * Sets the magnitude of this vector to equal the given magnitude unless
      * vector is a null vector.
@@ -244,7 +341,20 @@ public final class Vector3D implements Transformable, Showable {
         scale(mag/m);
         return true;
     }
-    
+
+    public Vector3D add(double a) {
+        return new Vector3D(this.x+a, this.y+a, this.z+a);
+    }
+    public Vector3D subtract(double a) {
+        return new Vector3D(this.x-a, this.y-a, this.z-a);
+    }
+    public Vector3D multiply(double a) {
+        return new Vector3D(this.x*a, this.y*a, this.z*a);
+    }
+    public Vector3D divide(double a) {
+        return new Vector3D(this.x/a, this.y/a, this.z/a);
+    }
+
     /**
      * Returns the dot product of this vector and the given vector.
      * @param vector the vector to dot product with this vector
@@ -261,20 +371,20 @@ public final class Vector3D implements Transformable, Showable {
      */
     public Vector3D cross(Vector3D vector) {
         return new Vector3D(
-                y*vector.z-z*vector.y, 
+                y*vector.z-z*vector.y,
                 z*vector.x-x*vector.z,
                 x*vector.y-y*vector.x);
     }
-    
+
     /**
-     * Constructs a new {@code Point3D} using this vector's x, y, and z 
+     * Constructs a new {@code Point3D} using this vector's x, y, and z
      * components.
      * @return a point representation of this vector
      */
     public Point3D toPoint3D() {
         return new Point3D(x, y, z);
     }
-    
+
     /**
      * Returns a value greater than or equal to zero proportional to the amount
      * that the two vectors differ. If the two vectors are equal then the
@@ -289,9 +399,9 @@ public final class Vector3D implements Transformable, Showable {
         quality += Math.abs(z-vector.z)/Math.abs(z);
         return quality;
     }
-    
+
     /**
-     * Rotates the given point clockwise around the axis produced by this 
+     * Rotates the given point clockwise around the axis produced by this
      * vector by the given angle
      * @param point the point to rotate
      * @param angle the angle of rotation
@@ -301,9 +411,9 @@ public final class Vector3D implements Transformable, Showable {
         rotate(vector, angle);
         point.set(vector.x, vector.y, vector.z);
     }
-    
+
     /**
-     * Rotates the given vector clockwise  around the axis produced by this 
+     * Rotates the given vector clockwise  around the axis produced by this
      * vector by the given angle.
      * @param vector the vector to rotate
      * @param angle the angle of rotation
@@ -327,7 +437,7 @@ public final class Vector3D implements Transformable, Showable {
         System.out.println(B);
         System.out.println(vector);
     }
-    
+
     /**
      * Calculates the clockwise angle of rotation from the image of the first
      * given vector to the image of the second given vector projected onto a
@@ -344,12 +454,50 @@ public final class Vector3D implements Transformable, Showable {
         double angle = Math.atan2(N.dot(A.cross(B)), A.dot(B));
         return (angle+Math.PI*2)%(Math.PI*2);
     }
-    
+
+
+    /**
+     * Projection of this vector onto another vector
+     * @param v another vector
+     * @return projection of this vector onto v
+     */
+    public Vector3D projection(Vector3D v) {
+        final double tol = 1e-6;
+        double r2 = v.r2();
+        if (r2 > tol) {
+            return v.multiply(this.dot(v) / v.r2());
+        } else {
+            return this.clone();
+        }
+    }
+
+    /**
+     * Angle between this and another vector
+     * @param v another vector
+     * @return the angle between the two vectors
+     */
+    public double angle(Vector3D v) {
+        final double tol = 1e-6;
+
+        double a = sqrt(this.r2() * v.r2());
+        if (a > tol) {
+            double dotprod = this.dot(v);
+            double cosangle = dotprod / a;
+            if (abs(cosangle) > (1-tol)) {
+                return 0.;
+            } else {
+                return acos(cosangle);
+            }
+        } else {
+            return 0.;
+        }
+    }
+
     /**
      * Does nothing; vectors cannot be translated.
      * @param x ignored
      * @param y ignored
-     * @param z ignored 
+     * @param z ignored
      */
     @Override
     public void translateXYZ(double x, double y, double z) {
@@ -379,7 +527,7 @@ public final class Vector3D implements Transformable, Showable {
         x = c*xx - s*y;
         y = s*xx + c*y;
     }
-    
+
     /**
      * Invokes {@code System.out.println(this)}.
      */
@@ -387,7 +535,7 @@ public final class Vector3D implements Transformable, Showable {
     public void show() {
         System.out.println(this);
     }
-    
+
     @Override
     public String toString() {
         return String.format("Vector3D:\t%12.5f %12.5f %12.5f", x, y, z);

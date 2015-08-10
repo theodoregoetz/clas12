@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-CLASSPATH=`find lib -name '*.jar' | sed s'/\n/:/g'`
+CLASSPATH=`find lib -name '*.jar' -print0 | tr '\0' ':' | head -c -1`
 CLASSPATH=$CLASSPATH:test
 CLASSPATH=$CLASSPATH:src/main/java
 CLASSPATH=$CLASSPATH:/usr/share/java/junit.jar

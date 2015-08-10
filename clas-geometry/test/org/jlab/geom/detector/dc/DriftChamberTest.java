@@ -20,6 +20,8 @@ public class DriftChamberTest {
     @Test
     public void testFetchParametersOnConstruction() {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+        provider.setDefaultRun(0);
+        provider.setDefaultVariation("default");
         provider.connect();
         DriftChamber dcgeom = new DriftChamber(provider);
     }
@@ -28,6 +30,8 @@ public class DriftChamberTest {
     public void testFetchParametersAfterConstruction() {
         DriftChamber dcgeom = new DriftChamber();
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+        provider.setDefaultRun(0);
+        provider.setDefaultVariation("default");
         provider.connect();
         dcgeom.fetch_nominal_parameters(provider);
     }
