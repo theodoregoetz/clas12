@@ -3,6 +3,7 @@ package org.jlab.geom.detector.dc;
 import static java.lang.Math.*;
 import java.util.*;
 
+import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
 
@@ -250,11 +251,22 @@ class Superlayer {
      *
      * \return direction (unit) vector in the direction of the wires
      **/
-    Vector3D wireDirection() {
-        return new Vector3D(
+    Vector3D wireDirection(CoordinateSystem coord) {
+        Vector3D ret = new Vector3D(
             this.wireDircosX(),
             this.wireDircosY(),
             this.wireDircosZ() ).asUnit();
+        switch (coord) {
+            case SECTOR:
+                // do nothing
+                break;
+            case CLAS:
+                ret = sector.sectorToCLAS(ret);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        return ret;
     }
 
     String name() {

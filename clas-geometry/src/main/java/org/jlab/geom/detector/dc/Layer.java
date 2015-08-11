@@ -3,6 +3,7 @@ package org.jlab.geom.detector.dc;
 import static java.lang.Math.*;
 import java.util.*;
 
+import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
 
@@ -144,11 +145,22 @@ class Layer {
      * \param [in] w the wire index (starting from zero) in this layer
      * \return (x,y,z) position in sector coordinate system (cm)
      **/
-    Vector3D wireMid(int w) {
-        return new Vector3D(
+    Vector3D wireMid(int w, CoordinateSystem coord) {
+        Vector3D ret = new Vector3D(
             this.wireMidX(w),
             this.wireMidY(w),
             this.wireMidZ(w) );
+        switch (coord) {
+            case SECTOR:
+                // do nothing
+                break;
+            case CLAS:
+                ret = sector.sectorToCLAS(ret);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        return ret;
     }
 
     /**
@@ -207,10 +219,10 @@ class Layer {
      *
      * \return (x,y,z) positions in sector coordinate system (cm)
      **/
-    Vector<Vector3D> wiresMid() {
+    Vector<Vector3D> wiresMid(CoordinateSystem coord) {
         Vector<Vector3D> ret = new Vector<Vector3D>(this.nWires());
         for (int w=0; w<ret.size(); w++) {
-            ret.set(w,this.wireMid(w));
+            ret.set(w,this.wireMid(w,coord));
         }
         return ret;
     }
@@ -225,16 +237,16 @@ class Layer {
      * \param [in] w the wire index (starting from zero) in this layer
      * \return (x,y,z) position in sector coordinate system (cm)
      **/
-    Vector3D wireCenter(int w) {
-        return this.wire(w).midpoint().toVector3D();
+    Vector3D wireCenter(int w, CoordinateSystem coord) {
+        return this.wire(w,coord).midpoint().toVector3D();
     }
 
     /**
      * \brief the center-point of this sense-layer volume
      * \return (x,y,z) position in sector coordinate system (cm)
      **/
-    Vector3D center() {
-        return this.wireCenter(0).add(this.wireCenter(-1)).multiply(0.5);
+    Vector3D center(CoordinateSystem coord) {
+        return this.wireCenter(0,coord).add(this.wireCenter(-1,coord)).multiply(0.5);
     }
 
     /**
@@ -252,20 +264,20 @@ class Layer {
      * \brief all 3D line segments representing guard and sense wires in this layer
      * \return vector of line segments in sector coordinate system (cm)
      **/
-    Vector<Line3D> wires() {
+    Vector<Line3D> wires(CoordinateSystem coord) {
         Vector<Line3D> ret = new Vector<Line3D>();
 
         // end plates of this region
-        Plane3D lplate = region.leftEndPlate();
-        Plane3D rplate = region.rightEndPlate();
+        Plane3D lplate = region.leftEndPlate(coord);
+        Plane3D rplate = region.rightEndPlate(coord);
 
-        Vector3D wd = superlayer.wireDirection();
+        Vector3D wd = superlayer.wireDirection(coord);
         Point3D ileft = new Point3D();
         Point3D iright = new Point3D();
         for (int idx=0; idx<this.nWires(); idx++) {
             // wire as a line
             Line3D wireLine = new Line3D(
-                new Point3D(this.wireMid(idx)),
+                new Point3D(this.wireMid(idx,coord)),
                 new Point3D(wd) );
 
             // get the intersection and create line segment from one
@@ -282,15 +294,15 @@ class Layer {
      * \param [in] w the wire index (starting from zero) in this layer
      * \return line segment with end-points in sector coordinate system (cm)
      **/
-    Line3D wire(int w) {
+    Line3D wire(int w, CoordinateSystem coord) {
         // end plates of this region
-        Plane3D lplate = region.leftEndPlate();
-        Plane3D rplate = region.rightEndPlate();
+        Plane3D lplate = region.leftEndPlate(coord);
+        Plane3D rplate = region.rightEndPlate(coord);
 
         // wire as a line
         Line3D wireLine = new Line3D(
-            new Point3D(this.wireMid(w)),
-            new Point3D(superlayer.wireDirection()) );
+            new Point3D(this.wireMid(w,coord)),
+            new Point3D(superlayer.wireDirection(coord)) );
 
         // get the intersection and create line segment from one
         // point to the other.
@@ -307,17 +319,18 @@ class Layer {
      * \return length (cm)
      **/
     double wireLength(int w) {
-        return this.wire(w).length();
+        return this.wire(w,CoordinateSystem.SECTOR).length();
     }
 
     /**
      * \brief this sense layer's wire-plane
      * \return plane(point on plane, normal) in sector coordinate system (cm)
      **/
-    Plane3D wirePlane() {
+    Plane3D wirePlane(CoordinateSystem coord) {
         return new Plane3D(
-            new Point3D(this.wireMid(0)),
-            superlayer.wireDirection() );
+            new Point3D(this.wireMid(0,coord)),
+            superlayer.wireDirection(coord) );
+
     }
 
     String name() {
@@ -350,7 +363,7 @@ class Layer {
      *
      * \return map of strings to strings: value = ret.get(param_name)
     **/
-    Map<String,String> volume() {
+    Map<String,String> volume(CoordinateSystem coord) {
         // all done in sector coordinate system. ///////////////////////////////
 
         // 100 um gap between layers (to avoid G4 volume overlap)
@@ -367,17 +380,17 @@ class Layer {
         // half a layer-thickness in the direction of (0,0,0).
         // The last two are displaced away from the origin.
         Line3D edge00_line = new Line3D(
-            this.wireMid( 0).sub(half_lyr_thickness).toPoint3D(),
-            superlayer.wireDirection() );
+            this.wireMid( 0,coord).sub(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection(coord) );
         Line3D edge01_line = new Line3D(
-            this.wireMid(-1).sub(half_lyr_thickness).toPoint3D(),
-            superlayer.wireDirection() );
+            this.wireMid(-1,coord).sub(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection(coord) );
         Line3D edge10_line = new Line3D(
-            this.wireMid( 0).add(half_lyr_thickness).toPoint3D(),
-            superlayer.wireDirection() );
+            this.wireMid( 0,coord).add(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection(coord) );
         Line3D edge11_line = new Line3D(
-            this.wireMid(-1).add(half_lyr_thickness).toPoint3D(),
-            superlayer.wireDirection() );
+            this.wireMid(-1,coord).add(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection(coord) );
 
         // get the intersection and create line segment from one
         // point to the other. These are the same lines as above
@@ -392,8 +405,8 @@ class Layer {
         Point3D edge11_rplate_int = new Point3D();
 
         // end plates of this region
-        Plane3D lplate = region.leftEndPlate();
-        Plane3D rplate = region.rightEndPlate();
+        Plane3D lplate = region.leftEndPlate(coord);
+        Plane3D rplate = region.rightEndPlate(coord);
 
         lplate.intersection(edge00_line, edge00_lplate_int);
         rplate.intersection(edge00_line, edge00_rplate_int);
@@ -443,7 +456,7 @@ class Layer {
         double alp2  = alp1;
 
         // d = position of layer volume relative to the region (mother volume)
-        Vector3D d = this.center().sub(region.center());
+        Vector3D d = this.center(coord).sub(region.center(coord));
 
         // rotate about the y-axis in sector coordinates by the region's tilt
         // this is done because the trapezoids are defined by the edges

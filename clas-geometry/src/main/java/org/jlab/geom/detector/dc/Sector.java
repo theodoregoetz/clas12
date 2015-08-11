@@ -2,6 +2,7 @@ package org.jlab.geom.detector.dc;
 
 import java.util.*;
 
+import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
 
@@ -66,13 +67,13 @@ class Sector {
         return new String(dc.description()+" Sector "+(index+1));
     }
 
-    Map<String,Map<String,String>> volumes() {
+    Map<String,Map<String,String>> volumes(CoordinateSystem coord) {
         Map<String,Map<String,String>> vols = new HashMap<String,Map<String,String>>();
         for (Region region : regions) {
-            vols.put(region.name(),region.volume());
+            vols.put(region.name(),region.volume(coord));
             for (Superlayer superlayer : region.superlayers) {
                 for (Layer layer : superlayer.senselayers()) {
-                    vols.put(layer.name(),layer.volume());
+                    vols.put(layer.name(),layer.volume(coord));
                 }
             }
         }

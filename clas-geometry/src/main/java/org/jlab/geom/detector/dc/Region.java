@@ -3,6 +3,7 @@ package org.jlab.geom.detector.dc;
 import static java.lang.Math.*;
 import java.util.*;
 
+import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
 
@@ -69,11 +70,21 @@ class Region {
      * \brief The left end-plane plane
      * \return plane(point on plane, normal) in sector coordinate system (cm)
      **/
-    Plane3D leftEndPlate() {
+    Plane3D leftEndPlate(CoordinateSystem coord) {
         // first, calculate the plane in sector coords
         Point3D point = new Point3D(xdist,0,0);
         Vector3D norm = new Vector3D(sin(0.5*thopen),cos(0.5*thopen),0).asUnit();
         Plane3D ret = new Plane3D(point,norm);
+        switch (coord) {
+            case SECTOR:
+                // do nothing
+                break;
+            case CLAS:
+                ret = sector.sectorToCLAS(ret);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
         return ret;
     }
 
@@ -81,11 +92,21 @@ class Region {
      * \brief The right end-plane plane
      * \return plane(point on plane, normal) in sector coordinate system (cm)
      **/
-    Plane3D rightEndPlate() {
+    Plane3D rightEndPlate(CoordinateSystem coord) {
         // first, calculate the plane in sector coords
         Point3D point = new Point3D(xdist,0,0);
         Vector3D norm = new Vector3D(sin(0.5*thopen),-cos(0.5*thopen),0).asUnit();
         Plane3D ret = new Plane3D(point,norm);
+        switch (coord) {
+            case SECTOR:
+                // do nothing
+                break;
+            case CLAS:
+                ret = sector.sectorToCLAS(ret);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
         return ret;
     }
 
@@ -103,10 +124,9 @@ class Region {
      *
      * \return (x,y,z) position in sector-coordinates of this region (cm)
      **/
-    Vector3D center() {
-        // first, calculate the point in sector coords
-        Vector3D p0 = this.superlayer( 0).guardlayer( 0).wire( 0).end().toVector3D();
-        Vector3D p1 = this.superlayer(-1).guardlayer(-1).wire(-1).end().toVector3D();
+    Vector3D center(CoordinateSystem coord) {
+        Vector3D p0 = this.superlayer( 0).guardlayer( 0).wire( 0,coord).end().toVector3D();
+        Vector3D p1 = this.superlayer(-1).guardlayer(-1).wire(-1,coord).end().toVector3D();
         Vector3D regionCenter = p0.add(p1).multiply(0.5);
         regionCenter.setY(0);
         return regionCenter;
@@ -144,14 +164,14 @@ class Region {
      *
      * \return map of strings to strings: value = ret.get(param_name)
      **/
-    Map<String,String> volume() {
+    Map<String,String> volume(CoordinateSystem coord) {
 
         // first and last guard wire endpoints
-        Vector3D guardwire0_endpoint = this.superlayer( 0).guardlayer( 0).wire( 0).end().toVector3D();
-        Vector3D guardwire1_endpoint = this.superlayer(-1).guardlayer(-1).wire(-1).end().toVector3D();
+        Vector3D guardwire0_endpoint = this.superlayer( 0).guardlayer( 0).wire( 0,coord).end().toVector3D();
+        Vector3D guardwire1_endpoint = this.superlayer(-1).guardlayer(-1).wire(-1,coord).end().toVector3D();
 
         // region center-point in sector coordinates
-        Vector3D region_center = this.center();
+        Vector3D region_center = this.center(coord);
 
         // x and y are reversed for gemc's coordinate system
         double dz    = 0.5 * this.thickness();
