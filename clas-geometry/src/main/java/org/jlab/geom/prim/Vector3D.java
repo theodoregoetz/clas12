@@ -455,7 +455,6 @@ public final class Vector3D implements Transformable, Showable {
         return (angle+Math.PI*2)%(Math.PI*2);
     }
 
-
     /**
      * Projection of this vector onto another vector
      * @param v another vector

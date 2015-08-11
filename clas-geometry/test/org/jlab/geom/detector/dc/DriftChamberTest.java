@@ -33,7 +33,27 @@ public class DriftChamberTest {
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
         provider.connect();
-        dcgeom.fetch_nominal_parameters(provider);
+        dcgeom.fetchNominalParameters(provider);
+    }
+
+    @Test
+    public void testPrint() {
+        DriftChamber dcgeom = new DriftChamber();
+        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+        provider.setDefaultRun(0);
+        provider.setDefaultVariation("default");
+        provider.connect();
+        dcgeom.fetchNominalParameters(provider);
+
+        Map<String,Map<String,String>> vols = dcgeom.volumes();
+        StringBuilder msg = new StringBuilder();
+        for (Map.Entry<String,Map<String,String>> vol : vols.entrySet()) {
+            msg.append(vol.getKey()+":\n");
+            for (Map.Entry<String,String> e : vol.getValue().entrySet()) {
+                msg.append("    "+e.getKey()+": "+e.getValue()+"\n");
+            }
+        }
+        System.out.print(msg.toString());
     }
 
     public static void main(String args[]) {

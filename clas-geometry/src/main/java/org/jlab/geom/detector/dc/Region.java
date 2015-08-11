@@ -13,6 +13,7 @@ import org.jlab.geom.detector.dc.*;
  **/
 class Region {
 
+    DriftChamber dc;
     Sector sector;
     ArrayList<Superlayer> superlayers;
     int index;
@@ -27,6 +28,7 @@ class Region {
 
     Region(Sector sector) {
         this.sector = sector;
+        this.dc = sector.dc;
         this.superlayers = new ArrayList<Superlayer>();
     }
 
@@ -108,6 +110,108 @@ class Region {
         Vector3D regionCenter = p0.add(p1).multiply(0.5);
         regionCenter.setY(0);
         return regionCenter;
+    }
+
+
+    String name() {
+        return new String("R"+(index+1)+"_S"+(sector.index+1));
+    }
+
+    String description() {
+        return new String(sector.description()+" Region "+(index+1));
+    }
+
+    /**
+     * \brief generate the mother volume of a DC Region for input into gemc/geant4
+     *
+     * The numbers calculated are following Geant4's G4Trap constructor:
+     *     pDz     Half-length along the z-axis
+     *     pTheta  Polar angle of the line joining the centres of the faces
+     *             at -/+pDz
+     *     pPhi    Azimuthal angle of the line joing the centre of the face
+     *             at -pDz to the centre of the face at +pDz
+     *     pDy1    Half-length along y of the face at -pDz
+     *     pDx1    Half-length along x of the side at y=-pDy1 of the face at -pDz
+     *     pDx2    Half-length along x of the side at y=+pDy1 of the face at -pDz
+     *     pAlp1   Angle with respect to the y axis from the centre of the
+     *             side at y=-pDy1 to the centre at y=+pDy1 of the face at -pDz
+     *
+     *     pDy2    Half-length along y of the face at +pDz
+     *     pDx3    Half-length along x of the side at y=-pDy2 of the face at +pDz
+     *     pDx4    Half-length along x of the side at y=+pDy2 of the face at +pDz
+     *     pAlp2   Angle with respect to the y axis from the centre of the
+     *             side at y=-pDy2 to the centre at y=+pDy2 of the face at +pDz
+     *
+     * \return map of strings to strings: value = ret.get(param_name)
+     **/
+    Map<String,String> volume() {
+
+        // first and last guard wire endpoints
+        Vector3D guardwire0_endpoint = this.superlayer( 0).guardlayer( 0).wire( 0).end().toVector3D();
+        Vector3D guardwire1_endpoint = this.superlayer(-1).guardlayer(-1).wire(-1).end().toVector3D();
+
+        // region center-point in sector coordinates
+        Vector3D region_center = this.center();
+
+        // x and y are reversed for gemc's coordinate system
+        double dz    = 0.5 * this.thickness();
+        double theta = - thtilt;
+        double phi   = 0.5 * PI;
+        double dy1   = 0.5 * (guardwire1_endpoint.x() - guardwire0_endpoint.x())
+                / cos(thtilt);
+        double dx1   = guardwire0_endpoint.y();
+        double dx2   = guardwire1_endpoint.y();
+        double alp1  = 0.;
+        double dy2   = dy1;
+        double dx3   = dx1;
+        double dx4   = dx2;
+        double alp2  = alp1;
+
+        // x and y are reversed for gemc's coordinate system
+        String region_pos = new String(
+            region_center.y()+"*cm " +
+            region_center.x()+"*cm " +
+            region_center.z()+"*cm");
+
+        String region_rot = new String(
+            "ordered: zxy " +
+            ( 90. + toDegrees(this.thtilt)) + "*deg " +
+            (-90. - 60.*index) + "*deg " +
+            0 + "*deg");
+
+        String region_dim = new String(
+            dz + "*cm " +
+            toDegrees(theta) + "*deg " +
+            toDegrees(phi) + "*deg " +
+            dy1 + "*cm " +
+            dx1 + "*cm " +
+            dx2 + "*cm " +
+            toDegrees(alp1) + "*deg " +
+            dy2 + "*cm " +
+            dx3 + "*cm " +
+            dx4 + "*cm " +
+            toDegrees(alp2) + "*deg");
+
+        // The Region mother volume
+        Map<String,String> vol = new HashMap<String,String>();
+        vol.put("mother", "root");
+        vol.put("description", this.description());
+        vol.put("pos", region_pos);
+        vol.put("rotation", region_rot);
+        vol.put("color", "aa0000");
+        vol.put("type", "G4Trap");
+        vol.put("dimensions", region_dim);
+        vol.put("material", "DCgas");
+        vol.put("mfield", "no");
+        vol.put("ncopy", "1");
+        vol.put("pMany", "1");
+        vol.put("exist", "1");
+        vol.put("visible", "1");
+        vol.put("style", "0");
+        vol.put("sensitivity", "no");
+        vol.put("hit_type", "");
+        vol.put("identifiers", "");
+        return vol;
     }
 
 }

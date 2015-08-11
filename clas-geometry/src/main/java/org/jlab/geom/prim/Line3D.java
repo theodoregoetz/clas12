@@ -489,4 +489,30 @@ public final class Line3D implements Transformable, Showable {
                 .append(boundPoint1)
                 .toString();
     }
+
+    /**
+     * direction vector from begin to end point
+     **/
+    public Vector3D direction() {
+        return boundPoint1.toVector3D().sub(boundPoint0.toVector3D());
+    }
+
+    public Point3D projection(Point3D p) {
+        return this.projection(p.toVector3D()).toPoint3D();
+    }
+
+    /**
+     * projection of a point onto this line
+     **/
+    public Vector3D projection(Vector3D v)
+    {
+        // plane perpendicular to line, which contains point v
+        Plane3D p = new Plane3D(v.toPoint3D(), this.direction());
+
+        // find intersection of line and plane
+        Point3D i = new Point3D();
+        p.intersection(this,i);
+        return i.toVector3D();
+    }
+
 }

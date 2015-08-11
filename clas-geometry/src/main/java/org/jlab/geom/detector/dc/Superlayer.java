@@ -24,6 +24,8 @@ import org.jlab.geom.detector.dc.*;
  **/
 class Superlayer {
 
+    DriftChamber dc;
+    Sector sector;
     Region region;
     ArrayList<Layer> layers;
     int index;
@@ -36,6 +38,8 @@ class Superlayer {
 
     Superlayer(Region region) {
         this.region = region;
+        this.sector = region.sector;
+        this.dc = sector.dc;
         this.layers = new ArrayList<Layer>();
     }
 
@@ -82,7 +86,10 @@ class Superlayer {
         return this.layerIndex(idx);
     }
     int senselayerIndex(int idx) {
-        return this.layerIndex(idx) + 1;
+        if (idx<0) {
+            idx = this.nSenselayers() + idx;
+        }
+        return idx + 1;
     }
 
     Layer layer(int idx) {
@@ -98,8 +105,6 @@ class Superlayer {
     List<Layer> senselayers() {
         return layers.subList(this.senselayerIndex(0), this.senselayerIndex(-1)+1);
     }
-
-
 
     /**
      * \brief Get the total number of wire-planes
@@ -250,5 +255,13 @@ class Superlayer {
             this.wireDircosX(),
             this.wireDircosY(),
             this.wireDircosZ() ).asUnit();
+    }
+
+    String name() {
+        return new String("SL"+(index+1)+"_"+region.name());
+    }
+
+    String description() {
+        return new String(region.description()+" Superlayer "+(index+1));
     }
 }

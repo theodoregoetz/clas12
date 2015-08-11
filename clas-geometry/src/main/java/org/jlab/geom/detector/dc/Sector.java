@@ -57,4 +57,25 @@ class Sector {
             this.sectorToCLAS(p.point()),
             this.sectorToCLAS(p.normal()) );
     }
+
+    String name() {
+        return new String("S"+(index+1));
+    }
+
+    String description() {
+        return new String(dc.description()+" Sector "+(index+1));
+    }
+
+    Map<String,Map<String,String>> volumes() {
+        Map<String,Map<String,String>> vols = new HashMap<String,Map<String,String>>();
+        for (Region region : regions) {
+            vols.put(region.name(),region.volume());
+            for (Superlayer superlayer : region.superlayers) {
+                for (Layer layer : superlayer.senselayers()) {
+                    vols.put(layer.name(),layer.volume());
+                }
+            }
+        }
+        return vols;
+    }
 }

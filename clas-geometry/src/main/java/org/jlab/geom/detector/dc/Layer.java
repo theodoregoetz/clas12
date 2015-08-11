@@ -14,6 +14,9 @@ import org.jlab.geom.detector.dc.*;
  **/
 class Layer {
 
+    DriftChamber dc;
+    Sector sector;
+    Region region;
     Superlayer superlayer;
     int index;
 
@@ -23,6 +26,9 @@ class Layer {
 
     Layer(Superlayer superlayer) {
         this.superlayer = superlayer;
+        this.region = superlayer.region;
+        this.sector = region.sector;
+        this.dc = sector.dc;
     }
 
     int nWires() {
@@ -54,7 +60,7 @@ class Layer {
     public double wireMidX(int w) {
         // r is the distance from the guard layer to this wire plane in cm.
         double r = ((double) index) * superlayer.cellthickness * superlayer.wpdist;
-        double xmid = superlayer.firstWireMidX() + r * sin(superlayer.region.thtilt);
+        double xmid = superlayer.firstWireMidX() + r * sin(region.thtilt);
         double wmidsp = superlayer.wireMidSpacing();
 
         // stagger wire planes
@@ -62,10 +68,10 @@ class Layer {
         if ((index % 2) == 0) {
             nwire += 0.5;
         }
-        xmid += nwire * wmidsp * cos(superlayer.region.thtilt);
+        xmid += nwire * wmidsp * cos(region.thtilt);
 
         // mini-stagger
-        if (superlayer.region.index == 2)
+        if (region.index == 2)
         {
             if ((index % 2) == 0) {
                 xmid += 0.001;
@@ -107,7 +113,7 @@ class Layer {
     double wireMidZ(int w) {
         // r is the distance from the guard layer to this wire plane in cm.
         double r = ((double) index) * superlayer.cellthickness * superlayer.wpdist;
-        double zmid = superlayer.firstWireMidZ() + r * cos(superlayer.region.thtilt);
+        double zmid = superlayer.firstWireMidZ() + r * cos(region.thtilt);
         double wmidsp = superlayer.wireMidSpacing();
 
         // stagger even wire planes
@@ -115,10 +121,10 @@ class Layer {
         if ((index % 2) == 0) {
             nwire += 0.5;
         }
-        zmid -= nwire * wmidsp * sin(superlayer.region.thtilt);
+        zmid -= nwire * wmidsp * sin(region.thtilt);
 
         // mini-stagger
-        if (superlayer.region.index == 2) {
+        if (region.index == 2) {
             if ((index % 2) == 0) {
                 zmid -= 0.001;
             } else {
@@ -250,8 +256,8 @@ class Layer {
         Vector<Line3D> ret = new Vector<Line3D>();
 
         // end plates of this region
-        Plane3D lplate = superlayer.region.leftEndPlate();
-        Plane3D rplate = superlayer.region.rightEndPlate();
+        Plane3D lplate = region.leftEndPlate();
+        Plane3D rplate = region.rightEndPlate();
 
         Vector3D wd = superlayer.wireDirection();
         Point3D ileft = new Point3D();
@@ -278,8 +284,8 @@ class Layer {
      **/
     Line3D wire(int w) {
         // end plates of this region
-        Plane3D lplate = superlayer.region.leftEndPlate();
-        Plane3D rplate = superlayer.region.rightEndPlate();
+        Plane3D lplate = region.leftEndPlate();
+        Plane3D rplate = region.rightEndPlate();
 
         // wire as a line
         Line3D wireLine = new Line3D(
@@ -312,6 +318,190 @@ class Layer {
         return new Plane3D(
             new Point3D(this.wireMid(0)),
             superlayer.wireDirection() );
+    }
+
+    String name() {
+        return new String("L"+index+"_"+superlayer.name());
+    }
+
+    String description() {
+        return new String(superlayer.description()+" Layer "+index);
+    }
+
+    /**
+     * generating the trapezoid parameters for this layer
+     * following the G4Trap constructor:
+     *     pDz     Half-length along the z-axis
+     *     pTheta  Polar angle of the line joining the centres of the faces
+     *             at -/+pDz
+     *     pPhi    Azimuthal angle of the line joing the centre of the face at
+     *             -pDz to the centre of the face at +pDz
+     *     pDy1    Half-length along y of the face at -pDz
+     *     pDx1    Half-length along x of the side at y=-pDy1 of the face at -pDz
+     *     pDx2    Half-length along x of the side at y=+pDy1 of the face at -pDz
+     *     pAlp1   Angle with respect to the y axis from the centre of the side
+     *             at y=-pDy1 to the centre at y=+pDy1 of the face at -pDz
+     *
+     *     pDy2    Half-length along y of the face at +pDz
+     *     pDx3    Half-length along x of the side at y=-pDy2 of the face at +pDz
+     *     pDx4    Half-length along x of the side at y=+pDy2 of the face at +pDz
+     *     pAlp2   Angle with respect to the y axis from the centre of the side
+     *             at y=-pDy2 to the centre at y=+pDy2 of the face at +pDz
+     *
+     * \return map of strings to strings: value = ret.get(param_name)
+    **/
+    Map<String,String> volume() {
+        // all done in sector coordinate system. ///////////////////////////////
+
+        // 100 um gap between layers (to avoid G4 volume overlap)
+        final double microgap = 0.01;
+
+        double hflyrthk = 0.5 * superlayer.layerThickness();
+        Vector3D half_lyr_thickness = new Vector3D(
+            hflyrthk * sin(region.thtilt),
+            0.,
+            hflyrthk * cos(region.thtilt) );
+
+        // volume edges as infinitely-extending lines
+        // The first two edges are the wire-lines displaced by
+        // half a layer-thickness in the direction of (0,0,0).
+        // The last two are displaced away from the origin.
+        Line3D edge00_line = new Line3D(
+            this.wireMid( 0).sub(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection() );
+        Line3D edge01_line = new Line3D(
+            this.wireMid(-1).sub(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection() );
+        Line3D edge10_line = new Line3D(
+            this.wireMid( 0).add(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection() );
+        Line3D edge11_line = new Line3D(
+            this.wireMid(-1).add(half_lyr_thickness).toPoint3D(),
+            superlayer.wireDirection() );
+
+        // get the intersection and create line segment from one
+        // point to the other. These are the same lines as above
+        // but with endpoints at the left and right end-planes.
+        Point3D edge00_lplate_int = new Point3D();
+        Point3D edge00_rplate_int = new Point3D();
+        Point3D edge01_lplate_int = new Point3D();
+        Point3D edge01_rplate_int = new Point3D();
+        Point3D edge10_lplate_int = new Point3D();
+        Point3D edge10_rplate_int = new Point3D();
+        Point3D edge11_lplate_int = new Point3D();
+        Point3D edge11_rplate_int = new Point3D();
+
+        // end plates of this region
+        Plane3D lplate = region.leftEndPlate();
+        Plane3D rplate = region.rightEndPlate();
+
+        lplate.intersection(edge00_line, edge00_lplate_int);
+        rplate.intersection(edge00_line, edge00_rplate_int);
+        lplate.intersection(edge01_line, edge01_lplate_int);
+        rplate.intersection(edge01_line, edge01_rplate_int);
+        lplate.intersection(edge10_line, edge00_lplate_int);
+        rplate.intersection(edge10_line, edge00_rplate_int);
+        lplate.intersection(edge11_line, edge01_lplate_int);
+        rplate.intersection(edge11_line, edge01_rplate_int);
+
+        Line3D edge00 = new Line3D(edge00_lplate_int, edge00_rplate_int);
+        Line3D edge01 = new Line3D(edge01_lplate_int, edge01_rplate_int);
+        Line3D edge10 = new Line3D(edge10_lplate_int, edge10_rplate_int);
+        Line3D edge11 = new Line3D(edge11_lplate_int, edge11_rplate_int);
+
+        // Layer closer to the origin:
+        // p0 = projection of the 1st edge's midpoint onto the
+        //      line representing the longer edge on the same layer.
+        // d00 = direction from the 1st edges's midpoint to p0
+        // d01 = direction from the 1st to the 2nd edges's midpoint
+        Vector3D p0 = edge01_line.projection(edge00.midpoint().toVector3D());
+        Vector3D d00 = p0.sub(edge00.midpoint().toVector3D()).asUnit();
+        Vector3D d01 = edge01.midpoint().toVector3D().sub(edge00.midpoint().toVector3D()).asUnit();
+
+        // Layer farther away from the origin:
+        // p1 = projection of the 1st edge's midpoint onto the
+        //      line representing the longer edge on the same layer.
+        Vector3D p1 = edge11_line.projection(edge10.midpoint().toVector3D());
+
+        // get the sign of the alp angle for the trapezoid
+        double sign_of_alp1 = 1;
+        if ((edge01.midpoint().y() - p0.y()) < 0.)
+        {
+            sign_of_alp1 = -1;
+        }
+
+        double dz    = hflyrthk - microgap;
+        double theta = - region.thtilt;
+        double phi   = 0.5 * PI;
+        double dy1   = 0.5 * (new Line3D(edge00.midpoint(), p0)).length();
+        double dx1   = 0.5 * edge00.length();
+        double dx2   = 0.5 * edge01.length();
+        double alp1  = sign_of_alp1 * d00.angle(d01);
+        double dy2   = 0.5 * (new Line3D(edge10.midpoint(), p1)).length();
+        double dx3   = 0.5 * edge10.length();
+        double dx4   = 0.5 * edge11.length();
+        double alp2  = alp1;
+
+        // d = position of layer volume relative to the region (mother volume)
+        Vector3D d = this.center().sub(region.center());
+
+        // rotate about the y-axis in sector coordinates by the region's tilt
+        // this is done because the trapezoids are defined by the edges
+        // and the whole volume is then rotated to get the final position
+        d.setXYZ(cos(region.thtilt)*d.x() - sin(region.thtilt)*d.z(),
+                 d.y(),
+                 cos(region.thtilt)*d.z() + sin(region.thtilt)*d.x());
+
+        // x and y are reversed for gemc's coordinate system
+        String layer_pos = new String(
+            d.y() + "*cm " +
+            d.x() + "*cm " +
+            d.z() + "*cm");
+
+        String layer_rot = new String(
+            "0*deg " +
+            "0*deg " +
+            toDegrees(superlayer.thster) + "*deg");
+
+        String layer_dim = new String(
+            dz + "*cm " +
+            toDegrees(theta) + "*deg " +
+            toDegrees(phi) + "*deg " +
+            dy1 + "*cm " +
+            dx1 + "*cm " +
+            dx2 + "*cm " +
+            toDegrees(alp1) + "*deg " +
+            dy2 + "*cm " +
+            dx3 + "*cm " +
+            dx4 + "*cm " +
+            toDegrees(alp2) + "*deg");
+
+        String layer_ids = new String(
+            "sector ncopy 0 " +
+            "superlayer manual " + (superlayer.index+1) + " " +
+            "layer manual " + (index+1) + " " +
+            "wire manual 1");
+
+        // The (Sense)Layer volume
+        Map<String,String> vol = new HashMap<String,String>();
+        vol.put("mother", region.name());
+        vol.put("description", this.description());
+        vol.put("pos", layer_pos);
+        vol.put("rotation", layer_rot);
+        vol.put("color", "66aadd");
+        vol.put("type", "G4Trap");
+        vol.put("dimensions", layer_dim);
+        vol.put("material", "DCgas");
+        vol.put("mfield", "no");
+        vol.put("ncopy", "1");
+        vol.put("pMany", "1");
+        vol.put("exist", "1");
+        vol.put("visible", "1");
+        vol.put("style", "1");
+        vol.put("sensitivity", "DC");
+        vol.put("hit_type", "DC");
+        vol.put("identifiers", layer_ids);
+        return vol;
     }
 
 }
