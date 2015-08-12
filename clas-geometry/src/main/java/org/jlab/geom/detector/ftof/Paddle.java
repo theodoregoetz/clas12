@@ -15,14 +15,14 @@ class Paddle {
 
     ForwardTOF ftof;
     Sector sector;
-    Paddle panel;
+    Panel panel;
     int index;
 
     double meas_lengths;
     double slopes;
     double intercepts;
 
-    Paddle(Sector sector) {
+    Paddle(Panel panel) {
         this.panel = panel;
         this.sector = panel.sector;
         this.ftof = sector.ftof;

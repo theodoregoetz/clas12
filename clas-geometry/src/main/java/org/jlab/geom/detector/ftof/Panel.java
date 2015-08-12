@@ -19,7 +19,6 @@ class Panel {
     Sector sector;
     ArrayList<Paddle> paddles;
     int index;
-    String name;
 
     double paddle_width;
     double paddle_thickness;
@@ -44,6 +43,10 @@ class Panel {
             idx = this.nPaddles() + idx;
         }
         return idx;
+    }
+
+    String name() {
+        return ftof.panelName(index);
     }
 
     Paddle paddle(int idx) {

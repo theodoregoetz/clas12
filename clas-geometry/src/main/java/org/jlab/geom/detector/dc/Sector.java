@@ -61,7 +61,7 @@ class Sector {
             this.sectorToCLAS(p.normal()) );
     }
 
-    String name() {
+    String g4Name() {
         return new String("S"+(index+1));
     }
 

@@ -14,6 +14,8 @@ javac -classpath $CLASSPATH $TEST_FILES || exit -2
 
 # if no main in target class:
 # java -cp 'test:src/main/java:/usr/share/java/junit.jar' org.junit.runner.JUnitCore org.jlab.geom.detector.dc.DriftChamberTest
+# java -cp 'test:src/main/java:/usr/share/java/junit.jar' org.junit.runner.JUnitCore org.jlab.geom.detector.ftof.ForwardTOFTest
 
 # if there is a main which just calls the unit test:
 java -cp $CLASSPATH org.jlab.geom.detector.dc.DriftChamberTest || exit -3
+java -cp $CLASSPATH org.jlab.geom.detector.ftof.ForwardTOFTest || exit -3

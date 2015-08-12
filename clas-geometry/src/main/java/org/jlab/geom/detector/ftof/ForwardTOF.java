@@ -21,12 +21,22 @@ import org.jlab.geom.detector.ftof.*;
 public class ForwardTOF {
 
     ArrayList<Sector> sectors;
+    private Map<String,Integer> panel_index_map;
+    private Vector<String> panel_names;
 
     /**
      * \brief default constructor
      **/
     public ForwardTOF() {
         this.sectors = new ArrayList<Sector>();
+        this.panel_index_map = new HashMap<String,Integer>();
+        this.panel_index_map.put("1a",0);
+        this.panel_index_map.put("1b",1);
+        this.panel_index_map.put("2" ,2);
+        this.panel_names = new Vector<String>();
+        this.panel_names.add("1a");
+        this.panel_names.add("1b");
+        this.panel_names.add("2" );
     }
 
     /**
@@ -53,64 +63,56 @@ public class ForwardTOF {
     public void fetchNominalParameters(JDBCProvider provider) {
         final double deg = 3.14159265358979 / 180.;
 
-        Vector<String> panel_names = new Vector<String>;
-        panel_names.add("1a");
-        panel_names.add("1b");
-        panel_names.add("2");
-        HashMap<String,Integer> panel_index = new HashMap<String,Integer>;
-        panel_index.put("1a",0);
-        panel_index.put("1b",1);
-        panel_index.put("2",2);
-
-        int nsetors;
+        int nsectors;
         int npanels;
-        Vector<Double> paddle_width = new Vector<Double>(npanels);
-        Vector<Double> paddle_thick = new Vector<Double>(npanels);
-        Vector<Double> paddle_thtilt = new Vector<Double>(npanels);
-        Vector<Double> paddle_thmin = new Vector<Double>(npanels);
-        Vector<Double> panel_dist2edge = new Vector<Double>(npanels);
-        Vector<Double> paddle_gap = new Vector<Double>(npanels);
-        double panel1b_pairgap
-        Vector<Double> wrapper_thick = new Vector<Double>(npanels);
 
         Assignment asgmt = provider.getData("/geometry/ftof/ftof");
 
         nsectors = asgmt.getColumnValuesInt("nsectors").get(0);
         npanels  = asgmt.getColumnValuesInt("npanels").get(0);
 
+        Vector<Double> paddle_width = new Vector<Double>(npanels);
+        Vector<Double> paddle_thick = new Vector<Double>(npanels);
+        Vector<Double> panel_thtilt = new Vector<Double>(npanels);
+        Vector<Double> panel_thmin = new Vector<Double>(npanels);
+        Vector<Double> panel_dist2edge = new Vector<Double>(npanels);
+        Vector<Double> paddle_gap = new Vector<Double>(npanels);
+        double panel1b_pairgap;
+        Vector<Double> wrapper_thick = new Vector<Double>(npanels);
+
         Assignment asgmt1a = provider.getData("/geometry/ftof/panel1a/panel");
         Assignment asgmt1b = provider.getData("/geometry/ftof/panel1b/panel");
         Assignment asgmt2  = provider.getData("/geometry/ftof/panel2/panel");
 
-        paddle_width.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("paddlewidth").get(0));
-        paddle_width.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("paddlewidth").get(0));
-        paddle_width.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("paddlewidth").get(0));
+        paddle_width.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("paddlewidth").get(0));
+        paddle_width.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("paddlewidth").get(0));
+        paddle_width.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("paddlewidth").get(0));
 
-        paddle_thick.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("paddlethickness").get(0));
-        paddle_thick.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("paddlethickness").get(0));
-        paddle_thick.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("paddlethickness").get(0));
+        paddle_thick.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("paddlethickness").get(0));
+        paddle_thick.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("paddlethickness").get(0));
+        paddle_thick.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("paddlethickness").get(0));
 
-        paddle_thtilt.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("thtilt").get(0));
-        paddle_thtilt.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("thtilt").get(0));
-        paddle_thtilt.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("thtilt").get(0));
+        panel_thtilt.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("thtilt").get(0));
+        panel_thtilt.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("thtilt").get(0));
+        panel_thtilt.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("thtilt").get(0));
 
-        paddle_thmin.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("thmin").get(0));
-        paddle_thmin.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("thmin").get(0));
-        paddle_thmin.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("thmin").get(0));
+        panel_thmin.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("thmin").get(0));
+        panel_thmin.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("thmin").get(0));
+        panel_thmin.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("thmin").get(0));
 
-        panel_dist2edge.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("dist2edge").get(0));
-        panel_dist2edge.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("dist2edge").get(0));
-        panel_dist2edge.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("dist2edge").get(0));
+        panel_dist2edge.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("dist2edge").get(0));
+        panel_dist2edge.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("dist2edge").get(0));
+        panel_dist2edge.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("dist2edge").get(0));
 
-        paddle_gap.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("gap").get(0));
-        paddle_gap.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("gap").get(0));
-        paddle_gap.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("gap").get(0));
+        paddle_gap.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("gap").get(0));
+        paddle_gap.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("gap").get(0));
+        paddle_gap.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("gap").get(0));
 
         panel1b_pairgap = asgmt1b.getColumnValuesDouble("pairgap").get(0);
 
-        wrapper_thick.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("wrapperthickness").get(0));
-        wrapper_thick.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("wrapperthickness").get(0));
-        wrapper_thick.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("wrapperthickness").get(0));
+        wrapper_thick.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("wrapperthickness").get(0));
+        wrapper_thick.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("wrapperthickness").get(0));
+        wrapper_thick.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("wrapperthickness").get(0));
 
         asgmt1a = provider.getData("/geometry/ftof/panel1a/paddles");
         asgmt1b = provider.getData("/geometry/ftof/panel1b/paddles");
@@ -120,17 +122,17 @@ public class ForwardTOF {
         Vector<Vector<Double>> paddle_slopes       = new Vector<Vector<Double>>(npanels);
         Vector<Vector<Double>> paddle_intercepts   = new Vector<Vector<Double>>(npanels);
 
-        paddle_meas_lengths.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("Length"));
-        paddle_meas_lengths.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("Length"));
-        paddle_meas_lengths.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("Length"));
+        paddle_meas_lengths.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("Length"));
+        paddle_meas_lengths.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("Length"));
+        paddle_meas_lengths.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("Length"));
 
-        paddle_slopes.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("Slope"));
-        paddle_slopes.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("Slope"));
-        paddle_slopes.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("Slope"));
+        paddle_slopes.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("Slope"));
+        paddle_slopes.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("Slope"));
+        paddle_slopes.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("Slope"));
 
-        paddle_intercepts.put(panel_index.get("1a"),asgmt1a.getColumnValuesDouble("Intercept"));
-        paddle_intercepts.put(panel_index.get("1b"),asgmt1b.getColumnValuesDouble("Intercept"));
-        paddle_intercepts.put(panel_index.get("2" ),asgmt2 .getColumnValuesDouble("Intercept"));
+        paddle_intercepts.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("Intercept"));
+        paddle_intercepts.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("Intercept"));
+        paddle_intercepts.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("Intercept"));
 
         this.sectors.clear();
 
@@ -140,10 +142,9 @@ public class ForwardTOF {
             sector.index = sec;
 
             for (int pan=0; pan<npanels; pan++) {
-                sector.panels.put(new Panel(sector));
-                Panel panel = sector.panel.get(pan);
+                sector.panels.add(new Panel(sector));
+                Panel panel = sector.panels.get(pan);
                 panel.index = pan;
-                panel.name = panel_name.get(pan);
 
                 panel.paddle_width      = paddle_width.get(pan);
                 panel.paddle_thickness  = paddle_thick.get(pan);
@@ -151,26 +152,28 @@ public class ForwardTOF {
                 panel.thmin             = toDegrees(panel_thmin.get(pan));
                 panel.dist2edge         = panel_dist2edge.get(pan);
                 panel.paddle_gap        = paddle_gap.get(pan);
-                if (panel.name == "1b") {
+                if (panel.name() == "1b") {
                     panel.paddle_pairgap = panel1b_pairgap;
                 } else {
                     panel.paddle_pairgap = 0.;
                 }
                 panel.wrapper_thickness = wrapper_thick.get(pan);
 
-                npaddles = paddle_meas_lengths.get(pan).size();
+                int npaddles = paddle_meas_lengths.get(pan).size();
                 for (int pad=0; pad<npaddles; pad++) {
-                    panel.paddles.put(new Paddle(panel));
+                    panel.paddles.add(new Paddle(panel));
                     Paddle paddle = panel.paddles.get(pad);
                     paddle.index = pad;
 
                     paddle.meas_lengths = paddle_meas_lengths.get(pan).get(pad);
                     paddle.slopes       = paddle_slopes.get(pan).get(pad);
                     paddle.intercepts   = paddle_intercepts.get(pan).get(pad);
+                }
             }
         }
     }
 
+    /*
     public G4VolumeMap g4Volumes(CoordinateSystem coord) {
         G4VolumeMap vols = new G4VolumeMap();
         for (Sector sector : sectors) {
@@ -182,6 +185,7 @@ public class ForwardTOF {
     public G4VolumeMap g4Volumes() {
         return this.g4Volumes(CoordinateSystem.CLAS);
     }
+    */
 
     int nSectors() {
         return sectors.size();
@@ -196,6 +200,14 @@ public class ForwardTOF {
 
     Sector sector(int idx) {
         return sectors.get(this.sectorIndex(idx));
+    }
+
+    int panelIndex(String id) {
+        return panel_index_map.get(id);
+    }
+
+    String panelName(int id) {
+        return panel_names.get(id);
     }
 
     String description() {

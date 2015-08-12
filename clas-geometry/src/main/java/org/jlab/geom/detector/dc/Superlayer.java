@@ -269,8 +269,8 @@ class Superlayer {
         return ret;
     }
 
-    String name() {
-        return new String("SL"+(index+1)+"_"+region.name());
+    String g4Name() {
+        return new String("SL"+(index+1)+"_"+region.g4Name());
     }
 
     String description() {

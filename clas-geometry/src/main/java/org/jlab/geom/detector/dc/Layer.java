@@ -338,7 +338,7 @@ class Layer {
 
 
     String g4Name() {
-        return new String("L"+index+"_"+superlayer.name());
+        return new String("L"+index+"_"+superlayer.g4Name());
     }
 
     String description() {
@@ -501,7 +501,7 @@ class Layer {
 
         // The (Sense)Layer volume
         G4Volume vol = new G4Volume();
-        vol.put("mother", region.name());
+        vol.put("mother", region.g4Name());
         vol.put("description", this.description());
         vol.put("pos", layer_pos);
         vol.put("rotation", layer_rot);

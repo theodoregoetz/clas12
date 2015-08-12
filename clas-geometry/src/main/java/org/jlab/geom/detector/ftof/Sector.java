@@ -28,6 +28,11 @@ class Sector {
         return panels.size();
     }
 
+    /**
+     * \brief convert negative indexes to positive counting from end
+     * \param [in] idx index either from zero or from -1 (counting from end)
+     * \return unsigned int index of the region in this sector
+     **/
     int panelIndex(int idx) {
         if (idx<0) {
             idx = this.nPanels() + idx;
@@ -39,12 +44,8 @@ class Sector {
         return panels.get(this.panelIndex(idx));
     }
 
-    Panel panel(String name) {
-        HashMap<String,Integer> panel_index = new HashMap<String,Integer>;
-        panel_index.put("1a",0);
-        panel_index.put("1b",1);
-        panel_index.put("2",2);
-        return panels.get(panel_index.get(name));
+    Panel panel(String id) {
+        return panels.get(ftof.panelIndex(id));
     }
 
     Vector3D sectorToCLAS(Vector3D v) {
@@ -77,6 +78,7 @@ class Sector {
         return new String(ftof.description()+" Sector "+(index+1));
     }
 
+    /*
     G4VolumeMap g4Volumes(CoordinateSystem coord) {
         G4VolumeMap vols = new G4VolumeMap();
         for (Panel panel : panels) {
@@ -84,4 +86,5 @@ class Sector {
         }
         return vols;
     }
+    */
 }
