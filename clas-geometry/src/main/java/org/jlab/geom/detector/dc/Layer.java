@@ -3,6 +3,7 @@ package org.jlab.geom.detector.dc;
 import static java.lang.Math.*;
 import java.util.*;
 
+import org.jlab.geom.G4Volume;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
@@ -366,7 +367,7 @@ class Layer {
      *
      * \return map of strings to strings: value = ret.get(param_name)
     **/
-    Map<String,String> volume(CoordinateSystem coord) {
+    G4Volume g4Volume(CoordinateSystem coord) {
         // all done in sector coordinate system. ///////////////////////////////
 
         // 100 um gap between layers (to avoid G4 volume overlap)
@@ -499,7 +500,7 @@ class Layer {
             "wire manual 1");
 
         // The (Sense)Layer volume
-        Map<String,String> vol = new HashMap<String,String>();
+        G4Volume vol = new G4Volume();
         vol.put("mother", region.name());
         vol.put("description", this.description());
         vol.put("pos", layer_pos);
@@ -519,5 +520,4 @@ class Layer {
         vol.put("identifiers", layer_ids);
         return vol;
     }
-
 }

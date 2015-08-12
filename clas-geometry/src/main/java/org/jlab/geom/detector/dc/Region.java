@@ -3,6 +3,7 @@ package org.jlab.geom.detector.dc;
 import static java.lang.Math.*;
 import java.util.*;
 
+import org.jlab.geom.G4Volume;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
@@ -164,7 +165,7 @@ class Region {
      *
      * \return map of strings to strings: value = ret.get(param_name)
      **/
-    Map<String,String> volume(CoordinateSystem coord) {
+    G4Volume g4Volume(CoordinateSystem coord) {
 
         // first and last guard wire endpoints
         Vector3D guardwire0_endpoint = this.superlayer( 0).guardlayer( 0).wire( 0,coord).end().toVector3D();
@@ -213,7 +214,7 @@ class Region {
             toDegrees(alp2) + "*deg");
 
         // The Region mother volume
-        Map<String,String> vol = new HashMap<String,String>();
+        G4Volume vol = new G4Volume();
         vol.put("mother", "root");
         vol.put("description", this.description());
         vol.put("pos", region_pos);

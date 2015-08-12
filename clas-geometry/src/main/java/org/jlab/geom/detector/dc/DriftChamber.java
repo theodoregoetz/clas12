@@ -6,6 +6,7 @@ import static java.lang.Math.*;
 import org.jlab.ccdb.JDBCProvider;
 import org.jlab.ccdb.Assignment;
 
+import org.jlab.geom.G4VolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.detector.dc.*;
 
@@ -138,16 +139,16 @@ public class DriftChamber {
         }
     }
 
-    public Map<String,Map<String,String>> volumes(CoordinateSystem coord) {
-        Map<String,Map<String,String>> vols = new HashMap<String,Map<String,String>>();
+    public G4VolumeMap g4Volumes(CoordinateSystem coord) {
+        G4VolumeMap vols = new G4VolumeMap();
         for (Sector sector : sectors) {
-            vols.putAll(sector.volumes(coord));
+            vols.putAll(sector.g4Volumes(coord));
         }
         return vols;
     }
 
-    public Map<String,Map<String,String>> volumes() {
-        return this.volumes(CoordinateSystem.CLAS);
+    public G4VolumeMap g4Volumes() {
+        return this.g4Volumes(CoordinateSystem.CLAS);
     }
 
     int nSectors() {

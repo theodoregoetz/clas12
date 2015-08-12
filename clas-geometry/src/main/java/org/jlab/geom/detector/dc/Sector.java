@@ -2,6 +2,7 @@ package org.jlab.geom.detector.dc;
 
 import java.util.*;
 
+import org.jlab.geom.G4VolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
@@ -68,13 +69,13 @@ class Sector {
         return new String(dc.description()+" Sector "+(index+1));
     }
 
-    Map<String,Map<String,String>> volumes(CoordinateSystem coord) {
-        Map<String,Map<String,String>> vols = new HashMap<String,Map<String,String>>();
+    G4VolumeMap g4Volumes(CoordinateSystem coord) {
+        G4VolumeMap vols = new G4VolumeMap();
         for (Region region : regions) {
-            vols.put(region.name(),region.volume(coord));
+            vols.put(region.name(),region.g4Volume(coord));
             for (Superlayer superlayer : region.superlayers) {
                 for (Layer layer : superlayer.senselayers()) {
-                    vols.put(layer.name(),layer.volume(coord));
+                    vols.put(layer.name(),layer.g4Volume(coord));
                 }
             }
         }
