@@ -21,7 +21,6 @@ class Layer {
     Superlayer superlayer;
     int index;
 
-    boolean isSenselayer;
     int nGuardwires;
     int nSensewires;
 
@@ -41,9 +40,6 @@ class Layer {
             idx = this.nWires() + idx;
         }
         return idx;
-    }
-    int guardwireIndex(int idx) {
-        return this.wireIndex(idx);
     }
     int sensewireIndex(int idx) {
         return this.wireIndex(idx) + 1;
@@ -66,7 +62,7 @@ class Layer {
 
         // stagger wire planes
         double nwire = (double) this.wireIndex(w);
-        if ((index % 2) == 0) {
+        if ((index % 2) == 1) {
             nwire += 0.5;
         }
         xmid += nwire * wmidsp * cos(region.thtilt);
@@ -74,10 +70,10 @@ class Layer {
         // mini-stagger
         if (region.index == 2)
         {
-            if ((index % 2) == 0) {
-                xmid += 0.001;
+            if ((index % 2) == 1) {
+                xmid += 0.03 * cos(region.thtilt);
             } else {
-                xmid -= 0.001;
+                xmid -= 0.03 * cos(region.thtilt);
             }
         }
 
@@ -119,17 +115,17 @@ class Layer {
 
         // stagger even wire planes
         double nwire = (double) this.wireIndex(w);
-        if ((index % 2) == 0) {
+        if ((index % 2) == 1) {
             nwire += 0.5;
         }
         zmid -= nwire * wmidsp * sin(region.thtilt);
 
         // mini-stagger
         if (region.index == 2) {
-            if ((index % 2) == 0) {
-                zmid -= 0.001;
+            if ((index % 2) == 1) {
+                zmid -= 0.03 * sin(region.thtilt);
             } else {
-                zmid += 0.001;
+                zmid += 0.03 * sin(region.thtilt);
             }
         }
 
@@ -276,9 +272,7 @@ class Layer {
         Point3D iright = new Point3D();
         for (int idx=0; idx<this.nWires(); idx++) {
             // wire as a line
-            Line3D wireLine = new Line3D(
-                new Point3D(this.wireMid(idx,coord)),
-                new Point3D(wd) );
+            Line3D wireLine = new Line3D(this.wireMid(idx,coord).toPoint3D(), wd);
 
             // get the intersection and create line segment from one
             // point to the other.
@@ -301,8 +295,8 @@ class Layer {
 
         // wire as a line
         Line3D wireLine = new Line3D(
-            new Point3D(this.wireMid(w,coord)),
-            new Point3D(superlayer.wireDirection(coord)) );
+            this.wireMid(w,coord).toPoint3D(),
+            superlayer.wireDirection(coord) );
 
         // get the intersection and create line segment from one
         // point to the other.
@@ -330,8 +324,17 @@ class Layer {
         return new Plane3D(
             new Point3D(this.wireMid(0,coord)),
             superlayer.wireDirection(coord) );
-
     }
+
+    Line3D sensewire(int w, CoordinateSystem coord) {
+        return this.wire(this.sensewireIndex(w), coord);
+    }
+
+    Vector<Line3D> sensewires(CoordinateSystem coord) {
+        Vector<Line3D> ret = this.wires(coord);
+        return new Vector<Line3D>(ret.subList(1,this.nWires()-1));
+    }
+
 
     String name() {
         return new String("L"+index+"_"+superlayer.name());

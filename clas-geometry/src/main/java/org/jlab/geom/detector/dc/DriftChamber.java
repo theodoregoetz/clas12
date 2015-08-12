@@ -119,6 +119,7 @@ public class DriftChamber {
 
                     region.superlayers.add(new Superlayer(region));
                     Superlayer superlayer = region.superlayers.get(slyr);
+                    superlayer.index = slyr;
 
                     superlayer.nfieldlayers  = nfieldlayers.get(nslyr);
                     superlayer.thster        = toRadians(thster.get(nslyr));
@@ -130,11 +131,7 @@ public class DriftChamber {
                     for (int lyr=0; lyr<nlayers; lyr++) {
                         superlayer.layers.add(new Layer(superlayer));
                         Layer layer = superlayer.layers.get(lyr);
-                        if (lyr == 0 || lyr == (nlayers-1)) {
-                            layer.isSenselayer = true;
-                        } else {
-                            layer.isSenselayer = false;
-                        }
+                        layer.index = lyr;
                     }
                 }
             }

@@ -539,4 +539,14 @@ public final class Vector3D implements Transformable, Showable {
     public String toString() {
         return String.format("Vector3D:\t%12.5f %12.5f %12.5f", x, y, z);
     }
+
+    public String toStringBrief(int ndigits) {
+        return new String("(" +
+            String.format(new String("%."+ndigits+"f"),x)+", "+
+            String.format(new String("%."+ndigits+"f"),y)+", "+
+            String.format(new String("%."+ndigits+"f"),z)+")");
+    }
+    public String toStringBrief() {
+        return this.toStringBrief(5);
+    }
 }

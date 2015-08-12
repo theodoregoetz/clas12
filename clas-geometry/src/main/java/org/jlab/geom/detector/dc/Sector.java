@@ -41,12 +41,13 @@ class Sector {
     Vector3D sectorToCLAS(Vector3D v) {
         final double sector_phi = 3.1415926535898 / 3.;
         Vector3D ret = v.clone();
-        ret.rotateZ(index * sector_phi);
+        if (index != 0) {
+            ret.rotateZ(index * sector_phi);
+        }
         return ret;
     }
     Point3D sectorToCLAS(Point3D p) {
-        Vector3D v = this.sectorToCLAS(p.toVector3D());
-        return new Point3D(v.x(),v.y(),v.z());
+        return this.sectorToCLAS(p.toVector3D()).toPoint3D();
     }
     Line3D sectorToCLAS(Line3D l) {
         return new Line3D(
