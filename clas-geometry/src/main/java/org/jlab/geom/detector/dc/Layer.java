@@ -337,7 +337,7 @@ class Layer {
     }
 
 
-    String name() {
+    String g4Name() {
         return new String("L"+index+"_"+superlayer.name());
     }
 

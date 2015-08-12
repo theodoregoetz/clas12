@@ -1,42 +1,50 @@
-package org.jlab.geom.detector.dc;
+package org.jlab.geom.detector.ftof;
 
 import java.util.*;
 
 import org.jlab.geom.G4VolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
-import org.jlab.geom.detector.dc.*;
+import org.jlab.geom.detector.ftof.*;
 
 /**
- * \brief a sector of the drift chamber which consists of several regions
+ * \brief a sector of the forward TOF which consists of several panels
  *
- * There are six sectors of drift chambers in CLAS12 which hold
- * three regions
+ * There are six sectors of forward TOF in CLAS12 which hold
+ * three panels
  **/
 class Sector {
 
-    DriftChamber dc;
-    ArrayList<Region> regions;
+    ForwardTOF ftof;
+    ArrayList<Panel> panels;
     int index;
 
-    Sector(DriftChamber dc) {
-        this.dc = dc;
-        this.regions = new ArrayList<Region>();
+    Sector(ForwardTOF ftof) {
+        this.ftof = ftof;
+        this.panels = new ArrayList<Panel>();
     }
 
-    int nRegions() {
-        return regions.size();
+    int nPanels() {
+        return panels.size();
     }
 
-    int regionIndex(int idx) {
+    int panelIndex(int idx) {
         if (idx<0) {
-            idx = this.nRegions() + idx;
+            idx = this.nPanels() + idx;
         }
         return idx;
     }
 
-    Region region(int idx) {
-        return regions.get(this.regionIndex(idx));
+    Panel panel(int idx) {
+        return panels.get(this.panelIndex(idx));
+    }
+
+    Panel panel(String name) {
+        HashMap<String,Integer> panel_index = new HashMap<String,Integer>;
+        panel_index.put("1a",0);
+        panel_index.put("1b",1);
+        panel_index.put("2",2);
+        return panels.get(panel_index.get(name));
     }
 
     Vector3D sectorToCLAS(Vector3D v) {
@@ -61,23 +69,18 @@ class Sector {
             this.sectorToCLAS(p.normal()) );
     }
 
-    String name() {
+    String g4Name() {
         return new String("S"+(index+1));
     }
 
     String description() {
-        return new String(dc.description()+" Sector "+(index+1));
+        return new String(ftof.description()+" Sector "+(index+1));
     }
 
     G4VolumeMap g4Volumes(CoordinateSystem coord) {
         G4VolumeMap vols = new G4VolumeMap();
-        for (Region region : regions) {
-            vols.put(region.g4Name(),region.g4Volume(coord));
-            for (Superlayer superlayer : region.superlayers) {
-                for (Layer layer : superlayer.senselayers()) {
-                    vols.put(layer.g4Name(),layer.g4Volume(coord));
-                }
-            }
+        for (Panel panel : panels) {
+            vols.put(panel.g4Name(),panel.g4Volume(coord));
         }
         return vols;
     }

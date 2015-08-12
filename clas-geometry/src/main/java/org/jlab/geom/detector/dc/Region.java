@@ -134,7 +134,7 @@ class Region {
     }
 
 
-    String name() {
+    String g4Name() {
         return new String("R"+(index+1)+"_S"+(sector.index+1));
     }
 
