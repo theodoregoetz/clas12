@@ -3,7 +3,6 @@
 CLASSPATH=`find lib -name '*.jar' -print0 | tr '\0' ':' | head -c -1`
 CLASSPATH=$CLASSPATH:test
 CLASSPATH=$CLASSPATH:src/main/java
-CLASSPATH=$CLASSPATH:/usr/share/java/junit.jar
 
 echo "classpath: $CLASSPATH"
 
