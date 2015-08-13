@@ -116,6 +116,7 @@ public class ProcessMonitoringDialog extends JDialog implements Runnable {
                 bar.setValue(counter);
                 statusText.setText("Status : processed " + counter);
             }
+            this.monitorClass.analyze();
         } else {
             EvioDataChain reader = new EvioDataChain();
             for(String file : this.inputFileList){
@@ -138,6 +139,7 @@ public class ProcessMonitoringDialog extends JDialog implements Runnable {
                 bar.setValue(counter);
                 statusText.setText("Status : processed " + counter);
             }
+            this.monitorClass.analyze();
         }                
     }
     
