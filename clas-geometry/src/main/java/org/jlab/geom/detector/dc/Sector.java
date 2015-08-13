@@ -16,7 +16,7 @@ import org.jlab.geom.detector.dc.*;
 class Sector {
 
     DriftChamber dc;
-    ArrayList<Region> regions;
+    List<Region> regions;
     int index;
 
     Sector(DriftChamber dc) {

@@ -45,6 +45,7 @@ public class ForwardTOF {
      * This calls ForwardTOF.fetchNominalParameters(provider)
      **/
     public ForwardTOF(JDBCProvider provider) {
+        this();
         this.sectors = new ArrayList<Sector>();
         this.fetchNominalParameters(provider);
     }
@@ -84,35 +85,30 @@ public class ForwardTOF {
         Assignment asgmt1b = provider.getData("/geometry/ftof/panel1b/panel");
         Assignment asgmt2  = provider.getData("/geometry/ftof/panel2/panel");
 
-        paddle_width.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("paddlewidth").get(0));
-        paddle_width.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("paddlewidth").get(0));
-        paddle_width.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("paddlewidth").get(0));
-
-        paddle_thick.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("paddlethickness").get(0));
-        paddle_thick.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("paddlethickness").get(0));
-        paddle_thick.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("paddlethickness").get(0));
-
-        panel_thtilt.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("thtilt").get(0));
-        panel_thtilt.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("thtilt").get(0));
-        panel_thtilt.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("thtilt").get(0));
-
-        panel_thmin.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("thmin").get(0));
-        panel_thmin.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("thmin").get(0));
-        panel_thmin.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("thmin").get(0));
-
-        panel_dist2edge.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("dist2edge").get(0));
-        panel_dist2edge.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("dist2edge").get(0));
-        panel_dist2edge.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("dist2edge").get(0));
-
-        paddle_gap.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("gap").get(0));
-        paddle_gap.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("gap").get(0));
-        paddle_gap.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("gap").get(0));
+        paddle_width   .add(asgmt1a.getColumnValuesDouble("paddlewidth"    ).get(0));
+        paddle_width   .add(asgmt1b.getColumnValuesDouble("paddlewidth"    ).get(0));
+        paddle_width   .add(asgmt2 .getColumnValuesDouble("paddlewidth"    ).get(0));
+        paddle_thick   .add(asgmt1a.getColumnValuesDouble("paddlethickness").get(0));
+        paddle_thick   .add(asgmt1b.getColumnValuesDouble("paddlethickness").get(0));
+        paddle_thick   .add(asgmt2 .getColumnValuesDouble("paddlethickness").get(0));
+        panel_thtilt   .add(asgmt1a.getColumnValuesDouble("thtilt"         ).get(0));
+        panel_thtilt   .add(asgmt1b.getColumnValuesDouble("thtilt"         ).get(0));
+        panel_thtilt   .add(asgmt2 .getColumnValuesDouble("thtilt"         ).get(0));
+        panel_thmin    .add(asgmt1a.getColumnValuesDouble("thmin"          ).get(0));
+        panel_thmin    .add(asgmt1b.getColumnValuesDouble("thmin"          ).get(0));
+        panel_thmin    .add(asgmt2 .getColumnValuesDouble("thmin"          ).get(0));
+        panel_dist2edge.add(asgmt1a.getColumnValuesDouble("dist2edge"      ).get(0));
+        panel_dist2edge.add(asgmt1b.getColumnValuesDouble("dist2edge"      ).get(0));
+        panel_dist2edge.add(asgmt2 .getColumnValuesDouble("dist2edge"      ).get(0));
+        paddle_gap     .add(asgmt1a.getColumnValuesDouble("gap"            ).get(0));
+        paddle_gap     .add(asgmt1b.getColumnValuesDouble("gap"            ).get(0));
+        paddle_gap     .add(asgmt2 .getColumnValuesDouble("gap"            ).get(0));
 
         panel1b_pairgap = asgmt1b.getColumnValuesDouble("pairgap").get(0);
 
-        wrapper_thick.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("wrapperthickness").get(0));
-        wrapper_thick.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("wrapperthickness").get(0));
-        wrapper_thick.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("wrapperthickness").get(0));
+        wrapper_thick.add(asgmt1a.getColumnValuesDouble("wrapperthickness").get(0));
+        wrapper_thick.add(asgmt1b.getColumnValuesDouble("wrapperthickness").get(0));
+        wrapper_thick.add(asgmt2 .getColumnValuesDouble("wrapperthickness").get(0));
 
         asgmt1a = provider.getData("/geometry/ftof/panel1a/paddles");
         asgmt1b = provider.getData("/geometry/ftof/panel1b/paddles");
@@ -122,17 +118,17 @@ public class ForwardTOF {
         Vector<Vector<Double>> paddle_slopes       = new Vector<Vector<Double>>(npanels);
         Vector<Vector<Double>> paddle_intercepts   = new Vector<Vector<Double>>(npanels);
 
-        paddle_meas_lengths.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("Length"));
-        paddle_meas_lengths.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("Length"));
-        paddle_meas_lengths.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("Length"));
+        paddle_meas_lengths.add(asgmt1a.getColumnValuesDouble("Length"));
+        paddle_meas_lengths.add(asgmt1b.getColumnValuesDouble("Length"));
+        paddle_meas_lengths.add(asgmt2 .getColumnValuesDouble("Length"));
 
-        paddle_slopes.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("Slope"));
-        paddle_slopes.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("Slope"));
-        paddle_slopes.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("Slope"));
+        paddle_slopes.add(asgmt1a.getColumnValuesDouble("Slope"));
+        paddle_slopes.add(asgmt1b.getColumnValuesDouble("Slope"));
+        paddle_slopes.add(asgmt2 .getColumnValuesDouble("Slope"));
 
-        paddle_intercepts.set(this.panelIndex("1a"),asgmt1a.getColumnValuesDouble("Intercept"));
-        paddle_intercepts.set(this.panelIndex("1b"),asgmt1b.getColumnValuesDouble("Intercept"));
-        paddle_intercepts.set(this.panelIndex("2" ),asgmt2 .getColumnValuesDouble("Intercept"));
+        paddle_intercepts.add(asgmt1a.getColumnValuesDouble("Intercept"));
+        paddle_intercepts.add(asgmt1b.getColumnValuesDouble("Intercept"));
+        paddle_intercepts.add(asgmt2 .getColumnValuesDouble("Intercept"));
 
         this.sectors.clear();
 
@@ -165,9 +161,9 @@ public class ForwardTOF {
                     Paddle paddle = panel.paddles.get(pad);
                     paddle.index = pad;
 
-                    paddle.meas_lengths = paddle_meas_lengths.get(pan).get(pad);
-                    paddle.slopes       = paddle_slopes.get(pan).get(pad);
-                    paddle.intercepts   = paddle_intercepts.get(pan).get(pad);
+                    paddle.meas_length = paddle_meas_lengths.get(pan).get(pad);
+                    paddle.slope       = paddle_slopes.get(pan).get(pad);
+                    paddle.intercept   = paddle_intercepts.get(pan).get(pad);
                 }
             }
         }

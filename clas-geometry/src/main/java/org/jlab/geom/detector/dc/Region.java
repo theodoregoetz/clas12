@@ -17,7 +17,7 @@ class Region {
 
     DriftChamber dc;
     Sector sector;
-    ArrayList<Superlayer> superlayers;
+    List<Superlayer> superlayers;
     int index;
 
     double dist2tgt;

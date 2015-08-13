@@ -26,6 +26,7 @@ public class ForwardTOFTest {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
+        provider.setDefaultDate(Date());
         provider.connect();
         ForwardTOF ftofgeom = new ForwardTOF(provider);
     }
@@ -36,6 +37,7 @@ public class ForwardTOFTest {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
+        provider.setDefaultDate(Date());
         provider.connect();
         ftofgeom.fetchNominalParameters(provider);
     }
@@ -46,6 +48,7 @@ public class ForwardTOFTest {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
+        provider.setDefaultDate(Date());
         provider.connect();
         ftofgeom.fetchNominalParameters(provider);
 

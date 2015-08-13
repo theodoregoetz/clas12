@@ -28,7 +28,7 @@ class Superlayer {
     DriftChamber dc;
     Sector sector;
     Region region;
-    ArrayList<Layer> layers;
+    List<Layer> layers;
     int index;
 
     int nfieldlayers;

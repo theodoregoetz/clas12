@@ -21,7 +21,7 @@ import org.jlab.geom.detector.dc.*;
  **/
 public class DriftChamber {
 
-    ArrayList<Sector> sectors;
+    List<Sector> sectors;
 
     /**
      * \brief default constructor
