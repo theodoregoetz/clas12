@@ -120,7 +120,7 @@ public class DatabaseConstantProvider implements ConstantProvider {
     public void setDefaultVariation(Sring variation) {
         provider.setDefaultVariation(variation);
     }
-    public void setDefaultRun(int run)) {
+    public void setDefaultRun(int run) {
         provider.setDefaultRun(run);
     }
 }
