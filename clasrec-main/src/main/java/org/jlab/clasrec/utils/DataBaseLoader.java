@@ -15,6 +15,8 @@ import org.jlab.geom.base.ConstantProvider;
  */
 public class DataBaseLoader {
 
+    private DataBaseLoader() {}
+
     private static DatabaseConstantProvider getProvider(int run, String variation, Date date) {
         DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(run);

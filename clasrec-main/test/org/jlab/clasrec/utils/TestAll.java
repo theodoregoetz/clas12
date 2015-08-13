@@ -1,12 +1,27 @@
 package org.jlab.clasrec.utils;
 
-import org.junit.runner.JUnitCore;
+import org.junit.runner.*;
+import org.junit.runner.notification.Failure;
+import static java.lang.System.out;
 
 public class TestAll {
     public static void main(String args[]) {
-        JUnitCore.main("org.jlab.clasrec.utils.CLASGeometryLoaderTest");
-        JUnitCore.main("org.jlab.clasrec.utils.DatabaseConstantProviderTest");
-        JUnitCore.main("org.jlab.clasrec.utils.DataBaseLoaderTest");
-        JUnitCore.main("org.jlab.clasrec.utils.DetectorComponentTest");
+        JUnitCore core = new JUnitCore();
+        Result res = core.runClasses(
+            org.jlab.clasrec.utils.CLASGeometryLoaderTest.class,
+            org.jlab.clasrec.utils.DatabaseConstantProviderTest.class,
+            org.jlab.clasrec.utils.DataBaseLoaderTest.class,
+            org.jlab.clasrec.utils.DetectorComponentTest.class);
+        for (Failure failure : res.getFailures()) {
+            out.println(failure.toString());
+        }
+        out.print("\nTests complete.\n");
+        out.print("    "+res.getRunCount()+" tests\n");
+        out.print("    "+res.getFailureCount()+" failures\n");
+        if (res.wasSuccessful()) {
+            out.print("OK\n");
+        } else {
+            out.print("ERROR\n");
+        }
     }
 }
