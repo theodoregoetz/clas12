@@ -56,16 +56,16 @@ class Panel {
 
     Vector<Vector3D> paddleCenters(CoordinateSystem coord) {
         Vector<Vector3D> ret = new Vector<Vector3D>();
-        for (Panel panel : panels) {
-            ret.add(panel.center(coord));
+        for (Paddle paddle : paddles) {
+            ret.add(paddle.center(coord));
         }
         return ret;
     }
 
     Vector<Double> paddleLengths() {
-        Vector<Vector3D> ret = new Vector<Vector3D>();
-        for (Panel panel : panels) {
-            ret.add(panel.length());
+        Vector<Double> ret = new Vector<Double>();
+        for (Paddle paddle : paddles) {
+            ret.add(paddle.length());
         }
         return ret;
     }
@@ -87,7 +87,7 @@ class Panel {
     }
 
     Plane3D plane(CoordinateSystem coord) {
-        return new Plane3D(this.paddle(0).center().toPoint3D(), this.normal(coord));
+        return new Plane3D(this.paddle(0).center(coord).toPoint3D(), this.normal(coord));
     }
 
 
@@ -100,7 +100,6 @@ class Panel {
      * \return (x,y,z) position in sector-coordinates of this region (cm)
      **/
     Vector3D center(CoordinateSystem coord) {
-    {
         Vector3D first = this.paddle( 0).center(coord);
         Vector3D last  = this.paddle(-1).center(coord);
         return first.add(last).multiply(0.5);
@@ -153,9 +152,9 @@ class Panel {
         double st = sin(thtilt);
 
         Vector3D ret = new Vector3D(
-            paddle_width*ca + paddle_thickness*sa,
+            paddle_width*ct + paddle_thickness*st,
             0,
-            paddle_width*sa + paddle_thickness*ca);
+            paddle_width*st + paddle_thickness*ct);
 
         switch (coord) {
             case SECTOR:

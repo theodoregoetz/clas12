@@ -26,7 +26,7 @@ public class DriftChamberTest {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
-        provider.setDefaultDate(Date());
+        //provider.setDefaultDate(Date());
         provider.connect();
         DriftChamber dcgeom = new DriftChamber(provider);
     }
@@ -37,7 +37,7 @@ public class DriftChamberTest {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
-        provider.setDefaultDate(Date());
+        //provider.setDefaultDate(Date());
         provider.connect();
         dcgeom.fetchNominalParameters(provider);
     }
@@ -48,7 +48,7 @@ public class DriftChamberTest {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
-        provider.setDefaultDate(Date());
+        //provider.setDefaultDate(Date());
         provider.connect();
         dcgeom.fetchNominalParameters(provider);
 
@@ -62,7 +62,7 @@ public class DriftChamberTest {
         JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(0);
         provider.setDefaultVariation("default");
-        provider.setDefaultDate(Date());
+        //provider.setDefaultDate(Date());
         provider.connect();
         dcgeom.fetchNominalParameters(provider);
 

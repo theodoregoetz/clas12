@@ -29,23 +29,26 @@ class Paddle {
     }
 
     double centerX() {
-        size_t pidx = this->paddle_index(p);
-        double costhtilt = cos(_thtilt);
         double p2pdist;
         double gaptot;
 
-        double x = _dist2edge * sin(_thmin) + (0.5*_paddle_width+_wrapper_thickness) * costhtilt;
+        double costhtilt = cos(panel.thtilt);
+        double dist2edge = panel.dist2edge;
+        double thmin = panel.thmin;
+        double wrapper_thickness = panel.wrapper_thickness;
+        double width = panel.paddle_width;
+        double gap = panel.paddle_gap;
+        double pairgap = panel.paddle_pairgap;
 
-        if ((_idx == 0) || (_idx == 2)) // Panels 1a and 2
-        {
-            p2pdist = _paddle_width + _paddle_gap + 2.*_wrapper_thickness;
-            x += pidx * p2pdist * costhtilt;
-        }
-        else // Panel 1b
-        {
-            p2pdist = _paddle_width + 2.*_wrapper_thickness;
-            gaptot = double(div(pidx+1,2).quot) * _paddle_gap + double(div(pidx,2).quot) * _paddle_pairgap;
-            x += (pidx * p2pdist + gaptot) * costhtilt;
+        double x = dist2edge * sin(thmin) + (0.5*width+wrapper_thickness) * costhtilt;
+
+        if (panel.name() == "1b") {
+            p2pdist = width + 2.*wrapper_thickness;
+            gaptot = ((index+1)/2) * gap + (index/2) * pairgap;
+            x += (index * p2pdist + gaptot) * costhtilt;
+        } else {
+            p2pdist = width + gap + 2.*wrapper_thickness;
+            x += index * p2pdist * costhtilt;
         }
 
         // at this point, we have the face edge (outside of the wrapper)
@@ -58,22 +61,26 @@ class Paddle {
         return 0;
     }
     double centerZ() {
-        size_t pidx = this->paddle_index(p);
         double p2pdist;
         double gaptot;
 
-        double z = _dist2edge * cos(_thmin) - (0.5*_paddle_width+_wrapper_thickness) * sin(_thtilt);
+        double dist2edge = panel.dist2edge;
+        double thmin = panel.thmin;
+        double thtilt = panel.thtilt;
+        double wrapper_thickness = panel.wrapper_thickness;
+        double width = panel.paddle_width;
+        double gap = panel.paddle_gap;
+        double pairgap = panel.paddle_pairgap;
 
-        if ((_idx == 0) || (_idx == 2)) // Panels 1a and 2
-        {
-            p2pdist = _paddle_width + _paddle_gap + 2.*_wrapper_thickness;
-            z -= pidx * p2pdist * sin(_thtilt);
-        }
-        else // Panel 1b
-        {
-            p2pdist = _paddle_width + 2.*_wrapper_thickness;
-            gaptot = div(pidx+1,2).quot * _paddle_gap + div(pidx,2).quot * _paddle_pairgap;
-            z -= (pidx * p2pdist + gaptot) * sin(_thtilt);
+        double z = dist2edge * cos(thmin) - (0.5*width+wrapper_thickness) * sin(thtilt);
+
+        if (panel.name() == "1b") {
+            p2pdist = width + 2.*wrapper_thickness;
+            gaptot = ((index+1)/2) * gap + (index/2) * pairgap;
+            z -= (index * p2pdist + gaptot) * sin(thtilt);
+        } else {
+            p2pdist = width + gap + 2.*wrapper_thickness;
+            z -= index * p2pdist * sin(thtilt);
         }
 
         // at this point, we have the face edge (outside of the wrapper)

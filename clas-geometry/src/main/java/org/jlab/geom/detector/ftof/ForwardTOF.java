@@ -20,7 +20,7 @@ import org.jlab.geom.detector.ftof.*;
  **/
 public class ForwardTOF {
 
-    ArrayList<Sector> sectors;
+    List<Sector> sectors;
     private Map<String,Integer> panel_index_map;
     private Vector<String> panel_names;
 
