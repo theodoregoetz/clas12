@@ -7,9 +7,9 @@ import org.jlab.geom.Showable;
 /**
  * A 3D point in space represented by three coordinates coordinates (x, y, z).
  * <p>
- * The distance between two points can be obtained via 
+ * The distance between two points can be obtained via
  * {@link #distance(org.jlab.geom.prim.Point3D)}. It is also possible to linearly
- * interpolate between one point an another via {@link #lerp(Point3D, double)}, 
+ * interpolate between one point an another via {@link #lerp(Point3D, double)},
  * and to vector from one point to another via {@link #vectorTo(Point3D) } and
  * {@link #vectorFrom(Point3D) }. Also, any collection of points can be averaged
  * using {@link #average(java.util.Collection)}.
@@ -20,7 +20,7 @@ public final class Point3D implements Transformable, Showable {
     private double x; // the x coordinate
     private double y; // the y coordinate
     private double z; // the z coordinate
-    
+
     /**
      * Constructs a new {@code Point3D} at (0, 0, 0).
      */
@@ -42,6 +42,15 @@ public final class Point3D implements Transformable, Showable {
      * @param point  the origin point
      * @param vector the direction vector
      */
+    public Point3D(Vector3D v) {
+        set(v.x(), v.y(), v.z());
+    }
+    /**
+     * Constructs a new {@code Point3D} by adding the given vector to the given
+     * point.
+     * @param point  the origin point
+     * @param vector the direction vector
+     */
     public Point3D(Point3D point, Vector3D vector) {
         set(point, vector);
     }
@@ -49,23 +58,23 @@ public final class Point3D implements Transformable, Showable {
      * Constructs a new {@code Point3D} by copying the x, y, and z coordinates
      * of the
      * given point.
-     * @param point the point to copy 
+     * @param point the point to copy
      */
     public Point3D(Point3D point) {
         copy(point);
     }
-    
+
     /**
-     * Sets the components of this point to be equal the components of the 
+     * Sets the components of this point to be equal the components of the
      * given point.
      * @param point the point to copy
      */
     public void copy(Point3D point) {
         set(point.x, point.y, point.z);
     }
-    
+
     /**
-     * Sets this points coordinates by adding the given vector to the given 
+     * Sets this points coordinates by adding the given vector to the given
      * point.
      * @param point  the origin point
      * @param vector the direction vector
@@ -105,7 +114,7 @@ public final class Point3D implements Transformable, Showable {
     public void setZ(double z) {
         this.z = z;
     }
-    
+
     /**
      * Returns the x coordinate.
      * @return the x coordinate
@@ -127,7 +136,7 @@ public final class Point3D implements Transformable, Showable {
     public double z() {
         return z;
     }
-    
+
     /**
      * Returns the distance between this point and the given point.
      * @param point the point to calculate the distance from this point to
@@ -137,7 +146,7 @@ public final class Point3D implements Transformable, Showable {
         return distance(point.x, point.y, point.z);
     }
     /**
-     * Returns the distance between this point and the point at the given 
+     * Returns the distance between this point and the point at the given
      * coordinate.
      * @param x the x coordinate of the given point
      * @param y the y coordinate of the given point
@@ -150,9 +159,9 @@ public final class Point3D implements Transformable, Showable {
                 (y-this.y)*(y-this.y) +
                 (z-this.z)*(z-this.z));
     }
-    
+
     /**
-     * Constructs a new {@code Point3D} at the geometric mean of this point and the given 
+     * Constructs a new {@code Point3D} at the geometric mean of this point and the given
      * point. This function behaves identically to lerp(point, 0.5).
      * @param point the other point
      * @return a point at the geometric mean of the two given points
@@ -177,9 +186,9 @@ public final class Point3D implements Transformable, Showable {
         return new Point3D(
                 x+(point.x-x)*t,
                 y+(point.y-y)*t,
-                z+(point.z-z)*t);  
+                z+(point.z-z)*t);
     }
-    
+
     /**
      * Combines this point with the given point. The position of this point will
      * move to the geometric mean (midpoint) of the the two points.
@@ -190,7 +199,7 @@ public final class Point3D implements Transformable, Showable {
         y = (y + point.y)*0.5;
         z = (z + point.x)*0.5;
     }
-    
+
     /**
      * Constructs a new {@code Vector3D} pointing from the given point to this
      * point (equivalent to (this.x-point.x, this.y-point.y, this.z-point.z).
@@ -210,7 +219,7 @@ public final class Point3D implements Transformable, Showable {
      */
     public Vector3D vectorFrom(double x, double y, double z) {
         return new Vector3D(this.x-x, this.y-y, this.z-z);
-        
+
     }
     /**
      * Constructs a new {@code Vector3D} pointing from this point to the given
@@ -232,7 +241,7 @@ public final class Point3D implements Transformable, Showable {
     public Vector3D vectorTo(double x, double y, double z) {
         return new Vector3D(x-this.x, y-this.y, z-this.z);
     }
-    
+
     /**
      * Constructs a new {@code Vector3D} using this points x, y, and z
      * coordinates.
@@ -241,7 +250,7 @@ public final class Point3D implements Transformable, Showable {
     public Vector3D toVector3D() {
         return new Vector3D(x, y, z);
     }
-    
+
     @Override
     public void translateXYZ(double x, double y, double z) {
         this.x += x;
@@ -272,9 +281,9 @@ public final class Point3D implements Transformable, Showable {
         x = c*xx - s*y;
         y = s*xx + c*y;
     }
-    
+
     /**
-     * Constructs a new {@code Point3D} at the geometric mean of the given 
+     * Constructs a new {@code Point3D} at the geometric mean of the given
      * points.
      * @param points the points to average
      * @return the geometric mean of the points
@@ -282,9 +291,9 @@ public final class Point3D implements Transformable, Showable {
     public static Point3D average(Point3D... points) {
         return average(Arrays.asList(points));
     }
-    
+
     /**
-     * Constructs a new {@code Point3D} at the geometric mean of the given 
+     * Constructs a new {@code Point3D} at the geometric mean of the given
      * points.
      * @param points the points to average
      * @return the geometric mean of the points
@@ -300,7 +309,7 @@ public final class Point3D implements Transformable, Showable {
         }
         return new Point3D(x/points.size(), y/points.size(), z/points.size());
     }
-    
+
     /**
      * Invokes {@code System.out.println(this)}.
      */
@@ -308,9 +317,19 @@ public final class Point3D implements Transformable, Showable {
     public void show() {
         System.out.println(this);
     }
-    
+
     @Override
     public String toString() {
         return String.format("Point3D:\t%12.5f %12.5f %12.5f", x, y, z);
+    }
+
+    public String toStringBrief(int ndigits) {
+        return new String("(" +
+            String.format(new String("%."+ndigits+"f"),x)+", "+
+            String.format(new String("%."+ndigits+"f"),y)+", "+
+            String.format(new String("%."+ndigits+"f"),z)+")");
+    }
+    public String toStringBrief() {
+        return this.toStringBrief(5);
     }
 }
