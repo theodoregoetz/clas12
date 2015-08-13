@@ -15,6 +15,15 @@ import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.detector.dc.DriftChamber;
 
 public class DriftChamberTest {
+    JDBCProvider provider;
+
+    public DriftChamberTest() {
+        this.provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+        this.provider.setDefaultRun(0);
+        this.provider.setDefaultVariation("default");
+        this.provider.setDefaultDate(new Date());
+        this.provider.connect();
+    }
 
     @Test
     public void testConstruction() {
@@ -23,34 +32,18 @@ public class DriftChamberTest {
 
     @Test
     public void testFetchParametersOnConstruction() {
-        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.setDefaultRun(0);
-        provider.setDefaultVariation("default");
-        //provider.setDefaultDate(Date());
-        provider.connect();
-        DriftChamber dcgeom = new DriftChamber(provider);
+        DriftChamber dcgeom = new DriftChamber(this.provider);
     }
 
     @Test
     public void testFetchParametersAfterConstruction() {
         DriftChamber dcgeom = new DriftChamber();
-        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.setDefaultRun(0);
-        provider.setDefaultVariation("default");
-        //provider.setDefaultDate(Date());
-        provider.connect();
-        dcgeom.fetchNominalParameters(provider);
+        dcgeom.fetchNominalParameters(this.provider);
     }
 
     @Test
     public void testVolumes() {
-        DriftChamber dcgeom = new DriftChamber();
-        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.setDefaultRun(0);
-        provider.setDefaultVariation("default");
-        //provider.setDefaultDate(Date());
-        provider.connect();
-        dcgeom.fetchNominalParameters(provider);
+        DriftChamber dcgeom = new DriftChamber(this.provider);
 
         G4VolumeMap vols = dcgeom.g4Volumes();
         out.print(vols.toString());
@@ -58,13 +51,7 @@ public class DriftChamberTest {
 
     @Test
     public void testEndpoints() {
-        DriftChamber dcgeom = new DriftChamber();
-        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.setDefaultRun(0);
-        provider.setDefaultVariation("default");
-        //provider.setDefaultDate(Date());
-        provider.connect();
-        dcgeom.fetchNominalParameters(provider);
+        DriftChamber dcgeom = new DriftChamber(this.provider);
 
         int sectors[] = {0};
         int regions[] = {0,1,2};

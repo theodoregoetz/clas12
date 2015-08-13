@@ -15,6 +15,15 @@ import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.detector.ftof.ForwardTOF;
 
 public class ForwardTOFTest {
+    JDBCProvider provider;
+
+    public ForwardTOFTest() {
+        this.provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+        this.provider.setDefaultRun(0);
+        this.provider.setDefaultVariation("default");
+        this.provider.setDefaultDate(new Date());
+        this.provider.connect();
+    }
 
     @Test
     public void testConstruction() {
@@ -23,34 +32,19 @@ public class ForwardTOFTest {
 
     @Test
     public void testFetchParametersOnConstruction() {
-        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.setDefaultRun(0);
-        provider.setDefaultVariation("default");
-        //provider.setDefaultDate(Date());
-        provider.connect();
-        ForwardTOF ftofgeom = new ForwardTOF(provider);
+        ForwardTOF ftofgeom = new ForwardTOF(this.provider);
     }
 
     @Test
     public void testFetchParametersAfterConstruction() {
         ForwardTOF ftofgeom = new ForwardTOF();
-        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.setDefaultRun(0);
-        provider.setDefaultVariation("default");
-        //provider.setDefaultDate(Date());
-        provider.connect();
         ftofgeom.fetchNominalParameters(provider);
     }
 
     @Test
     public void testVolumes() {
         ForwardTOF ftofgeom = new ForwardTOF();
-        JDBCProvider provider = CcdbPackage.createProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.setDefaultRun(0);
-        provider.setDefaultVariation("default");
-        //provider.setDefaultDate(Date());
-        provider.connect();
-        ftofgeom.fetchNominalParameters(provider);
+        ftofgeom.fetchNominalParameters(this.provider);
 
         //G4VolumeMap vols = ftofgeom.g4Volumes();
         //out.print(vols.toString());
