@@ -8,11 +8,11 @@ import org.jlab.geom.prim.Transformation3D;
  * {@link org.jlab.geom.base.Detector Detector},
  * {@link org.jlab.geom.base.Sector Sector},
  * {@link org.jlab.geom.base.Superlayer Superlayer}, or
- * {@link org.jlab.geom.base.Layer Layer} objects for a specific type of 
+ * {@link org.jlab.geom.base.Layer Layer} objects for a specific type of
  * detector using the factory method pattern.
  * <p>
  * Detectors are constructed entirely from scratch using using as little hard
- * coded information (primarily equations). Instead, detectors and their 
+ * coded information (primarily equations). Instead, detectors and their
  * various components are constructed using a few important constants provided
  * by a {@link org.jlab.geom.base.ConstantProvider}.
  * <p>
@@ -35,7 +35,7 @@ import org.jlab.geom.prim.Transformation3D;
  * Sector Coordinates: {@link #createDetectorSector(ConstantProvider)}
  * <ul>
  * <li>All sectors from the same detector coincide at φ = 0.</li>
- * <li>To CLAS:	Rotate each sector CW around z-axis by φ = sectorId·60°.</li>
+ * <li>To CLAS: Rotate each sector CW around z-axis by φ = sectorId·60°.</li>
  * <li>To Tilted: Rotate each sector CCW around the y-axis by 25° to θ = 0.</li>
  * <li>Exceptions: BST, CND, FTCAL</li>
  * </ul>
@@ -77,17 +77,17 @@ import org.jlab.geom.prim.Transformation3D;
  * Local coordinates.
  * <p>
  * Factory: <b>{@link org.jlab.geom.base.Factory Factory}</b><br>
- * Hierarchy: 
+ * Hierarchy:
  * <code>
- * {@link org.jlab.geom.base.Detector Detector} → 
- * {@link org.jlab.geom.base.Sector Sector} → 
- * {@link org.jlab.geom.base.Superlayer Superlayer} → 
- * {@link org.jlab.geom.base.Layer Layer} → 
+ * {@link org.jlab.geom.base.Detector Detector} →
+ * {@link org.jlab.geom.base.Sector Sector} →
+ * {@link org.jlab.geom.base.Superlayer Superlayer} →
+ * {@link org.jlab.geom.base.Layer Layer} →
  * {@link org.jlab.geom.base.Component Component}
  * </code>
  * <p>
- * All objects are returned in their nominal positions.  For information about 
- * calibration see 
+ * All objects are returned in their nominal positions.  For information about
+ * calibration see
  * {@link org.jlab.geom.base.Layer#setTransformation(org.jlab.geom.prim.Transformation3D)}.
  * <p>
  * Factories have no member variables or initialization procedure. It is
@@ -95,12 +95,15 @@ import org.jlab.geom.prim.Transformation3D;
  * <p>
  * However some detectors DO have non-negligible initialization procedures. For
  * example, the BST has 33792 wires, the end points of which are calculated
- * using 67584 line-plane intersections. This can take ~0.5 seconds. 
+ * using 67584 line-plane intersections. This can take ~0.5 seconds.
  * <p>
  * Example usage:
  * <p>
  * <code>
- * ConstantProvider constants = DataBaseLoader.getConstantsEC();<br>
+ * int run = 0;
+ * String variation = new String("default");
+ * Date date = new Date();
+ * ConstantProvider constants = DataBaseLoader.getConstantsEC(run,variation,date);<br>
  * ECDetector detector;<br>
  * detector = new ECFactory().createDetectorCLAS(constants);<br>
  * detector = new ECFactory().createDetectorSector(constants);<br>
@@ -132,7 +135,7 @@ import org.jlab.geom.prim.Transformation3D;
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (DriftChamberWire wire : layer.getAllComponents())<br>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;midPoints.add(wire.getMidpoint());
  * </code>
- * 
+ *
  * @author jnhankins
  * @param <DetectorType> the specific type of {@link org.jlab.geom.base.Detector}
  * produced by the {@code Factory}
@@ -148,7 +151,7 @@ public interface Factory<
         SectorType extends Sector,
         SuperlayerType extends Superlayer,
         LayerType extends Layer> extends Showable {
-    
+
     /**
      * Constructs a new {@code Detector} in CLAS coordinates using the given
      * constants.
@@ -156,7 +159,7 @@ public interface Factory<
      * @return a detector in CLAS coordinates
      */
     DetectorType createDetectorCLAS(ConstantProvider cp);
-    
+
     /**
      * Constructs a new {@code Detector} in Sector coordinates using the given
      * constants.
@@ -164,7 +167,7 @@ public interface Factory<
      * @return a detector in Sector coordinates
      */
     DetectorType createDetectorSector(ConstantProvider cp);
-    
+
     /**
      * Constructs a new {@code Detector} in Tilted coordinates using the given
      * constants.
@@ -172,7 +175,7 @@ public interface Factory<
      * @return a detector in Tilted coordinates
      */
     DetectorType createDetectorTilted(ConstantProvider cp);
-    
+
     /**
      * Constructs a new {@code Detector} in Local coordinates using the given
      * constants.
@@ -189,7 +192,7 @@ public interface Factory<
      * @return a sector in Local coordinates
      */
     SectorType createSector(ConstantProvider cp, int sectorId);
-    
+
     /**
      * Constructs the specified {@code Superlayer} in Local coordinates using
      * the given constants.
@@ -199,8 +202,8 @@ public interface Factory<
      * @return a superlayer in Local coordinates
      */
     SuperlayerType createSuperlayer(ConstantProvider cp, int sectorId, int superlayerId);
-    
-    
+
+
     /**
      * Constructs the specified {@code Layer} in Local coordinates using the
      * given constants.
@@ -211,7 +214,7 @@ public interface Factory<
      * @return a layer in Local coordinates
      */
     LayerType createLayer(ConstantProvider cp, int sectorId, int superlayerId, int layerId);
-    
+
     /**
      * Returns a string that identifies the specific subtype of this factory.
      * @return a string naming this factory's type
@@ -223,10 +226,10 @@ public interface Factory<
      * @param sector
      * @param superlayer
      * @param layer
-     * @return 
+     * @return
      */
     Transformation3D getTransformation(ConstantProvider cp,int sector, int superlayer, int layer);
-    
+
     DetectorTransformation getDetectorTransform(ConstantProvider cp);
     /**
      * Invokes {@code System.out.println(this)}.

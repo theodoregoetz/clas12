@@ -24,26 +24,26 @@ import org.jlab.geom.base.ConstantProvider;
 public class DatabaseConstantProvider implements ConstantProvider {
     private HashMap<String,String[]> constantContainer = new HashMap<String,String[]>();
     private boolean PRINT_ALL = true;
-    
+
     private JDBCProvider provider;
     public DatabaseConstantProvider(String address){
         this.initialize(address);
     }
-    
+
     private void initialize(String address){
         provider = CcdbPackage.createProvider(address);
         provider.connect();
-        
+
         //Assignment asgmt = provider.getData("/test/test_vars/test_table");
     }
-    
+
     public void loadTable(String table_name){
         Assignment asgmt = provider.getData(table_name);
         int ncolumns = asgmt.getColumnCount();
         TypeTable  table = asgmt.getTypeTable();
         Vector<TypeTableColumn> typecolumn = asgmt.getTypeTable().getColumns();
         for(int loop = 0; loop < ncolumns; loop++){
-            //System.out.println("Reading column number " + loop 
+            //System.out.println("Reading column number " + loop
             //+ "  " + typecolumn.elementAt(loop).getCellType()
             //+ "  " + typecolumn.elementAt(loop).getName());
             Vector<String> row = asgmt.getColumnValuesString(loop);
@@ -61,7 +61,7 @@ public class DatabaseConstantProvider implements ConstantProvider {
             //System.out.println(); //next line after a row
         }
     }
-    
+
     @Override
     public boolean hasConstant(String string) {
         return constantContainer.containsKey(string);
@@ -78,7 +78,7 @@ public class DatabaseConstantProvider implements ConstantProvider {
         if(this.hasConstant(string)==true && i < this.length(string)){
             return Double.parseDouble(constantContainer.get(string)[i]);
         } else {
-            
+
         }
         return 0.0;
     }
@@ -88,11 +88,11 @@ public class DatabaseConstantProvider implements ConstantProvider {
         if(this.hasConstant(string)==true && i < this.length(string)){
             return Integer.parseInt(constantContainer.get(string)[i]);
         } else {
-            
+
         }
         return 0;
     }
-    
+
     @Override
     public String toString(){
         System.err.println("Database Constat Provider: ");
@@ -112,5 +112,15 @@ public class DatabaseConstantProvider implements ConstantProvider {
             }
         }
         return str.toString();
+    }
+
+    public void setDefaultDate(Date date) {
+        provider.setDefaultDate(date);
+    }
+    public void setDefaultVariation(Sring variation) {
+        provider.setDefaultVariation(variation);
+    }
+    public void setDefaultRun(int run)) {
+        provider.setDefaultRun(run);
     }
 }

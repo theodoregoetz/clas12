@@ -31,15 +31,15 @@ public class BSTDetectorFastMC {
     DetectorTransformation  bstTransform = null;
     ConstantProvider  bstDB = null;
     BSTFactory   factory = null;
-    
-    public BSTDetectorFastMC(){
-        bstDB = DataBaseLoader.getConstantsBST();
-        factory    = new BSTFactory();     
+
+    public BSTDetectorFastMC(int run, String variation, Date date){
+        bstDB = DataBaseLoader.getConstantsBST(run,variation,date);
+        factory    = new BSTFactory();
         bstTransform = factory.getDetectorTransform(bstDB);
         layerDOWN    = factory.createRingLayer(bstDB,0,0,0);
         layerUP      = factory.createRingLayer(bstDB,0,0,1);
     }
-    
+
     public boolean intersects(Line3D line, int sector, int region, int layer){
         Shape3D  surface = new Shape3D();
         surface.addFace(new Triangle3D(-2.1,0.0,0.0,-2.1,0.0,33.509,2.1,0.0,0.0));
@@ -49,12 +49,12 @@ public class BSTDetectorFastMC {
         if(surface.hasIntersectionSegment(line)==true) return true;
         return false;
     }
-    
+
     public List<DetectorHit>  getHits(Path3D path){
-        
+
         ArrayList<DetectorHit>     detHits = new ArrayList<DetectorHit>();
         int[] sectors = new int[]{10,14,18,24};
-        
+
         for(int region = 0; region < 4 ; region++){
             for(int sec = 0; sec < sectors[region]; sec++){
                 List<DetectorHit> comp = this.component(path, sec, region, 0);
@@ -65,15 +65,15 @@ public class BSTDetectorFastMC {
         }
         return detHits;
     }
-    
+
     public List<DetectorHit> component(Path3D path, int sector, int region, int layer){
         int this_layer = 0;
         if(layer==0) this_layer = 1;
-        
+
         BSTLayer  layer_bst = factory.createRingLayer(bstDB, 0,0,this_layer);
-        
+
         Transformation3D trans = bstTransform.get(sector, region ,layer);
-        
+
         layer_bst.setTransformation(trans);
         ArrayList<DetectorHit>  hits = new ArrayList<DetectorHit>();
         double minDistance = 100.0;

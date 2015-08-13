@@ -13,19 +13,36 @@ import org.jlab.geom.base.ConstantProvider;
  * @author gavalian
  */
 public class DataBaseLoader {
-    
-    public static ConstantProvider getDriftChamberConstants(){
-        
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+
+    private static DatabaseConstantProvider getProvider(int run, String variation, Date date) {
+        DatabaseConstantProvider provider = getProvider();
+        provider.setDefaultRun(run);
+        provider.setDefaultVariation(variation);
+        provider.setDefaultDate(date);
+        return provider;
+    }
+
+    /* DO NOT UNCOMMENT THIS METHOD!
+     *
+     * I know it's tempting to do, but it is likely to
+     * cause more harm than good.
+     *
+    public static DatabaseConstantProvider getProvider() {
+        return getProvider(0,"default",new Date());
+    }
+     */
+
+    public static ConstantProvider getDriftChamberConstants(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
         provider.loadTable("/geometry/dc/dc");
         provider.loadTable("/geometry/dc/region");
         provider.loadTable("/geometry/dc/superlayer");
         provider.loadTable("/geometry/dc/layer");
         return provider;
     }
-    
-    public static ConstantProvider getCalorimeterConstants(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+
+    public static ConstantProvider getCalorimeterConstants(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
         provider.loadTable("/geometry/pcal/pcal");
         provider.loadTable("/geometry/pcal/UView");
         provider.loadTable("/geometry/pcal/VView");
@@ -36,12 +53,12 @@ public class DataBaseLoader {
         provider.loadTable("/geometry/ec/wview");
         return provider;
     }
-    
-   
-    
-    public static ConstantProvider getTimeOfFlightConstants(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.loadTable("/geometry/ftof/panel1a/paddles");        
+
+
+
+    public static ConstantProvider getTimeOfFlightConstants(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        provider.loadTable("/geometry/ftof/panel1a/paddles");
         provider.loadTable("/geometry/ftof/panel1a/panel");
         provider.loadTable("/geometry/ftof/panel1b/paddles");
         provider.loadTable("/geometry/ftof/panel1b/panel");
@@ -49,17 +66,17 @@ public class DataBaseLoader {
         provider.loadTable("/geometry/ftof/panel2/panel");
         return provider;
     }
-    public static ConstantProvider getConstantsDC(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+    public static ConstantProvider getConstantsDC(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
         provider.loadTable("/geometry/dc/dc");
         provider.loadTable("/geometry/dc/region");
         provider.loadTable("/geometry/dc/superlayer");
         provider.loadTable("/geometry/dc/layer");
         return provider;
     }
-    
-     public static ConstantProvider getConstantsEC(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+
+     public static ConstantProvider getConstantsEC(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
         provider.loadTable("/geometry/pcal/pcal");
         provider.loadTable("/geometry/pcal/UView");
         provider.loadTable("/geometry/pcal/VView");
@@ -70,10 +87,10 @@ public class DataBaseLoader {
         provider.loadTable("/geometry/ec/wview");
         return provider;
     }
-     
-    public static ConstantProvider getConstantsFTOF(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
-        provider.loadTable("/geometry/ftof/panel1a/paddles");        
+
+    public static ConstantProvider getConstantsFTOF(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        provider.loadTable("/geometry/ftof/panel1a/paddles");
         provider.loadTable("/geometry/ftof/panel1a/panel");
         provider.loadTable("/geometry/ftof/panel1b/paddles");
         provider.loadTable("/geometry/ftof/panel1b/panel");
@@ -81,26 +98,26 @@ public class DataBaseLoader {
         provider.loadTable("/geometry/ftof/panel2/panel");
         return provider;
     }
-    
-    public static ConstantProvider getConstantsCND(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+
+    public static ConstantProvider getConstantsCND(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
         provider.loadTable("/geometry/cnd/cnd");
         provider.loadTable("/geometry/cnd/layer");
         return provider;
     }
-    
-    public static ConstantProvider getConstantsFTCAL(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+
+    public static ConstantProvider getConstantsFTCAL(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
         provider.loadTable("/geometry/ft/ftcal");
         return provider;
     }
 
-    public static ConstantProvider getConstantsBST(){
-        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
+    public static ConstantProvider getConstantsBST(int run, String variation, Date date){
+        DatabaseConstantProvider provider = getProvider(run, variation, date);
         provider.loadTable("/geometry/bst/region");
         provider.loadTable("/geometry/bst/sector");
         provider.loadTable("/geometry/bst/bst");
         return provider;
     }
-    
+
 }

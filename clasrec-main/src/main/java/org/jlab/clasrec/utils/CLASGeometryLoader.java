@@ -37,38 +37,38 @@ import org.jlab.geom.prim.Triangle3D;
  * @author gavalian
  */
 public class CLASGeometryLoader {
-    
+
     private final TreeMap<String,Detector>  clasDetectors = new TreeMap<String,Detector>();
     private final ArrayList<BSTLayer>       bstLayers     = new ArrayList<BSTLayer>();
     private DetectorTransformation  bstTransform = null;
-    
+
     public CLASGeometryLoader(){
-        
+
     }
-    
-    public void loadGeometry(String name){
-        
+
+    public void loadGeometry(String name, int run, String variation, Date date){
+
         if(name.compareTo("EC")==0){
             System.out.println("[GEOMETRY-LOADER] --> loading geometry EC");
-            ConstantProvider    cp = DataBaseLoader.getConstantsEC();
+            ConstantProvider    cp = DataBaseLoader.getConstantsEC(run,variation,date);
             ECFactory      factory = new ECFactory();
             ECDetector     ecdet   = factory.createDetectorCLAS(cp);
             this.clasDetectors.put("EC", ecdet);
         }
-        
+
         if(name.compareTo("FTOF")==0){
             System.out.println("[GEOMETRY-LOADER] --> loading geometry FTOF");
-            ConstantProvider      cp = DataBaseLoader.getConstantsFTOF();
+            ConstantProvider      cp = DataBaseLoader.getConstantsFTOF(run,variation,date);
             FTOFFactory      factory = new FTOFFactory();
             FTOFDetector     ftofdet = factory.createDetectorCLAS(cp);
             this.clasDetectors.put("FTOF", ftofdet);
         }
-        
+
         if(name.compareTo("BST")==0){
             System.out.println("[GEOMETRY-LOADER] --> loading geometry BST");
             bstLayers.clear();
-            ConstantProvider      cp = DataBaseLoader.getConstantsBST();
-            BSTFactory   factory    = new BSTFactory();     
+            ConstantProvider      cp = DataBaseLoader.getConstantsBST(run,variation,date);
+            BSTFactory   factory    = new BSTFactory();
             bstTransform = factory.getDetectorTransform(cp);
             BSTLayer layerDOWN    = factory.createRingLayer(cp,0,0,0);
             BSTLayer layerUP      = factory.createRingLayer(cp,0,0,1);
@@ -78,23 +78,23 @@ public class CLASGeometryLoader {
         }
         /*
         if(name.compareTo("FTOF")==0){
-            ConstantProvider      cp = DataBaseLoader.getConstantsFTOF();
+            ConstantProvider      cp = DataBaseLoader.getConstantsFTOF(run,variation,date);
             FTOFFactory      factory = new FTOFFactory();
             FTOFDetector     ftofdet = factory.createDetectorCLAS(cp);
             this.clasDetectors.put("EC", ftofdet);
-        } */       
+        } */
     }
-    
+
     public Detector  getDetector(String name){
         if(clasDetectors.containsKey(name)==true){
             return clasDetectors.get(name);
         }
         return null;
     }
-    
+
     public DetectorComponent getComponent(DetectorType t, int sector, int layer,
             int component){
-        
+
         if(t==DetectorType.EC){
             int superlayer = layer/3;
             int reallayer  = layer%3;
@@ -104,7 +104,7 @@ public class CLASGeometryLoader {
             comp.getLine().copy(paddle.getLine());
             return comp;
         }
-        
+
         if(t==DetectorType.FTOF){
             int superlayer = 0;
             int reallayer  = layer;
@@ -114,10 +114,10 @@ public class CLASGeometryLoader {
             comp.getLine().copy(paddle.getLine());
             return comp;
         }
-        
+
         return null;
     }
-    
+
     public DetectorComponent getComponent(String ts, int sector, int layer,
             int component){
         if(ts.compareTo("EC")==0){
@@ -125,8 +125,8 @@ public class CLASGeometryLoader {
         }
         return null;
     }
-    
-    
+
+
     public List<DetectorComponent>  getComponents(DetectorType t, int[] sector, int[] layer,
             int[] component){
         ArrayList<DetectorComponent> compList = new ArrayList<DetectorComponent>();
@@ -136,15 +136,15 @@ public class CLASGeometryLoader {
         }
         return compList;
     }
-    
+
     public List<DetectorComponent>  getComponents(String t, int[] sector, int[] layer,
             int[] component){
         return this.getComponents(DetectorType.getType(t), sector, layer, component);
     }
-    
-    
+
+
     public List<DetectorComponentUI>  getLayerUI(String detector, int sector, int layer){
-        
+
         if(detector.compareTo("BST")==0){
             ArrayList<DetectorComponentUI>  uiList = new ArrayList<DetectorComponentUI>();
             int[] sectors = new int[]{10,14,18,24};
@@ -160,7 +160,7 @@ public class CLASGeometryLoader {
                     comp.COMPONENT = -1;
                     comp.SECTOR    = sec;
                     comp.LAYER     = loop;
-                    
+
                     double xc = (radius[region] + regionLayer*width)*Math.cos(Math.toRadians(angle*sec));
                     double yc = (radius[region] + regionLayer*width)*Math.sin(Math.toRadians(angle*sec));
                     double xp = 0;
@@ -173,15 +173,15 @@ public class CLASGeometryLoader {
                     xp = (radius[region] + offset + width/4.0)*Math.cos(Math.toRadians(angle*sec - angle/2.0 + angleGap));
                     yp = (radius[region] + +offset+ width/4.0)*Math.sin(Math.toRadians(angle*sec - angle/2.0 + angleGap));
                     comp.shapePolygon.addPoint((int) yp,(int) -xp);
-                    
+
                     xp = (radius[region] + offset + width/4.0)*Math.cos(Math.toRadians(angle*sec + angle/2.0 - angleGap));
                     yp = (radius[region] + offset + width/4.0)*Math.sin(Math.toRadians(angle*sec + angle/2.0 - angleGap));
                     comp.shapePolygon.addPoint((int) yp,(int) -xp);
-                    
+
                     xp = (radius[region] + offset - width/4.0)*Math.cos(Math.toRadians(angle*sec + angle/2.0 - angleGap));
                     yp = (radius[region] + offset - width/4.0)*Math.sin(Math.toRadians(angle*sec + angle/2.0 - angleGap));
                     comp.shapePolygon.addPoint((int) yp,(int) -xp);
-                    
+
                     /*
                     xp = (radius[region] - regionLayer*width/2.0)*Math.cos(Math.toRadians(angle*sec - sec*angle/2.0));
                     yp = (radius[region] - regionLayer*width/2.0)*Math.sin(Math.toRadians(angle*sec - sec*angle/2.0));
@@ -194,7 +194,7 @@ public class CLASGeometryLoader {
                     xp = (radius[region] + regionLayer*width/2.0)*Math.cos(Math.toRadians(angle*sec + sec*angle/2.0));
                     yp = (radius[region] + regionLayer*width/2.0)*Math.sin(Math.toRadians(angle*sec + sec*angle/2.0));
                     comp.shapePolygon.addPoint((int) xp,(int) yp);
-                    
+
                     xp = (radius[region] - regionLayer*width/2.0)*Math.cos(Math.toRadians(angle*sec + sec*angle/2.0));
                     yp = (radius[region] - regionLayer*width/2.0)*Math.sin(Math.toRadians(angle*sec + sec*angle/2.0));
                     comp.shapePolygon.addPoint((int) xp,(int) yp);
@@ -206,7 +206,7 @@ public class CLASGeometryLoader {
         }
         return null;
     }
-    
+
     public List<DetectorHit>  getDetectorHits(String detector, Path3D path){
         if(detector.compareTo("BST")==0){
             ArrayList<DetectorHit>  hits = new ArrayList<DetectorHit>();
@@ -221,13 +221,13 @@ public class CLASGeometryLoader {
             }
             return hits;
         }
-        
+
         if(detector.compareTo("FTOF")==0){
             if(this.clasDetectors.containsKey("FTOF")==true){
                 return this.clasDetectors.get("FTOF").getHits(path);
             }
         }
-        
+
         if(detector.compareTo("EC")==0){
             if(this.clasDetectors.containsKey("EC")==true){
                 return this.clasDetectors.get("EC").getHits(path);
@@ -235,21 +235,21 @@ public class CLASGeometryLoader {
         }
         return null;
     }
-    
+
     public List<DetectorHit>  getDetectorHits(Path3D path){
         ArrayList<DetectorHit>  dhits = new ArrayList<DetectorHit>();
         if(this.bstLayers.size()>0&&this.bstTransform!=null){
             List<DetectorHit> hits = this.getDetectorHits("BST", path);
             if(hits!=null) dhits.addAll(hits);
         }
-        
+
         for(Map.Entry<String,Detector>  entry : this.clasDetectors.entrySet()){
             List<DetectorHit> hits = this.getDetectorHits(entry.getKey(), path);
             if(hits!=null) dhits.addAll(hits);
         }
         return dhits;
     }
-    
+
     public DetectorHit  getDetectorHit(Path3D path, int sector, int region, int layer){
         Transformation3D trans   = bstTransform.get(sector,region,layer);
         Shape3D  boundary = new Shape3D();
@@ -257,34 +257,34 @@ public class CLASGeometryLoader {
                 2.00160,      0.00000,     22.40850,
                 -2.00160,      0.00000,     33.40400
         ));
-        
+
         boundary.addFace(new Triangle3D(
                 2.00160,      0.00000,     33.40400,
                 -2.00160,      0.00000,     33.40400,
                 2.00160,      0.00000,     22.40850
         ));
-        
+
         if(layer<0||layer>1) return null;
-        
+
         trans.apply(boundary);
-        
-        
+
+
         List<SiStrip>  strips = this.bstLayers.get(layer).getAllComponents();
         int cid = -1;
         double distance = 100.0;
         Point3D  ip = new Point3D();
         Line3D   stripLine = new Line3D();
-        
+
         for(int loop = 0; loop < path.getNumLines(); loop++){
             if(boundary.hasIntersectionSegment(path.getLine(loop))==true){
                 for(SiStrip strip : strips){
                     stripLine.copy(strip.getLine());
-                    trans.apply(stripLine);  
+                    trans.apply(stripLine);
                     if(stripLine.distance(path.getLine(loop)).length()<distance){
                         ip.copy( stripLine.distance(path.getLine(loop)).midpoint());
                         distance = stripLine.distance(path.getLine(loop)).length();
                         cid      = strip.getComponentId();
-                    }                    
+                    }
                 }
             }
         }
@@ -293,10 +293,10 @@ public class CLASGeometryLoader {
         DetectorHit hit = new DetectorHit(DetectorId.BST,sector,region,layer,cid,ip);
         return hit;
     }
-    
+
     public ArrayList<DetectorShape3D> getDetectorShapes(DetectorType type, int sector, int layer){
         if(type==DetectorType.FTOF){
-            
+
             ArrayList<DetectorShape3D> components = new ArrayList<DetectorShape3D>();
             List<ScintillatorPaddle> paddles = this.clasDetectors.get("FTOF").getSector(sector).getSuperlayer(layer).getLayer(0).getAllComponents();
             for(ScintillatorPaddle paddle : paddles){
@@ -304,7 +304,7 @@ public class CLASGeometryLoader {
                 entry.SECTOR = sector;
                 entry.LAYER  = layer;
                 entry.COMPONENT = paddle.getComponentId();
-                
+
                 entry.shapePath.addPoint(
                         (int) paddle.getVolumePoint(0).x(),
                         (int) paddle.getVolumePoint(0).y(),
@@ -325,8 +325,8 @@ public class CLASGeometryLoader {
                         (int) paddle.getVolumePoint(4).y(),
                         0.0
                 );
-                
-                
+
+
             components.add(entry);
             }
             return components;
@@ -334,5 +334,5 @@ public class CLASGeometryLoader {
         return null;
     }
 
-    
+
 }

@@ -30,7 +30,7 @@ import org.jlab.geom.detector.ftof.FTOFFactory;
  */
 
 public abstract class DetectorReconstruction implements ICService {
-    
+
     private String serviceName     = "undefined";
     private String serviceVersion  = "1.0";
     private String serviceAuthor  = "undefined";
@@ -38,12 +38,12 @@ public abstract class DetectorReconstruction implements ICService {
     private final String mainModuleName     = "[CLASREC-MAIN] ====>>>>> ";
     private final HashMap<String,Detector>  detectorGeometry = new HashMap<String,Detector>();
     private final ServiceConfiguration serviceConfig = new ServiceConfiguration();
-    private Integer serviceDebugLevel   = 0;    
-    
+    private Integer serviceDebugLevel   = 0;
+
     public abstract void processEvent(EvioDataEvent event);
     public abstract void init();
     public abstract void configure(ServiceConfiguration c);
-    
+
     /**
      * Returns the debug level.
      * @return debug level
@@ -52,7 +52,7 @@ public abstract class DetectorReconstruction implements ICService {
         return this.serviceDebugLevel;
     }
     /**
-     * Set the debug level for the service. 
+     * Set the debug level for the service.
      * @param level debug level
      */
     public void setDebugLevel(int level){
@@ -60,13 +60,13 @@ public abstract class DetectorReconstruction implements ICService {
         if(level<0)  serviceDebugLevel = 0;
         if(level>10) serviceDebugLevel = 10;
     }
-    
+
     /**
      * Returns geometry object for detector "geom". To use this function
      * first the geometry for given detector has to be loaded through
      * requireGeometry(geomname)
      * @param geom detector name.
-     * @return 
+     * @return
      */
     public Detector getGeometry(String geom){
         if(detectorGeometry.containsKey(geom)==false){
@@ -79,80 +79,80 @@ public abstract class DetectorReconstruction implements ICService {
         return detectorGeometry.get(geom);
     }
     /**
-     * Loads geometry package for given detector into local map. To access 
-     * it use getGeometry(geomname)
+     * Loads geometry package for given detector into local map. To access
+     * it use getGeometry(geomname, run, variation, date)
      * @param geometryPackage  geometry package name ("EC","FTOF","DC","FTCAL" etc.)
      */
-    public void requireGeometry(String geometryPackage){
-        
+    public void requireGeometry(String geometryPackage, int run, String variation, Date date){
+
         if(geometryPackage.compareTo("DC::Tilted")==0){
             DCFactory factory = new DCFactory();
-            ConstantProvider  data = DataBaseLoader.getConstantsDC();
+            ConstantProvider  data = DataBaseLoader.getConstantsDC(run,variation,date);
             Detector geomFTOF = factory.createDetectorTilted(data);
             detectorGeometry.put("DC::Tilted", geomFTOF);
             System.err.println(mainModuleName + "geometry for detector " +
                     geometryPackage + " is loaded...");
             return;
         }
-        
+
         if(geometryPackage.compareTo("DC")==0){
             DCFactory factory = new DCFactory();
-            ConstantProvider  data = DataBaseLoader.getConstantsDC();
+            ConstantProvider  data = DataBaseLoader.getConstantsDC(run,variation,date);
             Detector geomFTOF = factory.createDetectorCLAS(data);
             detectorGeometry.put("DC", geomFTOF);
             System.err.println(mainModuleName + "geometry for detector " +
                     geometryPackage + " is loaded...");
             return;
         }
-        
+
         if(geometryPackage.compareTo("FTOF")==0){
             FTOFFactory factory = new FTOFFactory();
-            ConstantProvider  data = DataBaseLoader.getTimeOfFlightConstants();
+            ConstantProvider  data = DataBaseLoader.getTimeOfFlightConstants(run,variation,date);
             Detector geomFTOF = factory.createDetectorCLAS(data);
             detectorGeometry.put("FTOF", geomFTOF);
             System.err.println(mainModuleName + "geometry for detector " +
                     geometryPackage + " is loaded...");
             return;
         }
-        
+
         if(geometryPackage.compareTo("FTCAL")==0){
             FTCALFactory factory = new FTCALFactory();
-            ConstantProvider  data = DataBaseLoader.getConstantsFTCAL();
+            ConstantProvider  data = DataBaseLoader.getConstantsFTCAL(run,variation,date);
             Detector geomFTCAL = factory.createDetectorCLAS(data);
             detectorGeometry.put("FTCAL", geomFTCAL);
             System.err.println(mainModuleName + "geometry for detector " +
                     geometryPackage + " is loaded...");
             return;
         }
-        
+
         if(geometryPackage.compareTo("EC")==0){
             ECFactory factory = new ECFactory();
-            ConstantProvider  data = DataBaseLoader.getCalorimeterConstants();
+            ConstantProvider  data = DataBaseLoader.getCalorimeterConstants(run,variation,date);
             Detector geomEC = factory.createDetectorCLAS(data);
             detectorGeometry.put("EC", geomEC);
             System.err.println(mainModuleName + "geometry for detector " +
                     geometryPackage + " is loaded...");
             return;
         }
-        
+
         System.err.println(mainModuleName + "WARRNING : geometry package with name "
         + geometryPackage + " does not exist..");
     }
-    
+
     public void requireCalibration(String calibPackage){
-        
+
     }
-    
+
     public DetectorReconstruction(String name, String author,String version){
         serviceName = name;
         serviceAuthor = author;
         serviceVersion = version;
     }
-    
+
     public void setDescription(String desc){
         serviceDescription = desc;
     }
-    
+
     @Override
     public void configure(JioSerial js) {
         this.init();
@@ -161,7 +161,7 @@ public abstract class DetectorReconstruction implements ICService {
     @Override
     public JioSerial execute(JioSerial data) {
         JioSerial output = data;
- 
+
         // Validate input type
         MimeType mt = data.getMimeType();
         if (mt != MimeType.EVIO) {
@@ -170,7 +170,7 @@ public abstract class DetectorReconstruction implements ICService {
             output.setDataDescription(msg);
             return output;
         }
-        
+
         EvioDataEvent dataevent = null;
         try {
             byte[] buffer = data.getDataAsByteArray();
@@ -192,10 +192,10 @@ public abstract class DetectorReconstruction implements ICService {
             output.setDataDescription(msg);
             return output;
         }
- 
+
         // Save event.
         output.setData(dataevent.getEventBuffer(), MimeType.EVIO);
- 
+
         return output;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
