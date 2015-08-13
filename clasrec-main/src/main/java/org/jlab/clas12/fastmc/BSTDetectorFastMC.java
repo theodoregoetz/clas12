@@ -5,8 +5,7 @@
  */
 package org.jlab.clas12.fastmc;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import org.jlab.clasrec.utils.DataBaseLoader;
 import org.jlab.geom.DetectorHit;
 import org.jlab.geom.DetectorId;
@@ -14,12 +13,7 @@ import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.base.DetectorTransformation;
 import org.jlab.geom.detector.bst.BSTFactory;
 import org.jlab.geom.detector.bst.BSTLayer;
-import org.jlab.geom.prim.Line3D;
-import org.jlab.geom.prim.Path3D;
-import org.jlab.geom.prim.Point3D;
-import org.jlab.geom.prim.Shape3D;
-import org.jlab.geom.prim.Transformation3D;
-import org.jlab.geom.prim.Triangle3D;
+import org.jlab.geom.prim.*;
 
 /**
  *

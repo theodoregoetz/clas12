@@ -6,14 +6,8 @@
 
 package org.jlab.clasrec.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
-import org.jlab.ccdb.Assignment;
-import org.jlab.ccdb.CcdbPackage;
-import org.jlab.ccdb.JDBCProvider;
-import org.jlab.ccdb.TypeTable;
-import org.jlab.ccdb.TypeTableColumn;
+import java.util.*;
+import org.jlab.ccdb.*;
 import org.jlab.geom.base.ConstantProvider;
 
 
@@ -117,7 +111,7 @@ public class DatabaseConstantProvider implements ConstantProvider {
     public void setDefaultDate(Date date) {
         provider.setDefaultDate(date);
     }
-    public void setDefaultVariation(Sring variation) {
+    public void setDefaultVariation(String variation) {
         provider.setDefaultVariation(variation);
     }
     public void setDefaultRun(int run) {

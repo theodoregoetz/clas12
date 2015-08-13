@@ -6,6 +6,7 @@
 
 package org.jlab.clasrec.utils;
 
+import java.util.Date;
 import org.jlab.geom.base.ConstantProvider;
 
 /**
@@ -15,7 +16,7 @@ import org.jlab.geom.base.ConstantProvider;
 public class DataBaseLoader {
 
     private static DatabaseConstantProvider getProvider(int run, String variation, Date date) {
-        DatabaseConstantProvider provider = getProvider();
+        DatabaseConstantProvider provider = new DatabaseConstantProvider("mysql://clas12reader@clasdb.jlab.org/clas12");
         provider.setDefaultRun(run);
         provider.setDefaultVariation(variation);
         provider.setDefaultDate(date);
@@ -28,12 +29,16 @@ public class DataBaseLoader {
      * cause more harm than good.
      *
     public static DatabaseConstantProvider getProvider() {
-        return getProvider(0,"default",new Date());
+        DatabaseConstantProvider provider = new DatabaseConstantProvider();
+        provider.setDefaultRun(0);
+        provider.setDefaultVariation("default");
+        provider.setDefaultDate(new Date());
+        return provider;
     }
      */
 
     public static ConstantProvider getDriftChamberConstants(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/dc/dc");
         provider.loadTable("/geometry/dc/region");
         provider.loadTable("/geometry/dc/superlayer");
@@ -42,7 +47,7 @@ public class DataBaseLoader {
     }
 
     public static ConstantProvider getCalorimeterConstants(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/pcal/pcal");
         provider.loadTable("/geometry/pcal/UView");
         provider.loadTable("/geometry/pcal/VView");
@@ -57,7 +62,7 @@ public class DataBaseLoader {
 
 
     public static ConstantProvider getTimeOfFlightConstants(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/ftof/panel1a/paddles");
         provider.loadTable("/geometry/ftof/panel1a/panel");
         provider.loadTable("/geometry/ftof/panel1b/paddles");
@@ -67,7 +72,7 @@ public class DataBaseLoader {
         return provider;
     }
     public static ConstantProvider getConstantsDC(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/dc/dc");
         provider.loadTable("/geometry/dc/region");
         provider.loadTable("/geometry/dc/superlayer");
@@ -76,7 +81,7 @@ public class DataBaseLoader {
     }
 
      public static ConstantProvider getConstantsEC(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/pcal/pcal");
         provider.loadTable("/geometry/pcal/UView");
         provider.loadTable("/geometry/pcal/VView");
@@ -89,7 +94,7 @@ public class DataBaseLoader {
     }
 
     public static ConstantProvider getConstantsFTOF(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/ftof/panel1a/paddles");
         provider.loadTable("/geometry/ftof/panel1a/panel");
         provider.loadTable("/geometry/ftof/panel1b/paddles");
@@ -100,20 +105,20 @@ public class DataBaseLoader {
     }
 
     public static ConstantProvider getConstantsCND(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/cnd/cnd");
         provider.loadTable("/geometry/cnd/layer");
         return provider;
     }
 
     public static ConstantProvider getConstantsFTCAL(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/ft/ftcal");
         return provider;
     }
 
     public static ConstantProvider getConstantsBST(int run, String variation, Date date){
-        DatabaseConstantProvider provider = getProvider(run, variation, date);
+        DatabaseConstantProvider provider = DataBaseLoader.getProvider(run, variation, date);
         provider.loadTable("/geometry/bst/region");
         provider.loadTable("/geometry/bst/sector");
         provider.loadTable("/geometry/bst/bst");

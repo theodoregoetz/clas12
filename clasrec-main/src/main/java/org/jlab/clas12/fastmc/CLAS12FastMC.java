@@ -5,9 +5,7 @@
  */
 package org.jlab.clas12.fastmc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import org.jlab.clas.physics.Particle;
 import org.jlab.clas.physics.PhysicsEvent;
 import org.jlab.clasrec.utils.DataBaseLoader;
@@ -17,12 +15,7 @@ import org.jlab.geom.base.Detector;
 import org.jlab.geom.detector.dc.DCFactory;
 import org.jlab.geom.detector.ec.ECFactory;
 import org.jlab.geom.detector.ftof.FTOFFactory;
-import org.jlab.geom.prim.Arc3D;
-import org.jlab.geom.prim.Cylindrical3D;
-import org.jlab.geom.prim.Path3D;
-import org.jlab.geom.prim.Point3D;
-import org.jlab.geom.prim.Transformation3D;
-import org.jlab.geom.prim.Vector3D;
+import org.jlab.geom.prim.*;
 
 /**
  *

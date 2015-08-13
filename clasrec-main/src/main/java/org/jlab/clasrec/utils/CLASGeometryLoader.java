@@ -5,10 +5,7 @@
  */
 package org.jlab.clasrec.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import org.jlab.data.detector.DetectorType;
 import org.jlab.geom.DetectorHit;
 import org.jlab.geom.DetectorId;
@@ -25,12 +22,7 @@ import org.jlab.geom.detector.ftof.FTOFDetector;
 import org.jlab.geom.detector.ftof.FTOFFactory;
 import org.jlab.geom.gui.DetectorComponentUI;
 import org.jlab.geom.gui.DetectorShape3D;
-import org.jlab.geom.prim.Line3D;
-import org.jlab.geom.prim.Path3D;
-import org.jlab.geom.prim.Point3D;
-import org.jlab.geom.prim.Shape3D;
-import org.jlab.geom.prim.Transformation3D;
-import org.jlab.geom.prim.Triangle3D;
+import org.jlab.geom.prim.*;
 
 /**
  *

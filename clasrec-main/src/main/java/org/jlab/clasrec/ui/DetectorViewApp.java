@@ -13,8 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -34,11 +33,7 @@ import org.jlab.geom.detector.ft.FTCALDetector;
 import org.jlab.geom.detector.ft.FTCALFactory;
 import org.jlab.geom.detector.ftof.FTOFDetector;
 import org.jlab.geom.detector.ftof.FTOFFactory;
-import org.jlab.geom.gui.DetectorComponentUI;
-import org.jlab.geom.gui.DetectorLayerPanel;
-import org.jlab.geom.gui.DetectorLayerUI;
-import org.jlab.geom.gui.DetectorViewPanel;
-import org.jlab.geom.gui.IDetectorComponentSelection;
+import org.jlab.geom.gui.*;
 
 import org.root.pad.EmbeddedCanvas;
 

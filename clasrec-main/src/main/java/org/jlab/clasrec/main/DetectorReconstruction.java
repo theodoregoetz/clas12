@@ -7,7 +7,7 @@
 package org.jlab.clasrec.main;
 
 import java.nio.ByteOrder;
-import java.util.HashMap;
+import java.util.*;
 import org.jlab.clas12.tools.MimeType;
 import org.jlab.clasrec.utils.DataBaseLoader;
 import org.jlab.clasrec.utils.ServiceConfiguration;
