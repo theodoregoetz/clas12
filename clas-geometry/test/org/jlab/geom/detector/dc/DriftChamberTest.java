@@ -10,7 +10,7 @@ import org.jlab.ccdb.CcdbPackage;
 import org.jlab.ccdb.JDBCProvider;
 
 import org.jlab.geom.prim.*;
-import org.jlab.geom.G4VolumeMap;
+import org.jlab.geom.GemcVolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.detector.dc.DriftChamber;
 
@@ -45,8 +45,8 @@ public class DriftChamberTest {
     public void testVolumes() {
         DriftChamber dcgeom = new DriftChamber(this.provider);
 
-        G4VolumeMap vols = dcgeom.g4Volumes(CoordinateSystem.CLAS);
-        //out.print(vols.toString());
+        GemcVolumeMap vols = dcgeom.gemcVolumes(CoordinateSystem.CLAS);
+        out.print(vols.toPaddedString());
     }
 
     @Test

@@ -3,7 +3,7 @@ package org.jlab.geom.detector.ftof;
 import static java.lang.Math.*;
 import java.util.*;
 
-import org.jlab.geom.G4Volume;
+import org.jlab.geom.GemcVolume;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.ftof.*;
@@ -109,8 +109,8 @@ class Paddle {
         return slope*(index+1) + intercept;
     }
 
-    String g4Name() {
-        return new String(panel.g4Name()+"_pad"+(index+1));
+    String gemcName() {
+        return new String(panel.gemcName()+"_pad"+(index+1));
     }
 
     String description() {
@@ -124,7 +124,7 @@ class Paddle {
      *     pDy     Half-length along the y-axis
      *     pDz     Half-length along the z-axis
      **/
-    G4Volume g4Volume(CoordinateSystem coord) {
+    GemcVolume gemcVolume(CoordinateSystem coord) {
 
         double dx = 0.5*this.length();
         double dy = 0.5*panel.paddle_thickness;
@@ -149,8 +149,8 @@ class Paddle {
         String paddle_sens = new String("FTOF_"+panel.name());
 
         // The paddle volume
-        G4Volume vol = new G4Volume();
-        vol.put("mother", panel.g4Name());
+        GemcVolume vol = new GemcVolume();
+        vol.put("mother", panel.gemcName());
         vol.put("description", this.description());
         vol.put("pos", paddle_pos);
         vol.put("rotation", paddle_rot);

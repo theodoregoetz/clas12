@@ -2,7 +2,7 @@ package org.jlab.geom.detector.dc;
 
 import java.util.*;
 
-import org.jlab.geom.G4VolumeMap;
+import org.jlab.geom.GemcVolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
@@ -61,7 +61,7 @@ class Sector {
             this.sectorToCLAS(p.normal()) );
     }
 
-    String g4Name() {
+    String gemcName() {
         return new String("S"+(index+1));
     }
 
@@ -69,13 +69,13 @@ class Sector {
         return new String(dc.description()+" Sector "+(index+1));
     }
 
-    G4VolumeMap g4Volumes(CoordinateSystem coord) {
-        G4VolumeMap vols = new G4VolumeMap();
+    GemcVolumeMap gemcVolumes(CoordinateSystem coord) {
+        GemcVolumeMap vols = new GemcVolumeMap();
         for (Region region : regions) {
-            vols.put(region.g4Name(),region.g4Volume(coord));
+            vols.put(region.gemcName(),region.gemcVolume(coord));
             for (Superlayer superlayer : region.superlayers) {
                 for (Layer layer : superlayer.senselayers()) {
-                    vols.put(layer.g4Name(),layer.g4Volume(coord));
+                    vols.put(layer.gemcName(),layer.gemcVolume(coord));
                 }
             }
         }

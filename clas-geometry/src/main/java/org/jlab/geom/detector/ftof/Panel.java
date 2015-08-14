@@ -3,8 +3,8 @@ package org.jlab.geom.detector.ftof;
 import static java.lang.Math.*;
 import java.util.*;
 
-import org.jlab.geom.G4Volume;
-import org.jlab.geom.G4VolumeMap;
+import org.jlab.geom.GemcVolume;
+import org.jlab.geom.GemcVolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.ftof.*;
@@ -170,8 +170,8 @@ class Panel {
         return ret;
     }
 
-    String g4Name() {
-        return new String(sector.g4Name()+"_pan"+this.name());
+    String gemcName() {
+        return new String(sector.gemcName()+"_pan"+this.name());
     }
 
     String description() {
@@ -190,7 +190,7 @@ class Panel {
      *
      * \return map of map of strings: ret[volume_name][param_name] = value
      **/
-    G4Volume g4Volume(CoordinateSystem coord) {
+    GemcVolume gemcVolume(CoordinateSystem coord) {
         // 4 mm gap between panel's mother volume and daughter volumes
         final double mothergap = 0.4; //cm
 
@@ -222,7 +222,7 @@ class Panel {
             dz  + "*cm");
 
         // The Panel mother volume
-        G4Volume vol = new G4Volume();
+        GemcVolume vol = new GemcVolume();
         vol.put("mother", "root");
         vol.put("description", this.description());
         vol.put("pos", panel_pos);
@@ -230,7 +230,7 @@ class Panel {
         vol.put("color", "ff11aa5");
         vol.put("type", "Trd");
         vol.put("dimensions", panel_dim);
-        vol.put("material", "G4_AIR");
+        vol.put("material", "Gemc_AIR");
         vol.put("mfield", "no");
         vol.put("ncopy", "1");
         vol.put("pMany", "1");
@@ -243,11 +243,11 @@ class Panel {
         return vol;
     }
 
-    G4VolumeMap g4Volumes(CoordinateSystem coord) {
-        G4VolumeMap vols = new G4VolumeMap();
-        vols.put(this.g4Name(),this.g4Volume(coord));
+    GemcVolumeMap gemcVolumes(CoordinateSystem coord) {
+        GemcVolumeMap vols = new GemcVolumeMap();
+        vols.put(this.gemcName(),this.gemcVolume(coord));
         for (Paddle paddle : paddles) {
-            vols.put(paddle.g4Name(),paddle.g4Volume(coord));
+            vols.put(paddle.gemcName(),paddle.gemcVolume(coord));
         }
         return vols;
     }

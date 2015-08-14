@@ -10,7 +10,7 @@ import org.jlab.ccdb.CcdbPackage;
 import org.jlab.ccdb.JDBCProvider;
 
 import org.jlab.geom.prim.*;
-import org.jlab.geom.G4VolumeMap;
+import org.jlab.geom.GemcVolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.detector.ftof.ForwardTOF;
 
@@ -46,7 +46,7 @@ public class ForwardTOFTest {
         ForwardTOF ftofgeom = new ForwardTOF();
         ftofgeom.fetchNominalParameters(this.provider);
 
-        G4VolumeMap vols = ftofgeom.g4Volumes(CoordinateSystem.CLAS);
+        GemcVolumeMap vols = ftofgeom.gemcVolumes(CoordinateSystem.CLAS);
         //out.print(vols.toString());
     }
 

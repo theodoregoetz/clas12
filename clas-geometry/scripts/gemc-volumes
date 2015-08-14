@@ -1,0 +1,165 @@
+#!/bin/bash
+//bin/true && OPTS="-cp lib/ccdb.jar:src/main/java"
+//usr/bin/env groovy $OPTS "$0" $@; exit $?
+
+//####!/usr/bin/env groovy
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+import org.jlab.ccdb.CcdbPackage
+import org.jlab.ccdb.JDBCProvider
+
+import org.jlab.geom.CoordinateSystem
+import org.jlab.geom.GemcVolumeMap
+import org.jlab.geom.detector.dc.DriftChamber
+import org.jlab.geom.detector.ftof.ForwardTOF
+
+// USAGE STATEMENT
+arg0 = this.class.name
+def usage = arg0 + " [options] detectors..."
+def header = '''\
+|
+| This is a simple script interface to the CLAS12
+| geometry designed for use by GEMC.
+|
+| available detectors:
+|   dc, ftof
+|
+Options:'''
+
+// DEFAULT PARAMETERS
+def conn = 'mysql://clas12reader@clasdb.jlab.org/clas12'
+def run = 0
+def variation = 'default'
+def date_format = 'yyyy.MM.dd/HH:mm:ss'
+def date = new Date()
+def infotype = 'geometry'
+def output = 'stdout'
+def runmin = 0
+def runmax = 'inf'
+
+def output_type = 'stdout'
+
+// COMMAND LINE ARGUMENT SETUP
+def cli = new CliBuilder(usage: usage, header:header)
+
+cli.h(longOpt:'help'   , 'Show this help information'                     )
+cli._(longOpt:'quiet'  , 'Do not print any extraneous messages to stderr.')
+cli._(longOpt:'verbose', 'Print verbose messages (all to stderr).'        )
+
+cli.c(longOpt:'conn'  , args:1, argName:'CONN', 'CCDB connection string. (default: '+conn+')')
+cli.r(longOpt:'run'      , args:1, argName:'RUN' , 'Run number for reading CCDB. (default: '+run+')')
+cli.v(longOpt:'variation', args:1, argName:'VAR' , 'CCDB variation. (default: "'+variation+'")')
+cli.f(longOpt:'date-format', args:1, argName:'FMT','Date format to be used when reading in the date option. (default: "'+date_format+'")')
+cli.d(longOpt:'date'     , args:1, argName:'DATE', 'CCDB timestamp. (default: current time in the format specified by --date-format)')
+
+cli.t(longOpt:'infotype', args:1, argName:'TYPE', 'Type of information requested: geometry, etc. (default: "'+infotype+'")')
+
+cli.o(longOpt:'output', args:1, argName:'OUTPUT', 'Output filename or database connection string beginning with either "mysql://" or "sqlite://". Use "database" to copy the url from the --connstr option. Use "stdout" to print to standard output. (default: "'+output+'")')
+
+cli._(longOpt:'runmin', args:1, argName:'RUN', 'Beginning of run range when writing to CCDB. (default: '+runmin+')')
+cli._(longOpt:'runmax', args:1, argName:'RUN', 'End of run range when writing to CCDB. Use "inf" for infinity. (default: '+runmax+')')
+
+// PARSE COMMAND LINE ARGUMENTS
+def options = cli.parse(args)
+
+if (options.h || (options.arguments().size() == 0)) {
+    cli.usage()
+    return
+}
+
+if (options.conn) {
+    connstr = options.conn
+}
+if (options.output) {
+    if (options.output == 'database') {
+        output = conn
+        output_type = 'database'
+    } else if (options.output.startsWith('mysql://') || options.output.startsWith('sqlite://')) {
+        output = options.output
+        output_type = 'database'
+    } else if (options.output == 'stdout') {
+        output = 'stdout'
+        output_type = 'stdout'
+    } else {
+        output = options.output
+        output_type = 'file'
+    }
+}
+
+if (options.run) {
+    run = (int) options.run
+}
+if (options.variation) {
+    variation = options.variation
+}
+if (options.date) {
+    if (options.date_format) {
+        date_format = options.date_format
+    }
+    DateFormat dfmt = new SimpleDateFormat(date_format, Locale.ENGLISH)
+    date = dfmt.parse(options.date)
+}
+if (options.infotype) {
+    infotype = options.infotype.toLowerCase()
+}
+def detectors = []
+for (arg in options.arguments()) {
+    detectors.add(arg.toLowerCase())
+}
+
+def valid_types = ['geometry']
+if (!valid_types.contains(infotype)) {
+    cli.usage()
+    print('\nERROR: Unknown info-type: '+infotype+'\n')
+    return
+}
+
+def valid_detectors = ['dc','ftof']
+for (det in detectors) {
+    if (!valid_detectors.contains(det)) {
+        cli.usage()
+        print('\nERROR: Unknown detector: '+det+'\n')
+        return
+    }
+}
+
+if (options.runmin) {
+    runmin = options.runmin
+}
+if (options.runmax) {
+    runmax = options.runmax
+}
+
+// BEGIN PROCESSING COMMAND LINE ARGUMENTS
+JDBCProvider provider = CcdbPackage.createProvider(conn)
+provider.setDefaultRun(run)
+provider.setDefaultVariation(variation)
+provider.setDefaultDate(date)
+
+provider.connect()
+
+for (det in detectors) {
+    if (det == "dc") {
+        if (infotype == 'geometry') {
+            DriftChamber dcgeom = new DriftChamber(provider)
+            GemcVolumeMap vols = dcgeom.gemcVolumes(CoordinateSystem.CLAS)
+            if (output_type == 'database') {
+            } else if (output_type == 'file') {
+            } else if (output_type == 'stdout') {
+                print(vols.toPaddedString());
+            }
+        }
+    } else if (det == "ftof") {
+        if (infotype == 'geometry') {
+            ForwardTOF ftofgeom = new ForwardTOF(provider)
+            GemcVolumeMap vols = ftofgeom.gemcVolumes(CoordinateSystem.CLAS)
+            if (output_type == 'database') {
+            } else if (output_type == 'file') {
+            } else if (output_type == 'stdout') {
+                print(vols.toPaddedString());
+            }
+        }
+    }
+}

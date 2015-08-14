@@ -269,8 +269,8 @@ class Superlayer {
         return ret;
     }
 
-    String g4Name() {
-        return new String("SL"+(index+1)+"_"+region.g4Name());
+    String gemcName() {
+        return new String("SL"+(index+1)+"_"+region.gemcName());
     }
 
     String description() {
