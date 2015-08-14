@@ -27,7 +27,7 @@ public class ForwardTOF {
     /**
      * \brief default constructor
      **/
-    public ForwardTOF() {
+    ForwardTOF() {
         this.sectors = new ArrayList<Sector>();
         this.panel_index_map = new HashMap<String,Integer>();
         this.panel_index_map.put("1a",0);
@@ -62,8 +62,6 @@ public class ForwardTOF {
      * \param [in] dataprovider the ccdb::DataProvider object
      **/
     public void fetchNominalParameters(JDBCProvider provider) {
-        final double deg = 3.14159265358979 / 180.;
-
         int nsectors;
         int npanels;
 
