@@ -2,7 +2,7 @@ package org.jlab.geom.detector.ftof;
 
 import java.util.*;
 
-import org.jlab.geom.G4VolumeMap;
+import org.jlab.geom.GemcVolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.ftof.*;
@@ -70,7 +70,7 @@ class Sector {
             this.sectorToCLAS(p.normal()) );
     }
 
-    String g4Name() {
+    String gemcName() {
         return new String("sec"+(index+1));
     }
 
@@ -78,10 +78,10 @@ class Sector {
         return new String(ftof.description()+" Sector "+(index+1));
     }
 
-    G4VolumeMap g4Volumes(CoordinateSystem coord) {
-        G4VolumeMap vols = new G4VolumeMap();
+    GemcVolumeMap gemcVolumes(CoordinateSystem coord) {
+        GemcVolumeMap vols = new GemcVolumeMap();
         for (Panel panel : panels) {
-            vols.putAll(panel.g4Volumes(coord));
+            vols.putAll(panel.gemcVolumes(coord));
         }
         return vols;
     }

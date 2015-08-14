@@ -6,7 +6,7 @@ import static java.lang.Math.*;
 import org.jlab.ccdb.JDBCProvider;
 import org.jlab.ccdb.Assignment;
 
-import org.jlab.geom.G4VolumeMap;
+import org.jlab.geom.GemcVolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.detector.ftof.*;
 
@@ -194,10 +194,10 @@ public class ForwardTOF {
         return new String("Forward Time of Flight");
     }
 
-    public G4VolumeMap g4Volumes(CoordinateSystem coord) {
-        G4VolumeMap vols = new G4VolumeMap();
+    public GemcVolumeMap gemcVolumes(CoordinateSystem coord) {
+        GemcVolumeMap vols = new GemcVolumeMap();
         for (Sector sector : sectors) {
-            vols.putAll(sector.g4Volumes(coord));
+            vols.putAll(sector.gemcVolumes(coord));
         }
         return vols;
     }

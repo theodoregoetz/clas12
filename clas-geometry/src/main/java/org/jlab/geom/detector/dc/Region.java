@@ -3,7 +3,7 @@ package org.jlab.geom.detector.dc;
 import static java.lang.Math.*;
 import java.util.*;
 
-import org.jlab.geom.G4Volume;
+import org.jlab.geom.GemcVolume;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
@@ -134,7 +134,7 @@ class Region {
     }
 
 
-    String g4Name() {
+    String gemcName() {
         return new String("R"+(index+1)+"_S"+(sector.index+1));
     }
 
@@ -145,7 +145,7 @@ class Region {
     /**
      * \brief generate the mother volume of a DC Region for input into gemc/geant4
      *
-     * The numbers calculated are following Geant4's G4Trap constructor:
+     * The numbers calculated are following Geant4's GemcTrap constructor:
      *     pDz     Half-length along the z-axis
      *     pTheta  Polar angle of the line joining the centres of the faces
      *             at -/+pDz
@@ -165,7 +165,7 @@ class Region {
      *
      * \return map of strings to strings: value = ret.get(param_name)
      **/
-    G4Volume g4Volume(CoordinateSystem coord) {
+    GemcVolume gemcVolume(CoordinateSystem coord) {
 
         // first and last guard wire endpoints
         Vector3D guardwire0_endpoint = this.superlayer( 0).guardlayer( 0).wire( 0,coord).end().toVector3D();
@@ -214,13 +214,13 @@ class Region {
             toDegrees(alp2) + "*deg");
 
         // The Region mother volume
-        G4Volume vol = new G4Volume();
+        GemcVolume vol = new GemcVolume();
         vol.put("mother", "root");
         vol.put("description", this.description());
         vol.put("pos", region_pos);
         vol.put("rotation", region_rot);
         vol.put("color", "aa0000");
-        vol.put("type", "G4Trap");
+        vol.put("type", "GemcTrap");
         vol.put("dimensions", region_dim);
         vol.put("material", "DCgas");
         vol.put("mfield", "no");

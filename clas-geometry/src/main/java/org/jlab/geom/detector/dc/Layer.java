@@ -3,7 +3,7 @@ package org.jlab.geom.detector.dc;
 import static java.lang.Math.*;
 import java.util.*;
 
-import org.jlab.geom.G4Volume;
+import org.jlab.geom.GemcVolume;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.dc.*;
@@ -337,8 +337,8 @@ class Layer {
     }
 
 
-    String g4Name() {
-        return new String("L"+index+"_"+superlayer.g4Name());
+    String gemcName() {
+        return new String("L"+index+"_"+superlayer.gemcName());
     }
 
     String description() {
@@ -347,7 +347,7 @@ class Layer {
 
     /**
      * generating the trapezoid parameters for this layer
-     * following the G4Trap constructor:
+     * following the GemcTrap constructor:
      *     pDz     Half-length along the z-axis
      *     pTheta  Polar angle of the line joining the centres of the faces
      *             at -/+pDz
@@ -367,10 +367,10 @@ class Layer {
      *
      * \return map of strings to strings: value = ret.get(param_name)
     **/
-    G4Volume g4Volume(CoordinateSystem coord) {
+    GemcVolume gemcVolume(CoordinateSystem coord) {
         // all done in sector coordinate system. ///////////////////////////////
 
-        // 100 um gap between layers (to avoid G4 volume overlap)
+        // 100 um gap between layers (to avoid Gemc volume overlap)
         final double microgap = 0.01;
 
         double hflyrthk = 0.5 * superlayer.layerThickness();
@@ -500,13 +500,13 @@ class Layer {
             "wire manual 1");
 
         // The (Sense)Layer volume
-        G4Volume vol = new G4Volume();
-        vol.put("mother", region.g4Name());
+        GemcVolume vol = new GemcVolume();
+        vol.put("mother", region.gemcName());
         vol.put("description", this.description());
         vol.put("pos", layer_pos);
         vol.put("rotation", layer_rot);
         vol.put("color", "66aadd");
-        vol.put("type", "G4Trap");
+        vol.put("type", "GemcTrap");
         vol.put("dimensions", layer_dim);
         vol.put("material", "DCgas");
         vol.put("mfield", "no");
