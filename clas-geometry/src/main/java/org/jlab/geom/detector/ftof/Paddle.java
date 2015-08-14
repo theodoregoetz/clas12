@@ -108,4 +108,65 @@ class Paddle {
     double length() {
         return slope*(index+1) + intercept;
     }
+
+    String g4Name() {
+        return new String(panel.g4Name()+"_pad"+(index+1));
+    }
+
+    String description() {
+        return new String(panel.description()+" Paddle "+(index+1));
+    }
+
+    G4Volume g4Volume(CoordinateSystem coord) {
+        /*
+        generating parameters for the paddle volumes following
+        the BOX constructor:
+            pDx     Half-length along the x-axis
+            pDy     Half-length along the y-axis
+            pDz     Half-length along the z-axis
+        */
+
+        double dx = 0.5*this.length();
+        double dy = 0.5*panel.paddle_thickness;
+        double dz = 0.5*panel.paddle_width;
+
+        // posz is the GEANT z position of each paddle
+        // (corresponding to x in sector coords)
+        double x = this.centerX();
+        double posz = (x - panel.center(CoordinateSystem.SECTOR).x()) / cos(panel.thtilt);
+
+        //paddle's position relative to the panel (mother volume)
+        Vector3D paddle_position = new Vector3D(0,0,posz);
+
+        String paddle_pos = new String(
+            paddle_position.x() + "*cm " +
+            paddle_position.y() + "*cm " +
+            paddle_position.z() + "*cm");
+
+        String paddle_rot = new String("0*deg 0*deg 0*deg");
+        String paddle_dim = new String(dx+"*cm "+dy+"*cm "+dz+"*cm");
+        String paddle_ids  = new String("sector ncopy 0 paddle manual "+(index+1));
+        String paddle_sens = new String("FTOF_"+panel.name());
+
+        // The paddle volume
+        G4Volume vol = new G4Volume();
+        vol.put("mother", panel.g4Name());
+        vol.put("description", this.description());
+        vol.put("pos", paddle_pos);
+        vol.put("rotation", paddle_rot);
+        vol.put("color", "ff11aa");
+        vol.put("type", "Box");
+        vol.put("dimensions", paddle_dim);
+        vol.put("material", "scintillator");
+        vol.put("mfield", "no");
+        vol.put("ncopy", "1");
+        vol.put("pMany", "1");
+        vol.put("exist", "1");
+        vol.put("visible", "1");
+        vol.put("style", "1");
+        vol.put("sensitivity", paddle_sens);
+        vol.put("hit_type", paddle_sens);
+        vol.put("identifiers", paddle_ids);
+        return vol;
+    }
 }

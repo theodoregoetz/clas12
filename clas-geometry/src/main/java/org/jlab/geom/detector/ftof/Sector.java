@@ -71,20 +71,18 @@ class Sector {
     }
 
     String g4Name() {
-        return new String("S"+(index+1));
+        return new String("sec"+(index+1));
     }
 
     String description() {
         return new String(ftof.description()+" Sector "+(index+1));
     }
 
-    /*
     G4VolumeMap g4Volumes(CoordinateSystem coord) {
         G4VolumeMap vols = new G4VolumeMap();
         for (Panel panel : panels) {
-            vols.put(panel.g4Name(),panel.g4Volume(coord));
+            vols.putAll(panel.g4Volumes(coord));
         }
         return vols;
     }
-    */
 }

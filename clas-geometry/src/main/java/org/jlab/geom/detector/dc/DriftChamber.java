@@ -147,10 +147,6 @@ public class DriftChamber {
         return vols;
     }
 
-    public G4VolumeMap g4Volumes() {
-        return this.g4Volumes(CoordinateSystem.CLAS);
-    }
-
     int nSectors() {
         return sectors.size();
     }

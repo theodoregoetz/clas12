@@ -45,7 +45,7 @@ public class DriftChamberTest {
     public void testVolumes() {
         DriftChamber dcgeom = new DriftChamber(this.provider);
 
-        G4VolumeMap vols = dcgeom.g4Volumes();
+        G4VolumeMap vols = dcgeom.g4Volumes(CoordinateSystem.CLAS);
         out.print(vols.toString());
     }
 
