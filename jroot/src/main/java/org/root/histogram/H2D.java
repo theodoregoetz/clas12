@@ -22,6 +22,7 @@ public class H2D implements EvioWritableTree,IDataSet {
 	private double[] hBuffer;
 	private MultiIndex offset;
         private Attributes attr = new Attributes(); 
+        private Double     maximumBinValue = 0.0;
         
 	public H2D() {
 		offset = new MultiIndex(xAxis.getNBins(), yAxis.getNBins());
@@ -273,6 +274,8 @@ public class H2D implements EvioWritableTree,IDataSet {
 	 */
 	private void addBinContent(int bin) {
 		hBuffer[bin] = hBuffer[bin] + 1.0;
+                if(hBuffer[bin]>this.maximumBinValue) 
+                    this.maximumBinValue = hBuffer[bin];
 	}
 
 	/**
@@ -285,6 +288,8 @@ public class H2D implements EvioWritableTree,IDataSet {
 	 */
 	private void addBinContent(int bin, double w) {
 		hBuffer[bin] = hBuffer[bin] + w;
+                if(hBuffer[bin]>this.maximumBinValue) 
+                    this.maximumBinValue = hBuffer[bin];
 	}
         
         public ArrayList<H1D>  getSlicesX(){
@@ -543,13 +548,15 @@ public class H2D implements EvioWritableTree,IDataSet {
         region.MINIMUM_Y = this.yAxis.getBinCenter(0)-this.yAxis.getBinWidth(0)/2.0;
         region.MAXIMUM_Y = this.yAxis.getBinCenter(this.yAxis.getNBins()-1)-
                 this.yAxis.getBinWidth(this.yAxis.getNBins()-1)/2.0;
+        region.MINIMUM_Z = 0;
+        region.MAXIMUM_Z = this.maximumBinValue;
         return region;
     }
 
     public Integer getDataSize() {
         return this.xAxis.getNBins()*this.yAxis.getNBins();
     }
-
+    
     public Double getDataX(int index) {
         return 1.0;
     }
@@ -569,5 +576,15 @@ public class H2D implements EvioWritableTree,IDataSet {
 
     public Attributes getAttributes() {
         return this.attr;
+    }
+
+    public Double getData(int x, int y) {
+        return this.getBinContent(x, y);
+    }
+
+    public Integer getDataSize(int axis) {
+        if(axis==0) return this.getXAxis().getNBins();
+        if(axis==1) return this.getYAxis().getNBins();
+        return 0;
     }
 }

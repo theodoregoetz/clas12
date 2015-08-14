@@ -9,6 +9,8 @@ package org.jlab.clasrec.rec;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jlab.clas.tools.benchmark.Benchmark;
 import org.jlab.clas.tools.utils.CommandLineTools;
 
@@ -55,6 +57,8 @@ public class CLASReconstruction {
         this.debugLevel = level;
     }
     
+    
+    
     public void initServiceConfiguration(ArrayList<String> items){
         for(String configItem : items){
             String[] tokens = configItem.split("=");
@@ -71,6 +75,71 @@ public class CLASReconstruction {
         System.out.println("****************************************");
     }
     
+    public void addDetector(DetectorReconstruction rec){
+        this.detectorFactory.add(rec);
+    }
+    
+    public void addDetector(String classname){
+         try {
+            Class   c = Class.forName(classname);
+            if(c.getSuperclass()==DetectorReconstruction.class){
+                DetectorReconstruction dr = (DetectorReconstruction) c.newInstance();
+                this.addDetector(dr);
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CLASReconstruction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(CLASReconstruction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(CLASReconstruction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void addDetectorToFactory(String classname){
+        try {
+            Class   c = Class.forName(classname);
+            if(c.getSuperclass()==DetectorReconstruction.class){
+                DetectorReconstruction dr = (DetectorReconstruction) c.newInstance();
+                this.detectorFactory.add(dr);
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(CLASReconstruction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(CLASReconstruction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(CLASReconstruction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void init(){
+        for(DetectorReconstruction detectorRec : this.detectorFactory ){
+            try {
+                detectorRec.setDebugLevel(this.debugLevel);
+                detectorRec.configure(serviceConfig);
+                detectorRec.init();
+                System.err.println("[INIT-DETECTORS] ----> detector initialization "
+                        + detectorRec.getName() + " ......... ok");
+            } catch (Exception e) {
+                System.err.println("[INIT-DETECTORS] ----> ERROR initializing detector "
+                + detectorRec.getName());
+            }
+        }
+    }
+    
+    public void initDetectorModules(){
+        for(DetectorReconstruction detectorRec : this.detectorFactory ){
+            try {
+                detectorRec.setDebugLevel(this.debugLevel);
+                detectorRec.configure(serviceConfig);
+                detectorRec.init();
+                System.err.println("[INIT-DETECTORS] ----> detector initialization "
+                        + detectorRec.getName() + " ......... ok");
+            } catch (Exception e) {
+                System.err.println("[INIT-DETECTORS] ----> ERROR initializing detector "
+                + detectorRec.getName());
+            }
+        }
+    }
     
     public void initDetectors(){
         this.detectorFactory.clear();
@@ -101,6 +170,8 @@ public class CLASReconstruction {
             }
         }
     }
+    
+    
     public void setSkip(Integer skip){
         this.skipEvents = skip;
     }
@@ -117,7 +188,7 @@ public class CLASReconstruction {
     
     public void run(String filename, String output){
         reader.open(filename);
-        this.initDetectors();
+        //this.initDetectors();
         EvioDataSync writer = new EvioDataSync();
         writer.open(output);
         

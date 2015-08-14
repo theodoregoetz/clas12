@@ -5,6 +5,8 @@
  */
 package org.jlab.clas12.calib;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.jlab.clas.detector.DetectorDescriptor;
@@ -71,5 +73,16 @@ public class DetectorH1D {
             str.append("  \n");            
         }
         return str.toString();
+    }
+    
+    public List<String> getList(){
+        ArrayList<String>  list = new ArrayList<String>();
+        for(Map.Entry<Integer,ComponentH1D> entry : this.componentH1D.entrySet()){
+            Integer sec = entry.getValue().getDescriptor().getSector();
+            Integer lay = entry.getValue().getDescriptor().getLayer();
+            Integer com = entry.getValue().getDescriptor().getComponent();
+            list.add(sec+"/"+lay+"/"+com);
+        }
+        return list;
     }
 }

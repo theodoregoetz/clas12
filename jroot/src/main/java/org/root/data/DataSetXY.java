@@ -315,4 +315,12 @@ public class DataSetXY implements EvioWritableTree,IDataSet {
     public Double getErrorY(int index) {
         return 0.0;
     }
+
+    public Double getData(int x, int y) {
+        return 0.0;
+    }
+
+    public Integer getDataSize(int axis) {
+        return this.getDataSize();
+    }
 }

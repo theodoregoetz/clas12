@@ -755,4 +755,12 @@ public class H1D implements EvioWritableTree,IDataSet {
     public Attributes getAttributes() {
         return this.attr;
     }
+
+    public Double getData(int x, int y) {
+        return 0.0;
+    }
+
+    public Integer getDataSize(int axis) {
+        return this.getDataSize();
+    }
 }

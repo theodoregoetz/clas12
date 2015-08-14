@@ -22,6 +22,7 @@ import org.jlab.coda.jevio.EvioNode;
  * @author gavalian
  */
 public class EvioDataEventHandler {
+    
     private EvioCompactStructureHandler structure = null;
     private ByteBuffer evioBuffer;     
     private List<EvioNode> eventNodes  = null;
@@ -36,6 +37,7 @@ public class EvioDataEventHandler {
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
         }
+         //this.list();
     }
     
     public EvioDataEventHandler(ByteBuffer buff){
@@ -46,10 +48,12 @@ public class EvioDataEventHandler {
         } catch (EvioException ex) {
             Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //this.list();
     }
     
     public EvioNode getRootNode(int tag, int num, DataType type){
         for(EvioNode node : eventNodes){
+            //System.out.println(" LOOKING for tag = " + tag + " num =  "   + num +  " type = " + type);
             if(node.getTag()==tag&&node.getNum()==num&&node.getDataTypeObj()==type){
                 return node;
             }
@@ -58,7 +62,15 @@ public class EvioDataEventHandler {
     }
     
     public EvioCompactStructureHandler getStructure(){return this.structure;}
-    public void setStructure(EvioCompactStructureHandler struct){ this.structure = struct;}
+    public void setStructure(EvioCompactStructureHandler struct){ 
+        this.structure = struct;
+        try {
+            this.eventNodes = this.structure.getNodes();
+        } catch (EvioException ex) {
+            Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public EvioNode getChildNode(EvioNode rootNode, int tag, int num, DataType type){
         List<EvioNode>  leafs = rootNode.getChildNodes();
         for(EvioNode node : leafs){
@@ -138,4 +150,11 @@ public class EvioDataEventHandler {
         return nodeData;
     }
     
+    public void list(){
+        System.out.println("  LIST ========>  EVIO NODES ");
+        for(EvioNode node : this.eventNodes){
+            System.out.println(String.format(" tag = %8d  num = %8d  type = %s", 
+                    node.getTag(),node.getNum(),node.getDataTypeObj()));
+        }
+    }
 }

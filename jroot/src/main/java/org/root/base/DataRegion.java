@@ -15,6 +15,8 @@ public class DataRegion {
     public double MAXIMUM_X = 0.0;
     public double MINIMUM_Y = 0.0;
     public double MAXIMUM_Y = 0.0;
+    public double MINIMUM_Z = 0.0;
+    public double MAXIMUM_Z = 0.0;
     
     public DataRegion(){
         

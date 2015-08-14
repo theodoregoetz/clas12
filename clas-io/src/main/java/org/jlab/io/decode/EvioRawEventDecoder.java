@@ -198,6 +198,7 @@ public class EvioRawEventDecoder {
                 //return this.getDataEntriesMode_7(crate,node, event);
             }
             if(node.getTag()==57622){
+                //System.out.println("FOUND TAG 622");
                 // This is MODE=10 is used for DC, it contains only TDC
                 return this.getDataEntries_57622(crate, node, event);
             }
@@ -419,7 +420,9 @@ public class EvioRawEventDecoder {
                 CompositeData  compData = new CompositeData(compBuffer.array(),event.getByteOrder());                
                 List<DataType> cdatatypes = compData.getTypes();
                 List<Object>   cdataitems = compData.getItems();
+                
                 int  totalSize = cdataitems.size();
+                //System.out.println(" BANK 622 TOTAL SIZE = " + totalSize);
                 int  position  = 0;
                 while( (position + 4) < totalSize){
                     Byte    slot = (Byte)     cdataitems.get(position);

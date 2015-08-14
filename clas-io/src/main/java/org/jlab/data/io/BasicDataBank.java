@@ -310,11 +310,13 @@ public class BasicDataBank implements DataBank {
         int nrows = 0;
         for(Map.Entry<String,float[]> item : floatContainer.entrySet()){
             float[] itemdata = item.getValue();
-            nrows = itemdata.length;           
+            if(itemdata!=null)
+                nrows = itemdata.length;           
         }
         for(Map.Entry<String,int[]> item : intContainer.entrySet()){
             int[] itemdata = item.getValue();
-            nrows = itemdata.length;           
+            if(itemdata!=null)
+                nrows = itemdata.length;
         }
         return nrows;
     }

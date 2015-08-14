@@ -23,7 +23,6 @@ import org.jlab.coda.jevio.CompositeData;
 import org.jlab.coda.jevio.DataType;
 import org.jlab.coda.jevio.EvioException;
 import org.jlab.coda.jevio.EvioNode;
-import org.jlab.data.detector.DetectorDataBank;
 import org.jlab.evio.clas12.EvioDataEvent;
 import org.jlab.evio.clas12.EvioSource;
 import org.jlab.io.decode.EvioRawEventDecoder;
@@ -195,6 +194,18 @@ public class EvioEventDecoder {
         }
         return rawEntries;
     }*/
+    
+    public ArrayList<DetectorRawData> getDataEntries(EvioDataEvent event){
+        ArrayList<DetectorRawData>  rawEntries = new ArrayList<DetectorRawData>();
+        List<EvioTreeBranch> branches = this.getEventBranches(event);
+        for(EvioTreeBranch branch : branches){
+            ArrayList<DetectorRawData>  list = this.getDataEntries(event,branch.getTag());
+            if(list != null){
+                rawEntries.addAll(list);
+            }
+        }
+        return rawEntries;
+    }
     
     public ArrayList<DetectorRawData> getDataEntries(EvioDataEvent event, Integer crate){
         

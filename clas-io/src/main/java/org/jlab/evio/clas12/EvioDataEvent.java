@@ -128,6 +128,10 @@ public class EvioDataEvent implements DataEvent {
         return this.eventHandler.getStructure();
     }
     
+    public EvioDataEventHandler getHandler(){
+        return this.eventHandler;
+    }
+    
     public void initEvent(ByteBuffer buffer){
         evioBuffer = buffer;
     }
@@ -288,7 +292,9 @@ public class EvioDataEvent implements DataEvent {
         }
         
         EvioDataDescriptor desc = (EvioDataDescriptor) this.dictionary.getDescriptor(bank_name);
-        if(desc==null) return false;
+        if(desc==null){
+            return false;
+        }
         int parenttag = Integer.parseInt(desc.getPropertyString("parent_tag"));
         int nodetag   = Integer.parseInt(desc.getPropertyString("container_tag"));
         //System.out.println("Looking for bank " + bank_name + " TAGS = " + 
