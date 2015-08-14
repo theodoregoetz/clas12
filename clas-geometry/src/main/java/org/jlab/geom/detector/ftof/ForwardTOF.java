@@ -169,20 +169,6 @@ public class ForwardTOF {
         }
     }
 
-    /*
-    public G4VolumeMap g4Volumes(CoordinateSystem coord) {
-        G4VolumeMap vols = new G4VolumeMap();
-        for (Sector sector : sectors) {
-            vols.putAll(sector.g4Volumes(coord));
-        }
-        return vols;
-    }
-
-    public G4VolumeMap g4Volumes() {
-        return this.g4Volumes(CoordinateSystem.CLAS);
-    }
-    */
-
     int nSectors() {
         return sectors.size();
     }
@@ -208,5 +194,13 @@ public class ForwardTOF {
 
     String description() {
         return new String("Forward Time of Flight");
+    }
+
+    public G4VolumeMap g4Volumes(CoordinateSystem coord) {
+        G4VolumeMap vols = new G4VolumeMap();
+        for (Sector sector : sectors) {
+            vols.putAll(sector.g4Volumes(coord));
+        }
+        return vols;
     }
 }

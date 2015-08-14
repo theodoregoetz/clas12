@@ -4,6 +4,7 @@ import static java.lang.Math.*;
 import java.util.*;
 
 import org.jlab.geom.G4Volume;
+import org.jlab.geom.G4VolumeMap;
 import org.jlab.geom.CoordinateSystem;
 import org.jlab.geom.prim.*;
 import org.jlab.geom.detector.ftof.*;
@@ -167,5 +168,87 @@ class Panel {
                 throw new UnsupportedOperationException();
         }
         return ret;
+    }
+
+    String g4Name() {
+        return new String(sector.g4Name()+"_pan"+this.name());
+    }
+
+    String description() {
+        return new String(sector.description()+" Panel "+this.name());
+    }
+
+    /**
+     * \brief generate the volumes of a FTOF Sector for input into gemc/geant4
+     *
+     * The numbers for the mother volumes are calculated following Geant4's TRD constructor:
+
+     *     pDx1    Half-length along x at the z surface positioned at -DZ
+     *     pDx2    Half-length along x at the z surface positioned at +DZ
+     *     pDy     Half-length along y
+     *     pDz     Half-length along z
+     *
+     * \return map of map of strings: ret[volume_name][param_name] = value
+     **/
+    G4Volume g4Volume(CoordinateSystem coord) {
+        // 4 mm gap between panel's mother volume and daughter volumes
+        final double mothergap = 0.4; //cm
+
+        double dx1 = 0.5 * this.paddle( 0).length() + mothergap;
+        double dx2 = 0.5 * this.paddle(-1).length() + mothergap
+            + 0.5 * (this.paddle(-1).length() - this.paddle(-2).length());
+        double dy  = 0.5 * paddle_thickness + mothergap;
+        double dz  = 0.5 * this.radialExtent() + mothergap;
+
+        //panel's center point in CLAS coordinate system
+        Vector3D panel_center = this.center(CoordinateSystem.CLAS);
+
+        String panel_pos = new String(
+            panel_center.x() + "*cm " +
+            panel_center.y() + "*cm " +
+            panel_center.z() + "*cm");
+
+        String panel_rot = new String(
+            "ordered: zxy " +
+            (-90. - 60.*sector.index) + "*deg " +
+            (-90. - toDegrees(thtilt)) + "*deg " +
+            "0*deg");
+
+        String panel_dim = new String(
+            dx1 + "*cm " +
+            dx2 + "*cm " +
+            dy  + "*cm " +
+            dy  + "*cm " +
+            dz  + "*cm");
+
+        // The Panel mother volume
+        G4Volume vol = new G4Volume();
+        vol.put("mother", "root");
+        vol.put("description", this.description());
+        vol.put("pos", panel_pos);
+        vol.put("rotation",  panel_rot);
+        vol.put("color", "ff11aa5");
+        vol.put("type", "Trd");
+        vol.put("dimensions", panel_dim);
+        vol.put("material", "G4_AIR");
+        vol.put("mfield", "no");
+        vol.put("ncopy", "1");
+        vol.put("pMany", "1");
+        vol.put("exist", "1");
+        vol.put("visible", "0");
+        vol.put("style", "0");
+        vol.put("sensitivity", "no");
+        vol.put("hit_type", "");
+        vol.put("identifiers", "");
+        return vol;
+    }
+
+    G4VolumeMap g4Volumes(CoordinateSystem coord) {
+        G4VolumeMap vols = new G4VolumeMap();
+        vols.put(this.g4Name(),this.g4Volume(coord));
+        for (Paddle paddle : paddles) {
+            vols.put(paddle.g4Name(),paddle.g4Volume(coord));
+        }
+        return vols;
     }
 }
