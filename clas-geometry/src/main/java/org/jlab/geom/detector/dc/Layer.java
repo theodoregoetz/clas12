@@ -506,7 +506,7 @@ class Layer {
         vol.put("pos", layer_pos);
         vol.put("rotation", layer_rot);
         vol.put("color", "66aadd");
-        vol.put("type", "GemcTrap");
+        vol.put("type", "G4Trap");
         vol.put("dimensions", layer_dim);
         vol.put("material", "DCgas");
         vol.put("mfield", "no");

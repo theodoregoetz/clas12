@@ -230,7 +230,7 @@ class Panel {
         vol.put("color", "ff11aa5");
         vol.put("type", "Trd");
         vol.put("dimensions", panel_dim);
-        vol.put("material", "Gemc_AIR");
+        vol.put("material", "G4_AIR");
         vol.put("mfield", "no");
         vol.put("ncopy", "1");
         vol.put("pMany", "1");
