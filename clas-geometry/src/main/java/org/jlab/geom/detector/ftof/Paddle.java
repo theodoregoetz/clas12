@@ -117,14 +117,14 @@ class Paddle {
         return new String(panel.description()+" Paddle "+(index+1));
     }
 
+    /**
+     * generating parameters for the paddle volumes following
+     * the BOX constructor:
+     *     pDx     Half-length along the x-axis
+     *     pDy     Half-length along the y-axis
+     *     pDz     Half-length along the z-axis
+     **/
     G4Volume g4Volume(CoordinateSystem coord) {
-        /*
-        generating parameters for the paddle volumes following
-        the BOX constructor:
-            pDx     Half-length along the x-axis
-            pDy     Half-length along the y-axis
-            pDz     Half-length along the z-axis
-        */
 
         double dx = 0.5*this.length();
         double dy = 0.5*panel.paddle_thickness;

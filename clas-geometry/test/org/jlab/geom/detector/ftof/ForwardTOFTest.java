@@ -47,7 +47,7 @@ public class ForwardTOFTest {
         ftofgeom.fetchNominalParameters(this.provider);
 
         G4VolumeMap vols = ftofgeom.g4Volumes(CoordinateSystem.CLAS);
-        out.print(vols.toString());
+        //out.print(vols.toString());
     }
 
     public static void main(String args[]) {

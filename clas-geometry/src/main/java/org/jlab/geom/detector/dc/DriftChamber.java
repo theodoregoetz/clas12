@@ -52,8 +52,6 @@ public class DriftChamber {
      * \param [in] dataprovider the ccdb::DataProvider object
      **/
     public void fetchNominalParameters(JDBCProvider provider) {
-        final double deg = 3.14159265358979 / 180.;
-
         // here we connect to the CCDB (MySQL) databse and request
         // the nominal geometry parameters for the Drift Chamber.
         // These numbers come from four tables: dc, region, superlayer,
