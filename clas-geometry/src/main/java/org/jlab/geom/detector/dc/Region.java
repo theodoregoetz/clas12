@@ -220,7 +220,7 @@ class Region {
         vol.put("pos", region_pos);
         vol.put("rotation", region_rot);
         vol.put("color", "aa0000");
-        vol.put("type", "GemcTrap");
+        vol.put("type", "G4Trap");
         vol.put("dimensions", region_dim);
         vol.put("material", "DCgas");
         vol.put("mfield", "no");
