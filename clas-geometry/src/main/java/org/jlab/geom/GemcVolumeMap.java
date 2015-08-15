@@ -3,6 +3,10 @@ package org.jlab.geom;
 import java.util.*;
 
 public class GemcVolumeMap extends LinkedHashMap<String,GemcVolume> {
+
+    /**
+     * human-readable string
+     **/
     @Override
     public String toString() {
         StringBuilder msg = new StringBuilder();
@@ -13,6 +17,9 @@ public class GemcVolumeMap extends LinkedHashMap<String,GemcVolume> {
         return msg.toString();
     }
 
+    /**
+     * text format expected by GEMC
+     **/
     public String toPaddedString(String sep) {
         List<Integer> pads = null;
         for (Map.Entry<String,GemcVolume> vol : this.entrySet()) {
@@ -34,6 +41,9 @@ public class GemcVolumeMap extends LinkedHashMap<String,GemcVolume> {
         return msg.toString();
     }
 
+    /**
+     * text format expected by GEMC using | as separator
+     **/
     public String toPaddedString() {
         return this.toPaddedString("|");
     }

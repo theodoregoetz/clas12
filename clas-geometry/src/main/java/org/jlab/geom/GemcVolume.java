@@ -1,29 +1,49 @@
 package org.jlab.geom;
 
 import java.util.*;
+import java.lang.UnsupportedOperationException;
 
 public class GemcVolume extends LinkedHashMap<String,String> {
 
+    /**
+     * defines the keys and order thereof for this map
+     **/
     public GemcVolume() {
-        this.put("mother", "root");
-        this.put("description", "");
-        this.put("pos", "0*cm 0*cm 0*cm");
-        this.put("rotation", "ordered: zxy 0*deg 0*deg 0*deg");
-        this.put("color", "808080");
-        this.put("type", "GemcTrap");
-        this.put("dimensions", "0*cm 0*deg 0*deg 0*cm 0*cm 0*cm 0*deg 0*cm 0*cm 0*cm 0*deg");
-        this.put("material", "Air");
-        this.put("mfield", "no");
-        this.put("ncopy", "1");
-        this.put("pMany", "1");
-        this.put("exist", "1");
-        this.put("visible", "1");
-        this.put("style", "0");
-        this.put("sensitivity", "no");
-        this.put("hit_type", "");
-        this.put("identifiers", "");
+        // order matters here!
+        super.put("mother", "root");
+        super.put("description", "");
+        super.put("pos", "0*cm 0*cm 0*cm");
+        super.put("rotation", "ordered: zxy 0*deg 0*deg 0*deg");
+        super.put("color", "808080");
+        super.put("type", "GemcTrap");
+        super.put("dimensions", "0*cm 0*deg 0*deg 0*cm 0*cm 0*cm 0*deg 0*cm 0*cm 0*cm 0*deg");
+        super.put("material", "Air");
+        super.put("mfield", "no");
+        super.put("ncopy", "1");
+        super.put("pMany", "1");
+        super.put("exist", "1");
+        super.put("visible", "1");
+        super.put("style", "0");
+        super.put("sensitivity", "no");
+        super.put("hit_type", "");
+        super.put("identifiers", "");
     }
 
+    /**
+     * this prevents new keys from being added outside the constructor
+     **/
+    @Override
+    public String put(String K, String V) {
+        if (this.containsKey(K)) {
+            return super.put(K,V);
+        } else {
+            throw new UnsupportedOperationException("Unknown key: "+K);
+        }
+    }
+
+    /**
+     * human-readable format
+     **/
     @Override
     public String toString() {
         StringBuilder msg = new StringBuilder();
@@ -33,6 +53,9 @@ public class GemcVolume extends LinkedHashMap<String,String> {
         return msg.toString();
     }
 
+    /**
+     * text format expected by GEMC
+     **/
     public String toPaddedString(List<Integer> pads, String sep) {
         StringBuilder msg = new StringBuilder();
         int i = 0;
@@ -47,6 +70,9 @@ public class GemcVolume extends LinkedHashMap<String,String> {
         return msg.toString();
     }
 
+    /**
+     * returns the length of the strings stored in this map
+     **/
     public List<Integer> getWidths() {
         List<Integer> w = new ArrayList<Integer>();
         for (Map.Entry<String,String> e : this.entrySet()) {
